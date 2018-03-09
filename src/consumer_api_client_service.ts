@@ -11,10 +11,13 @@ import {
 
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
 
+import {IFactoryAsync} from 'addict-ioc';
+
 export class ConsumerApiClientService implements IConsumerApiService {
 
   public config: any = undefined;
 
+  private _httpClientFactory: IFactoryAsync<IHttpClient> = undefined;
   private _httpClient: IHttpClient = undefined;
 
   private urlParameters: any = {
@@ -26,18 +29,25 @@ export class ConsumerApiClientService implements IConsumerApiService {
     userTaskId: ':user_task_id',
   };
 
-  constructor(httpClient: IHttpClient) {
-    this._httpClient = httpClient;
+  constructor(httpClientFactory: IFactoryAsync<IHttpClient>) {
+    this._httpClientFactory = httpClientFactory;
   }
 
   public get httpClient(): IHttpClient {
     return this._httpClient;
   }
 
+  public async initialize(): Promise<void> {
+    this._httpClient = await this._httpClientFactory(undefined, this.config);
+  }
+
   public async getProcessModels(): Promise<IProcessModelList> {
     const httpResponse: IResponse<IProcessModelList> = await this.httpClient.get<IProcessModelList>(routes.processModels);
 
-    return <IProcessModelList> httpResponse.result;
+    // TODO - FIXME: The response returned by the HttpClient is always a string,
+    // even if the response headers include "Content-Type application/json"!?
+    // Need to investigate if this is an issue with the HttpClient itself or with popsicle.
+    return <IProcessModelList> JSON.parse(httpResponse.result);
   }
 
   public async getProcessModelByKey(processModelKey: string): Promise<IProcessModel> {
@@ -46,7 +56,8 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
     const httpResponse: IResponse<IProcessModel> = await this.httpClient.get<IProcessModel>(url);
 
-    return <IProcessModel> httpResponse.result;
+    // TODO - FIXME: See above
+    return <IProcessModel> JSON.parse(httpResponse.result);
   }
 
   public async startProcess(processModelKey: string, startEventKey: string): Promise<void> {

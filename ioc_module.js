@@ -6,8 +6,9 @@ const routerDiscoveryTag = require('@essential-projects/core_contracts').RouterD
 
 function registerInContainer(container) {
   container.register('ConsumerApiClientService', ConsumerApiClientService)
-    .dependencies('HttpClient')
-    .configure('consumer_api:consumer_api_service');
+    .dependencies('HttpService')
+    .injectPromiseLazy('HttpService')
+    .configure('consumer_api_client:consumer_api_client_service');
 }
 
 module.exports.registerInContainer = registerInContainer;
