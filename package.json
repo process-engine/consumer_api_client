@@ -9,6 +9,10 @@
     "url": "git+https://github.com/process-engine/consumer_api_client.git"
   },
   "author": "",
+  "contributors": [
+    "Sebastian Meier <sebastian.meier@5minds.de>",
+    "Christian Werner <christian.werner@5minds.de>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/process-engine/consumer_api_client/issues"
@@ -17,7 +21,7 @@
   "dependencies": {
     "@essential-projects/core_contracts": "^1.0.0-rc3",
     "@essential-projects/errors_ts": "^1.0.0",
-    "@essential-projects/http_contracts": "^1.0.0-rc4",
+    "@essential-projects/http_contracts": "^1.0.0-rc5",
     "@essential-projects/services": "^1.0.0-rc4",
     "@process-engine/consumer_api_contracts": "^0.2.0",
     "addict-ioc": "^2.2.8",
