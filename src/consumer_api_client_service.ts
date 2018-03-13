@@ -52,7 +52,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
   public async getProcessModelByKey(processModelKey: string): Promise<IProcessModel> {
 
-    const url: string = routes.processModels.replace(this.urlParameters.processModelKey, processModelKey);
+    const url: string = routes.processModel.replace(this.urlParameters.processModelKey, processModelKey);
 
     const httpResponse: IResponse<IProcessModel> = await this.httpClient.get<IProcessModel>(url);
 
