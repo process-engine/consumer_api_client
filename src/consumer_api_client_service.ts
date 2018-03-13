@@ -4,8 +4,11 @@ import {
   IEventTriggerPayload,
   IProcessModel,
   IProcessModelList,
+  IProcessStartRequestPayload,
+  IProcessStartResponsePayload,
   IUserTaskList,
   IUserTaskResult,
+  ProcessStartReturnOnOptions,
   routes,
 } from '@process-engine/consumer_api_contracts';
 
@@ -44,10 +47,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
   public async getProcessModels(): Promise<IProcessModelList> {
     const httpResponse: IResponse<IProcessModelList> = await this.httpClient.get<IProcessModelList>(routes.processModels);
 
-    // TODO - FIXME: The response returned by the HttpClient is always a string,
-    // even if the response headers include "Content-Type application/json"!?
-    // Need to investigate if this is an issue with the HttpClient itself or with popsicle.
-    return <IProcessModelList> JSON.parse(httpResponse.result);
+    return httpResponse.result;
   }
 
   public async getProcessModelByKey(processModelKey: string): Promise<IProcessModel> {
@@ -56,29 +56,77 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
     const httpResponse: IResponse<IProcessModel> = await this.httpClient.get<IProcessModel>(url);
 
-    // TODO - FIXME: See above
-    return <IProcessModel> JSON.parse(httpResponse.result);
+    return httpResponse.result;
   }
 
-  public async startProcess(processModelKey: string, startEventKey: string): Promise<void> {
-    return Promise.resolve();
+  public async startProcess(processModelKey: string,
+                            startEventKey: string,
+                            payload: IProcessStartRequestPayload,
+                            returnOn: ProcessStartReturnOnOptions): Promise<IProcessStartResponsePayload> {
+
+    let url: string = routes.startProcess
+      .replace(this.urlParameters.processModelKey, processModelKey)
+      .replace(this.urlParameters.startEventKey, startEventKey);
+
+    url = `${url}?return_on=${returnOn}`;
+
+    const httpResponse: IResponse<IProcessStartResponsePayload> =
+      await this.httpClient.post<IProcessStartRequestPayload, IProcessStartResponsePayload>(url, payload);
+
+    return httpResponse.result;
   }
 
-  public async startProcessAndAwaitEndEvent(processModelKey: string, startEventKey: string, endEventKey: string): Promise<void> {
-    return Promise.resolve();
+  public async startProcessAndAwaitEndEvent(processModelKey: string,
+                                            startEventKey: string,
+                                            endEventKey: string,
+                                            payload: IProcessStartRequestPayload): Promise<IProcessStartResponsePayload> {
+
+    const url: string = routes.startProcessAndAwaitEndEvent
+      .replace(this.urlParameters.processModelKey, processModelKey)
+      .replace(this.urlParameters.startEventKey, startEventKey)
+      .replace(this.urlParameters.endEventKey, endEventKey);
+
+    const httpResponse: IResponse<IProcessStartResponsePayload> =
+      await this.httpClient.post<IProcessStartRequestPayload, IProcessStartResponsePayload>(url, payload);
+
+    return httpResponse.result;
   }
 
-  // Events
+  // Events - TODO
   public async getEventsForProcessModel(processModelKey: string): Promise<IEventList> {
-    return Promise.resolve();
+    const mockData: IEventList = {
+      page_number: 0,
+      page_size: 30,
+      element_count: 0,
+      page_count: 0,
+      events: [],
+    };
+
+    return Promise.resolve(mockData);
   }
 
   public async getEventsForCorrelation(correlationId: string): Promise<IEventList> {
-    return Promise.resolve();
+    const mockData: IEventList = {
+      page_number: 0,
+      page_size: 30,
+      element_count: 0,
+      page_count: 0,
+      events: [],
+    };
+
+    return Promise.resolve(mockData);
   }
 
   public async getEventsForProcessModelInCorrelation(processModelKey: string, correlationId: string): Promise<IEventList> {
-    return Promise.resolve();
+    const mockData: IEventList = {
+      page_number: 0,
+      page_size: 30,
+      element_count: 0,
+      page_count: 0,
+      events: [],
+    };
+
+    return Promise.resolve(mockData);
   }
 
   public async triggerEvent(processModelKey: string, eventId: string, eventTriggerPayload?: IEventTriggerPayload): Promise<void> {
@@ -92,17 +140,56 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return Promise.resolve();
   }
 
-  // UserTasks
+  // UserTasks - TODO
   public async getUserTasksForProcessModel(processModelKey: string): Promise<IUserTaskList> {
-    return Promise.resolve();
+    const mockData: IUserTaskList = {
+      page_number: 0,
+      page_size: 30,
+      element_count: 0,
+      page_count: 0,
+      user_tasks: [{
+        key: 'mock_user_task',
+        id: '123',
+        process_instance_id: '123412534124535',
+        data: {},
+      }],
+    };
+
+    return Promise.resolve(mockData);
   }
 
   public async getUserTasksForCorrelation(correlationId: string): Promise<IUserTaskList> {
-    return Promise.resolve();
+    const mockData: IUserTaskList = {
+      page_number: 0,
+      page_size: 30,
+      element_count: 0,
+      page_count: 0,
+      user_tasks: [{
+        key: 'mock_user_task',
+        id: '123',
+        process_instance_id: '123412534124535',
+        data: {},
+      }],
+    };
+
+    return Promise.resolve(mockData);
   }
 
   public async getUserTasksForProcessModelInCorrelation(processModelKey: string, correlationId: string): Promise<IUserTaskList> {
-    return Promise.resolve();
+    const mockData: IUserTaskList = {
+      page_number: 0,
+      page_size: 30,
+      element_count: 0,
+      page_count: 0,
+      user_tasks: [{
+        key: 'mock_user_task',
+        id: '123',
+        process_instance_id: '123412534124535',
+        data: {},
+      }],
+    };
+
+    return Promise.resolve(mockData);
   }
 
   public async finishUserTask(processModelKey: string, userTaskId: string, userTaskResult: IUserTaskResult): Promise<void> {
