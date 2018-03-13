@@ -92,114 +92,107 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  // Events - TODO
+  // Events
   public async getEventsForProcessModel(processModelKey: string): Promise<IEventList> {
-    const mockData: IEventList = {
-      page_number: 0,
-      page_size: 30,
-      element_count: 0,
-      page_count: 0,
-      events: [],
-    };
 
-    return Promise.resolve(mockData);
+    const url: string = routes.processModelEvents.replace(this.urlParameters.processModelKey, processModelKey);
+
+    const httpResponse: IResponse<IEventList> = await this.httpClient.get<IEventList>(url);
+
+    return httpResponse.result;
   }
 
   public async getEventsForCorrelation(correlationId: string): Promise<IEventList> {
-    const mockData: IEventList = {
-      page_number: 0,
-      page_size: 30,
-      element_count: 0,
-      page_count: 0,
-      events: [],
-    };
 
-    return Promise.resolve(mockData);
+    const url: string = routes.correlationEvents.replace(this.urlParameters.correlationId, correlationId);
+
+    const httpResponse: IResponse<IEventList> = await this.httpClient.get<IEventList>(url);
+
+    return httpResponse.result;
   }
 
   public async getEventsForProcessModelInCorrelation(processModelKey: string, correlationId: string): Promise<IEventList> {
-    const mockData: IEventList = {
-      page_number: 0,
-      page_size: 30,
-      element_count: 0,
-      page_count: 0,
-      events: [],
-    };
 
-    return Promise.resolve(mockData);
+    const url: string = routes.processModelCorrelationEvents
+      .replace(this.urlParameters.processModelKey, processModelKey)
+      .replace(this.urlParameters.correlationId, correlationId);
+
+    const httpResponse: IResponse<IEventList> = await this.httpClient.get<IEventList>(url);
+
+    return httpResponse.result;
   }
 
   public async triggerEvent(processModelKey: string, eventId: string, eventTriggerPayload?: IEventTriggerPayload): Promise<void> {
-    return Promise.resolve();
+
+    const url: string = routes.triggerEvent
+      .replace(this.urlParameters.processModelKey, processModelKey)
+      .replace(this.urlParameters.eventId, eventId);
+
+    await this.httpClient.post<IEventTriggerPayload, any>(url, eventTriggerPayload);
   }
 
   public async triggerEventInCorrelation(processModelKey: string,
                                          correlationId: string,
                                          eventId: string,
                                          eventTriggerPayload?: IEventTriggerPayload): Promise<void> {
-    return Promise.resolve();
+
+    const url: string = routes.triggerProcessModelCorrelationEvent
+      .replace(this.urlParameters.processModelKey, processModelKey)
+      .replace(this.urlParameters.correlationId, correlationId)
+      .replace(this.urlParameters.eventId, eventId);
+
+    await this.httpClient.post<IEventTriggerPayload, any>(url, eventTriggerPayload);
   }
 
-  // UserTasks - TODO
+  // UserTasks
   public async getUserTasksForProcessModel(processModelKey: string): Promise<IUserTaskList> {
-    const mockData: IUserTaskList = {
-      page_number: 0,
-      page_size: 30,
-      element_count: 0,
-      page_count: 0,
-      user_tasks: [{
-        key: 'mock_user_task',
-        id: '123',
-        process_instance_id: '123412534124535',
-        data: {},
-      }],
-    };
 
-    return Promise.resolve(mockData);
+    const url: string = routes.processModelUserTasks.replace(this.urlParameters.processModelKey, processModelKey);
+
+    const httpResponse: IResponse<IUserTaskList> = await this.httpClient.get<IUserTaskList>(url);
+
+    return httpResponse.result;
   }
 
   public async getUserTasksForCorrelation(correlationId: string): Promise<IUserTaskList> {
-    const mockData: IUserTaskList = {
-      page_number: 0,
-      page_size: 30,
-      element_count: 0,
-      page_count: 0,
-      user_tasks: [{
-        key: 'mock_user_task',
-        id: '123',
-        process_instance_id: '123412534124535',
-        data: {},
-      }],
-    };
 
-    return Promise.resolve(mockData);
+    const url: string = routes.correlationUserTasks.replace(this.urlParameters.correlationId, correlationId);
+
+    const httpResponse: IResponse<IUserTaskList> = await this.httpClient.get<IUserTaskList>(url);
+
+    return httpResponse.result;
   }
 
   public async getUserTasksForProcessModelInCorrelation(processModelKey: string, correlationId: string): Promise<IUserTaskList> {
-    const mockData: IUserTaskList = {
-      page_number: 0,
-      page_size: 30,
-      element_count: 0,
-      page_count: 0,
-      user_tasks: [{
-        key: 'mock_user_task',
-        id: '123',
-        process_instance_id: '123412534124535',
-        data: {},
-      }],
-    };
 
-    return Promise.resolve(mockData);
+    const url: string = routes.processModelCorrelationUserTasks
+      .replace(this.urlParameters.processModelKey, processModelKey)
+      .replace(this.urlParameters.correlationId, correlationId);
+
+    const httpResponse: IResponse<IUserTaskList> = await this.httpClient.get<IUserTaskList>(url);
+
+    return httpResponse.result;
   }
 
   public async finishUserTask(processModelKey: string, userTaskId: string, userTaskResult: IUserTaskResult): Promise<void> {
-    return Promise.resolve();
+
+    const url: string = routes.finishUserTask
+      .replace(this.urlParameters.processModelKey, processModelKey)
+      .replace(this.urlParameters.userTaskId, userTaskId);
+
+    await this.httpClient.post<IUserTaskResult, any>(url, userTaskResult);
   }
 
   public async finishUserTaskInCorrelation(processModelKey: string,
                                            correlationId: string,
                                            userTaskId: string,
                                            userTaskResult: IUserTaskResult): Promise<void> {
-    return Promise.resolve();
+
+    const url: string = routes.finishProcessModelCorrelationUserTask
+      .replace(this.urlParameters.processModelKey, processModelKey)
+      .replace(this.urlParameters.correlationId, correlationId)
+      .replace(this.urlParameters.userTaskId, userTaskId);
+
+    await this.httpClient.post<IUserTaskResult, any>(url, userTaskResult);
   }
 }
