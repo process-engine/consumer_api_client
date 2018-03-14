@@ -1,3 +1,4 @@
+import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
 import {
   IConsumerApiService,
   IEventList,
@@ -9,10 +10,8 @@ import {
   IUserTaskList,
   IUserTaskResult,
   ProcessStartReturnOnOptions,
-  routes,
+  restSettings,
 } from '@process-engine/consumer_api_contracts';
-
-import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
 
 import {IFactoryAsync} from 'addict-ioc';
 
@@ -22,15 +21,6 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
   private _httpClientFactory: IFactoryAsync<IHttpClient> = undefined;
   private _httpClient: IHttpClient = undefined;
-
-  private urlParameters: any = {
-    processModelKey: ':process_model_key',
-    correlationId: ':correlation_id',
-    startEventKey: ':start_event_key',
-    endEventKey: ':end_event_key',
-    eventId: ':event_id',
-    userTaskId: ':user_task_id',
-  };
 
   constructor(httpClientFactory: IFactoryAsync<IHttpClient>) {
     this._httpClientFactory = httpClientFactory;
@@ -45,14 +35,14 @@ export class ConsumerApiClientService implements IConsumerApiService {
   }
 
   public async getProcessModels(): Promise<IProcessModelList> {
-    const httpResponse: IResponse<IProcessModelList> = await this.httpClient.get<IProcessModelList>(routes.processModels);
+    const httpResponse: IResponse<IProcessModelList> = await this.httpClient.get<IProcessModelList>(restSettings.paths.processModels);
 
     return httpResponse.result;
   }
 
   public async getProcessModelByKey(processModelKey: string): Promise<IProcessModel> {
 
-    const url: string = routes.processModelByKey.replace(this.urlParameters.processModelKey, processModelKey);
+    const url: string = restSettings.paths.processModelByKey.replace(restSettings.params.processModelKey, processModelKey);
 
     const httpResponse: IResponse<IProcessModel> = await this.httpClient.get<IProcessModel>(url);
 
@@ -64,9 +54,9 @@ export class ConsumerApiClientService implements IConsumerApiService {
                             payload: IProcessStartRequestPayload,
                             returnOn: ProcessStartReturnOnOptions): Promise<IProcessStartResponsePayload> {
 
-    let url: string = routes.startProcess
-      .replace(this.urlParameters.processModelKey, processModelKey)
-      .replace(this.urlParameters.startEventKey, startEventKey);
+    let url: string = restSettings.paths.startProcess
+      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.startEventKey, startEventKey);
 
     url = `${url}?return_on=${returnOn}`;
 
@@ -81,10 +71,10 @@ export class ConsumerApiClientService implements IConsumerApiService {
                                             endEventKey: string,
                                             payload: IProcessStartRequestPayload): Promise<IProcessStartResponsePayload> {
 
-    const url: string = routes.startProcessAndAwaitEndEvent
-      .replace(this.urlParameters.processModelKey, processModelKey)
-      .replace(this.urlParameters.startEventKey, startEventKey)
-      .replace(this.urlParameters.endEventKey, endEventKey);
+    const url: string = restSettings.paths.startProcessAndAwaitEndEvent
+      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.startEventKey, startEventKey)
+      .replace(restSettings.params.endEventKey, endEventKey);
 
     const httpResponse: IResponse<IProcessStartResponsePayload> =
       await this.httpClient.post<IProcessStartRequestPayload, IProcessStartResponsePayload>(url, payload);
@@ -95,7 +85,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
   // Events
   public async getEventsForProcessModel(processModelKey: string): Promise<IEventList> {
 
-    const url: string = routes.processModelEvents.replace(this.urlParameters.processModelKey, processModelKey);
+    const url: string = restSettings.paths.processModelEvents.replace(restSettings.params.processModelKey, processModelKey);
 
     const httpResponse: IResponse<IEventList> = await this.httpClient.get<IEventList>(url);
 
@@ -104,7 +94,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
   public async getEventsForCorrelation(correlationId: string): Promise<IEventList> {
 
-    const url: string = routes.correlationEvents.replace(this.urlParameters.correlationId, correlationId);
+    const url: string = restSettings.paths.correlationEvents.replace(restSettings.params.correlationId, correlationId);
 
     const httpResponse: IResponse<IEventList> = await this.httpClient.get<IEventList>(url);
 
@@ -113,9 +103,9 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
   public async getEventsForProcessModelInCorrelation(processModelKey: string, correlationId: string): Promise<IEventList> {
 
-    const url: string = routes.processModelCorrelationEvents
-      .replace(this.urlParameters.processModelKey, processModelKey)
-      .replace(this.urlParameters.correlationId, correlationId);
+    const url: string = restSettings.paths.processModelCorrelationEvents
+      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.correlationId, correlationId);
 
     const httpResponse: IResponse<IEventList> = await this.httpClient.get<IEventList>(url);
 
@@ -127,10 +117,10 @@ export class ConsumerApiClientService implements IConsumerApiService {
                             eventId: string,
                             eventTriggerPayload?: IEventTriggerPayload): Promise<void> {
 
-    const url: string = routes.triggerEvent
-      .replace(this.urlParameters.processModelKey, processModelKey)
-      .replace(this.urlParameters.correlationId, correlationId)
-      .replace(this.urlParameters.eventId, eventId);
+    const url: string = restSettings.paths.triggerEvent
+      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.correlationId, correlationId)
+      .replace(restSettings.params.eventId, eventId);
 
     await this.httpClient.post<IEventTriggerPayload, any>(url, eventTriggerPayload);
   }
@@ -138,7 +128,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
   // UserTasks
   public async getUserTasksForProcessModel(processModelKey: string): Promise<IUserTaskList> {
 
-    const url: string = routes.processModelUserTasks.replace(this.urlParameters.processModelKey, processModelKey);
+    const url: string = restSettings.paths.processModelUserTasks.replace(restSettings.params.processModelKey, processModelKey);
 
     const httpResponse: IResponse<IUserTaskList> = await this.httpClient.get<IUserTaskList>(url);
 
@@ -147,7 +137,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
   public async getUserTasksForCorrelation(correlationId: string): Promise<IUserTaskList> {
 
-    const url: string = routes.correlationUserTasks.replace(this.urlParameters.correlationId, correlationId);
+    const url: string = restSettings.paths.correlationUserTasks.replace(restSettings.params.correlationId, correlationId);
 
     const httpResponse: IResponse<IUserTaskList> = await this.httpClient.get<IUserTaskList>(url);
 
@@ -156,9 +146,9 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
   public async getUserTasksForProcessModelInCorrelation(processModelKey: string, correlationId: string): Promise<IUserTaskList> {
 
-    const url: string = routes.processModelCorrelationUserTasks
-      .replace(this.urlParameters.processModelKey, processModelKey)
-      .replace(this.urlParameters.correlationId, correlationId);
+    const url: string = restSettings.paths.processModelCorrelationUserTasks
+      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.correlationId, correlationId);
 
     const httpResponse: IResponse<IUserTaskList> = await this.httpClient.get<IUserTaskList>(url);
 
@@ -170,10 +160,10 @@ export class ConsumerApiClientService implements IConsumerApiService {
                               userTaskId: string,
                               userTaskResult: IUserTaskResult): Promise<void> {
 
-    const url: string = routes.finishUserTask
-      .replace(this.urlParameters.processModelKey, processModelKey)
-      .replace(this.urlParameters.correlationId, correlationId)
-      .replace(this.urlParameters.userTaskId, userTaskId);
+    const url: string = restSettings.paths.finishUserTask
+      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.correlationId, correlationId)
+      .replace(restSettings.params.userTaskId, userTaskId);
 
     await this.httpClient.post<IUserTaskResult, any>(url, userTaskResult);
   }
