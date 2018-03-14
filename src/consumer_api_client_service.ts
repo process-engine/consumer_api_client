@@ -122,21 +122,12 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async triggerEvent(processModelKey: string, eventId: string, eventTriggerPayload?: IEventTriggerPayload): Promise<void> {
+  public async triggerEvent(processModelKey: string,
+                            correlationId: string,
+                            eventId: string,
+                            eventTriggerPayload?: IEventTriggerPayload): Promise<void> {
 
     const url: string = routes.triggerEvent
-      .replace(this.urlParameters.processModelKey, processModelKey)
-      .replace(this.urlParameters.eventId, eventId);
-
-    await this.httpClient.post<IEventTriggerPayload, any>(url, eventTriggerPayload);
-  }
-
-  public async triggerEventInCorrelation(processModelKey: string,
-                                         correlationId: string,
-                                         eventId: string,
-                                         eventTriggerPayload?: IEventTriggerPayload): Promise<void> {
-
-    const url: string = routes.triggerProcessModelCorrelationEvent
       .replace(this.urlParameters.processModelKey, processModelKey)
       .replace(this.urlParameters.correlationId, correlationId)
       .replace(this.urlParameters.eventId, eventId);
@@ -174,21 +165,12 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async finishUserTask(processModelKey: string, userTaskId: string, userTaskResult: IUserTaskResult): Promise<void> {
+  public async finishUserTask(processModelKey: string,
+                              correlationId: string,
+                              userTaskId: string,
+                              userTaskResult: IUserTaskResult): Promise<void> {
 
     const url: string = routes.finishUserTask
-      .replace(this.urlParameters.processModelKey, processModelKey)
-      .replace(this.urlParameters.userTaskId, userTaskId);
-
-    await this.httpClient.post<IUserTaskResult, any>(url, userTaskResult);
-  }
-
-  public async finishUserTaskInCorrelation(processModelKey: string,
-                                           correlationId: string,
-                                           userTaskId: string,
-                                           userTaskResult: IUserTaskResult): Promise<void> {
-
-    const url: string = routes.finishProcessModelCorrelationUserTask
       .replace(this.urlParameters.processModelKey, processModelKey)
       .replace(this.urlParameters.correlationId, correlationId)
       .replace(this.urlParameters.userTaskId, userTaskId);
