@@ -15,17 +15,17 @@
   },
   "homepage": "https://github.com/process-engine/consumer_api_client#readme",
   "dependencies": {
-    "@essential-projects/core_contracts": "^1.0.0-rc3",
+    "@essential-projects/core_contracts": "^1.0.0",
     "@essential-projects/errors_ts": "^1.0.0",
-    "@essential-projects/http_contracts": "^1.0.0-rc4",
-    "@process-engine/consumer_api_contracts": "^0.2.0",
+    "@essential-projects/http_contracts": "^1.0.0",
+    "@process-engine/consumer_api_contracts": "^0.1.0",
     "addict-ioc": "^2.2.8",
     "async-middleware": "^1.2.1",
     "bluebird": "^3.4.7",
     "loggerhythm": "^3.0.3"
   },
   "devDependencies": {
-    "@essential-projects/tslint-config": "1.0.0-rc3",
+    "@essential-projects/tslint-config": "1.0.0",
     "@types/express": "^4.11.0",
     "@types/node": "^8.0.27",
     "gulp": "^3.9.1",
