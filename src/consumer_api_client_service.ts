@@ -2,6 +2,7 @@ import {ExecutionContext} from '@essential-projects/core_contracts';
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
 import {
   IConsumerApiService,
+  IConsumerContext,
   IEventList,
   IEventTriggerPayload,
   IProcessModel,
@@ -35,13 +36,13 @@ export class ConsumerApiClientService implements IConsumerApiService {
     this._httpClient = await this._httpClientFactory(undefined, this.config);
   }
 
-  public async getProcessModels(): Promise<IProcessModelList> {
+  public async getProcessModels(context: IConsumerContext): Promise<IProcessModelList> {
     const httpResponse: IResponse<IProcessModelList> = await this.httpClient.get<IProcessModelList>(restSettings.paths.processModels);
 
     return httpResponse.result;
   }
 
-  public async getProcessModelByKey(processModelKey: string): Promise<IProcessModel> {
+  public async getProcessModelByKey(context: IConsumerContext, processModelKey: string): Promise<IProcessModel> {
 
     const url: string = restSettings.paths.processModelByKey.replace(restSettings.params.processModelKey, processModelKey);
 
@@ -50,7 +51,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async startProcess(context: ExecutionContext,
+  public async startProcess(context: IConsumerContext,
                             processModelKey: string,
                             startEventKey: string,
                             payload: IProcessStartRequestPayload,
@@ -62,13 +63,15 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
     url = `${url}?return_on=${returnOn}`;
 
+    const requestAuthHeaders: IRequestOptions = this.createRequestAuthHeaders(context);
+
     const httpResponse: IResponse<IProcessStartResponsePayload> =
-      await this.httpClient.post<IProcessStartRequestPayload, IProcessStartResponsePayload>(url, payload);
+      await this.httpClient.post<IProcessStartRequestPayload, IProcessStartResponsePayload>(url, payload, requestAuthHeaders);
 
     return httpResponse.result;
   }
 
-  public async startProcessAndAwaitEndEvent(context: ExecutionContext,
+  public async startProcessAndAwaitEndEvent(context: IConsumerContext,
                                             processModelKey: string,
                                             startEventKey: string,
                                             endEventKey: string,
@@ -79,14 +82,16 @@ export class ConsumerApiClientService implements IConsumerApiService {
       .replace(restSettings.params.startEventKey, startEventKey)
       .replace(restSettings.params.endEventKey, endEventKey);
 
+    const requestAuthHeaders: IRequestOptions = this.createRequestAuthHeaders(context);
+
     const httpResponse: IResponse<IProcessStartResponsePayload> =
-      await this.httpClient.post<IProcessStartRequestPayload, IProcessStartResponsePayload>(url, payload);
+      await this.httpClient.post<IProcessStartRequestPayload, IProcessStartResponsePayload>(url, payload, requestAuthHeaders);
 
     return httpResponse.result;
   }
 
   // Events
-  public async getEventsForProcessModel(processModelKey: string): Promise<IEventList> {
+  public async getEventsForProcessModel(context: IConsumerContext, processModelKey: string): Promise<IEventList> {
 
     const url: string = restSettings.paths.processModelEvents.replace(restSettings.params.processModelKey, processModelKey);
 
@@ -95,7 +100,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async getEventsForCorrelation(correlationId: string): Promise<IEventList> {
+  public async getEventsForCorrelation(context: IConsumerContext, correlationId: string): Promise<IEventList> {
 
     const url: string = restSettings.paths.correlationEvents.replace(restSettings.params.correlationId, correlationId);
 
@@ -104,7 +109,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async getEventsForProcessModelInCorrelation(processModelKey: string, correlationId: string): Promise<IEventList> {
+  public async getEventsForProcessModelInCorrelation(context: IConsumerContext, processModelKey: string, correlationId: string): Promise<IEventList> {
 
     const url: string = restSettings.paths.processModelCorrelationEvents
       .replace(restSettings.params.processModelKey, processModelKey)
@@ -115,7 +120,8 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async triggerEvent(processModelKey: string,
+  public async triggerEvent(context: IConsumerContext,
+                            processModelKey: string,
                             correlationId: string,
                             eventId: string,
                             eventTriggerPayload?: IEventTriggerPayload): Promise<void> {
@@ -129,7 +135,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
   }
 
   // UserTasks
-  public async getUserTasksForProcessModel(processModelKey: string): Promise<IUserTaskList> {
+  public async getUserTasksForProcessModel(context: IConsumerContext, processModelKey: string): Promise<IUserTaskList> {
 
     const url: string = restSettings.paths.processModelUserTasks.replace(restSettings.params.processModelKey, processModelKey);
 
@@ -138,7 +144,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async getUserTasksForCorrelation(correlationId: string): Promise<IUserTaskList> {
+  public async getUserTasksForCorrelation(context: IConsumerContext, correlationId: string): Promise<IUserTaskList> {
 
     const url: string = restSettings.paths.correlationUserTasks.replace(restSettings.params.correlationId, correlationId);
 
@@ -147,7 +153,9 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async getUserTasksForProcessModelInCorrelation(processModelKey: string, correlationId: string): Promise<IUserTaskList> {
+  public async getUserTasksForProcessModelInCorrelation(context: IConsumerContext,
+                                                        processModelKey: string,
+                                                        correlationId: string): Promise<IUserTaskList> {
 
     const url: string = restSettings.paths.processModelCorrelationUserTasks
       .replace(restSettings.params.processModelKey, processModelKey)
@@ -158,7 +166,8 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async finishUserTask(processModelKey: string,
+  public async finishUserTask(context: IConsumerContext,
+                              processModelKey: string,
                               correlationId: string,
                               userTaskId: string,
                               userTaskResult: IUserTaskResult): Promise<void> {
@@ -169,5 +178,15 @@ export class ConsumerApiClientService implements IConsumerApiService {
       .replace(restSettings.params.userTaskId, userTaskId);
 
     await this.httpClient.post<IUserTaskResult, any>(url, userTaskResult);
+  }
+
+  private createRequestAuthHeaders(context: IConsumerContext): IRequestOptions {
+    const requestAuthHeaders: IRequestOptions = {
+      headers: {
+        Authorization: context.authorization,
+      },
+    };
+
+    return requestAuthHeaders;
   }
 }
