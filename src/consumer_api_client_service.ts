@@ -1,3 +1,4 @@
+import {ExecutionContext} from '@essential-projects/core_contracts';
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
 import {
   IConsumerApiService,
@@ -49,7 +50,8 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async startProcess(processModelKey: string,
+  public async startProcess(context: ExecutionContext,
+                            processModelKey: string,
                             startEventKey: string,
                             payload: IProcessStartRequestPayload,
                             returnOn: ProcessStartReturnOnOptions): Promise<IProcessStartResponsePayload> {
@@ -66,7 +68,8 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async startProcessAndAwaitEndEvent(processModelKey: string,
+  public async startProcessAndAwaitEndEvent(context: ExecutionContext,
+                                            processModelKey: string,
                                             startEventKey: string,
                                             endEventKey: string,
                                             payload: IProcessStartRequestPayload): Promise<IProcessStartResponsePayload> {
