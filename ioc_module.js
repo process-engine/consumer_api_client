@@ -2,8 +2,6 @@
 
 const ConsumerApiClientService = require('./dist/commonjs/index').ConsumerApiClientService;
 
-const routerDiscoveryTag = require('@essential-projects/core_contracts').RouterDiscoveryTag;
-
 function registerInContainer(container) {
   container.register('ConsumerApiClientService', ConsumerApiClientService)
     .dependencies('HttpService')
