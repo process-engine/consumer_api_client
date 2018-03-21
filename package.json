@@ -21,9 +21,10 @@
   "dependencies": {
     "@essential-projects/core_contracts": "^1.0.0",
     "@essential-projects/errors_ts": "^1.0.0",
+    "@essential-projects/http": "feature~parse_received_error_responses",
     "@essential-projects/http_contracts": "^1.0.0",
     "@essential-projects/http_node": "^1.0.0",
-    "@essential-projects/services": "^1.0.0",
+    "@essential-projects/services": "feature~update_http_client_dependency",
     "@process-engine/consumer_api_contracts": "feature~apply_consumer_api_concept",
     "addict-ioc": "^2.2.8",
     "async-middleware": "^1.2.1",
