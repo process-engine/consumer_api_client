@@ -1,4 +1,5 @@
 import {ExecutionContext} from '@essential-projects/core_contracts';
+import * as EssentialProjectErrors from '@essential-projects/errors_ts';
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
 import {
   IConsumerApiService,
@@ -61,7 +62,13 @@ export class ConsumerApiClientService implements IConsumerApiService {
                             processModelKey: string,
                             startEventKey: string,
                             payload: IProcessStartRequestPayload,
-                            returnOn: ProcessStartReturnOnOptions): Promise<IProcessStartResponsePayload> {
+                            returnOn: ProcessStartReturnOnOptions = ProcessStartReturnOnOptions.onProcessInstanceStarted,
+                          ): Promise<IProcessStartResponsePayload> {
+
+    if (!(returnOn === ProcessStartReturnOnOptions.onProcessInstanceStarted ||
+          returnOn === ProcessStartReturnOnOptions.onProcessInstanceFinished)) {
+      throw new EssentialProjectErrors.BadRequestError(`${returnOn} is not a valid return option!`);
+    }
 
     let url: string = restSettings.paths.startProcess
       .replace(restSettings.params.processModelKey, processModelKey)
