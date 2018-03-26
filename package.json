@@ -21,7 +21,7 @@
   "dependencies": {
     "@essential-projects/core_contracts": "^1.0.0",
     "@essential-projects/errors_ts": "^1.0.0",
-    "@essential-projects/http_contracts": "^1.0.0",
+    "@essential-projects/http_contracts": "feature~user_tasks",
     "@essential-projects/http_node": "^1.0.0",
     "@essential-projects/services": "^1.0.1",
     "@process-engine/consumer_api_contracts": "^0.2.0",
