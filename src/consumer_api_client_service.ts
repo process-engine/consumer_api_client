@@ -209,6 +209,10 @@ export class ConsumerApiClientService implements IConsumerApiService {
   }
 
   private createRequestAuthHeaders(context: ConsumerContext): IRequestOptions {
+    if (context.identity === undefined || context.identity === null) {
+      return {};
+    }
+
     const requestAuthHeaders: IRequestOptions = {
       headers: {
         Authorization: `Bearer ${context.identity}`,
