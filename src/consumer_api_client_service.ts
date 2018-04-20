@@ -58,12 +58,12 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async startProcess(context: ConsumerContext,
-                            processModelKey: string,
-                            startEventKey: string,
-                            payload: ProcessStartRequestPayload,
-                            returnOn: ProcessStartReturnOnOptions = ProcessStartReturnOnOptions.onProcessInstanceStarted,
-                          ): Promise<ProcessStartResponsePayload> {
+  public async startProcessInstance(context: ConsumerContext,
+                                    processModelKey: string,
+                                    startEventKey: string,
+                                    payload: ProcessStartRequestPayload,
+                                    returnOn: ProcessStartReturnOnOptions = ProcessStartReturnOnOptions.onProcessInstanceStarted,
+                                  ): Promise<ProcessStartResponsePayload> {
 
     if (!Object.values(ProcessStartReturnOnOptions).includes(returnOn)) {
       throw new EssentialProjectErrors.BadRequestError(`${returnOn} is not a valid return option!`);
@@ -83,11 +83,12 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async startProcessAndAwaitEndEvent(context: ConsumerContext,
-                                            processModelKey: string,
-                                            startEventKey: string,
-                                            endEventKey: string,
-                                            payload: ProcessStartRequestPayload): Promise<ProcessStartResponsePayload> {
+  public async startProcessInstanceAndAwaitEndEvent(context: ConsumerContext,
+                                                    processModelKey: string,
+                                                    startEventKey: string,
+                                                    endEventKey: string,
+                                                    payload: ProcessStartRequestPayload,
+                                                  ): Promise<ProcessStartResponsePayload> {
 
     const url: string = restSettings.paths.startProcessAndAwaitEndEvent
       .replace(restSettings.params.processModelKey, processModelKey)
