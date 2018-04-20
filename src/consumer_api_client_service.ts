@@ -10,8 +10,8 @@ import {
   ProcessModelList,
   ProcessStartRequestPayload,
   ProcessStartResponsePayload,
-  ProcessStartReturnOnOptions,
   restSettings,
+  StartCallbackType,
   UserTaskList,
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
@@ -58,22 +58,22 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async startProcess(context: ConsumerContext,
-                            processModelKey: string,
-                            startEventKey: string,
-                            payload: ProcessStartRequestPayload,
-                            returnOn: ProcessStartReturnOnOptions = ProcessStartReturnOnOptions.onProcessInstanceStarted,
-                          ): Promise<ProcessStartResponsePayload> {
+  public async startProcessInstance(context: ConsumerContext,
+                                    processModelKey: string,
+                                    startEventKey: string,
+                                    payload: ProcessStartRequestPayload,
+                                    startCallbackType: StartCallbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
+                                  ): Promise<ProcessStartResponsePayload> {
 
-    if (!Object.values(ProcessStartReturnOnOptions).includes(returnOn)) {
-      throw new EssentialProjectErrors.BadRequestError(`${returnOn} is not a valid return option!`);
+    if (!Object.values(StartCallbackType).includes(startCallbackType)) {
+      throw new EssentialProjectErrors.BadRequestError(`${startCallbackType} is not a valid return option!`);
     }
 
     let url: string = restSettings.paths.startProcess
       .replace(restSettings.params.processModelKey, processModelKey)
       .replace(restSettings.params.startEventKey, startEventKey);
 
-    url = `${url}?return_on=${returnOn}`;
+    url = `${url}?start_callback_type=${startCallbackType}`;
 
     const requestAuthHeaders: IRequestOptions = this.createRequestAuthHeaders(context);
 
@@ -83,11 +83,12 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async startProcessAndAwaitEndEvent(context: ConsumerContext,
-                                            processModelKey: string,
-                                            startEventKey: string,
-                                            endEventKey: string,
-                                            payload: ProcessStartRequestPayload): Promise<ProcessStartResponsePayload> {
+  public async startProcessInstanceAndAwaitEndEvent(context: ConsumerContext,
+                                                    processModelKey: string,
+                                                    startEventKey: string,
+                                                    endEventKey: string,
+                                                    payload: ProcessStartRequestPayload,
+                                                  ): Promise<ProcessStartResponsePayload> {
 
     const url: string = restSettings.paths.startProcessAndAwaitEndEvent
       .replace(restSettings.params.processModelKey, processModelKey)
