@@ -6,6 +6,7 @@ import {
   EventList,
   EventTriggerPayload,
   IConsumerApiService,
+  ICorrelationResult,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
@@ -99,6 +100,17 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
     const httpResponse: IResponse<ProcessStartResponsePayload> =
       await this.httpClient.post<ProcessStartRequestPayload, ProcessStartResponsePayload>(url, payload, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getCorrelationResults(context: ConsumerContext, correlationId: string): Promise<ICorrelationResult> {
+
+    const url: string = restSettings.paths.getCorrelationResults.replace(restSettings.params.correlationId, correlationId);
+
+    const requestAuthHeaders: IRequestOptions = this.createRequestAuthHeaders(context);
+
+    const httpResponse: IResponse<ICorrelationResult> = await this.httpClient.get<ICorrelationResult>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
