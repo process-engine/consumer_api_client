@@ -104,9 +104,13 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async getCorrelationResults(context: ConsumerContext, correlationId: string): Promise<ICorrelationResult> {
+  public async getCorrelationProcessModelResult(context: ConsumerContext,
+                                                correlationId: string,
+                                                processModelKey: string): Promise<ICorrelationResult> {
 
-    const url: string = restSettings.paths.getCorrelationResults.replace(restSettings.params.correlationId, correlationId);
+    const url: string = restSettings.paths.getCorrelationProcessModelResult
+      .replace(restSettings.params.correlationId, correlationId)
+      .replace(restSettings.params.processModelKey, processModelKey);
 
     const requestAuthHeaders: IRequestOptions = this.createRequestAuthHeaders(context);
 
