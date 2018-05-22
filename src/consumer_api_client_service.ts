@@ -70,7 +70,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
       throw new EssentialProjectErrors.BadRequestError(`${startCallbackType} is not a valid return option!`);
     }
 
-    let url: string = restSettings.paths.startProcess
+    let url: string = restSettings.paths.startProcessInstance
       .replace(restSettings.params.processModelKey, processModelKey)
       .replace(restSettings.params.startEventKey, startEventKey);
 
@@ -91,7 +91,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
                                                     payload: ProcessStartRequestPayload,
                                                   ): Promise<ProcessStartResponsePayload> {
 
-    const url: string = restSettings.paths.startProcessAndAwaitEndEvent
+    const url: string = restSettings.paths.startProcessInstanceAndAwaitEndEvent
       .replace(restSettings.params.processModelKey, processModelKey)
       .replace(restSettings.params.startEventKey, startEventKey)
       .replace(restSettings.params.endEventKey, endEventKey);
@@ -104,11 +104,11 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async getCorrelationProcessModelResult(context: ConsumerContext,
-                                                correlationId: string,
-                                                processModelKey: string): Promise<ICorrelationResult> {
+  public async getProcessResultForCorrelation(context: ConsumerContext,
+                                              correlationId: string,
+                                              processModelKey: string): Promise<ICorrelationResult> {
 
-    const url: string = restSettings.paths.getCorrelationProcessModelResult
+    const url: string = restSettings.paths.getProcessResultForCorrelation
       .replace(restSettings.params.correlationId, correlationId)
       .replace(restSettings.params.processModelKey, processModelKey);
 
