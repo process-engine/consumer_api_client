@@ -1,4 +1,3 @@
-import {ExecutionContext} from '@essential-projects/core_contracts';
 import * as EssentialProjectErrors from '@essential-projects/errors_ts';
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
 import {
