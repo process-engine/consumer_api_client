@@ -70,17 +70,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
       throw new EssentialProjectErrors.BadRequestError(`${startCallbackType} is not a valid return option!`);
     }
 
-    let url: string;
-
-    if (startCallbackType === StartCallbackType.CallbackOnEndEventReached) {
-      if (!endEventKey) {
-        throw new EssentialProjectErrors.BadRequestError(`Must provide and EndEventKey, when using callback type 'CallbackOnEndEventReached'!`);
-      }
-
-      url = this._getStartProcessInstanceAndAwaitEndEventUrl(processModelKey, startEventKey, endEventKey);
-    } else {
-      url = this._getStartProcessInstanceUrl(processModelKey, startEventKey, startCallbackType);
-    }
+    const url: string = this._buildStartProcessInstanceUrl(processModelKey, startEventKey, startCallbackType, endEventKey);
 
     const requestAuthHeaders: IRequestOptions = this.createRequestAuthHeaders(context);
 
@@ -90,21 +80,24 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  private _getStartProcessInstanceUrl(processModelKey: string, startEventKey: string, startCallbackType: StartCallbackType): string {
+  private _buildStartProcessInstanceUrl(processModelKey: string,
+                                        startEventKey: string,
+                                        startCallbackType: StartCallbackType,
+                                        endEventKey: string): string {
+
     let url: string = restSettings.paths.startProcessInstance
       .replace(restSettings.params.processModelKey, processModelKey)
       .replace(restSettings.params.startEventKey, startEventKey);
 
     url = `${url}?start_callback_type=${startCallbackType}`;
 
-    return url;
-  }
+    if (startCallbackType === StartCallbackType.CallbackOnEndEventReached) {
+      if (!endEventKey) {
+        throw new EssentialProjectErrors.BadRequestError(`Must provide and EndEventKey, when using callback type 'CallbackOnEndEventReached'!`);
+      }
 
-  private _getStartProcessInstanceAndAwaitEndEventUrl(processModelKey: string, startEventKey: string, endEventKey: string): string {
-    const url: string = restSettings.paths.startProcessInstanceAndAwaitEndEvent
-      .replace(restSettings.params.processModelKey, processModelKey)
-      .replace(restSettings.params.startEventKey, startEventKey)
-      .replace(restSettings.params.endEventKey, endEventKey);
+      url = `${url}&end_event_key=${endEventKey}`;
+    }
 
     return url;
   }
