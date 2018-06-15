@@ -63,17 +63,14 @@ export class ConsumerApiClientService implements IConsumerApiService {
                                     startEventKey: string,
                                     payload: ProcessStartRequestPayload,
                                     startCallbackType: StartCallbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
+                                    endEventKey?: string,
                                   ): Promise<ProcessStartResponsePayload> {
 
     if (!Object.values(StartCallbackType).includes(startCallbackType)) {
       throw new EssentialProjectErrors.BadRequestError(`${startCallbackType} is not a valid return option!`);
     }
 
-    let url: string = restSettings.paths.startProcessInstance
-      .replace(restSettings.params.processModelKey, processModelKey)
-      .replace(restSettings.params.startEventKey, startEventKey);
-
-    url = `${url}?start_callback_type=${startCallbackType}`;
+    const url: string = this._buildStartProcessInstanceUrl(processModelKey, startEventKey, startCallbackType, endEventKey);
 
     const requestAuthHeaders: IRequestOptions = this.createRequestAuthHeaders(context);
 
@@ -83,24 +80,26 @@ export class ConsumerApiClientService implements IConsumerApiService {
     return httpResponse.result;
   }
 
-  public async startProcessInstanceAndAwaitEndEvent(context: ConsumerContext,
-                                                    processModelKey: string,
-                                                    startEventKey: string,
-                                                    endEventKey: string,
-                                                    payload: ProcessStartRequestPayload,
-                                                  ): Promise<ProcessStartResponsePayload> {
+  private _buildStartProcessInstanceUrl(processModelKey: string,
+                                        startEventKey: string,
+                                        startCallbackType: StartCallbackType,
+                                        endEventKey: string): string {
 
-    const url: string = restSettings.paths.startProcessInstanceAndAwaitEndEvent
+    let url: string = restSettings.paths.startProcessInstance
       .replace(restSettings.params.processModelKey, processModelKey)
-      .replace(restSettings.params.startEventKey, startEventKey)
-      .replace(restSettings.params.endEventKey, endEventKey);
+      .replace(restSettings.params.startEventKey, startEventKey);
 
-    const requestAuthHeaders: IRequestOptions = this.createRequestAuthHeaders(context);
+    url = `${url}?start_callback_type=${startCallbackType}`;
 
-    const httpResponse: IResponse<ProcessStartResponsePayload> =
-      await this.httpClient.post<ProcessStartRequestPayload, ProcessStartResponsePayload>(url, payload, requestAuthHeaders);
+    if (startCallbackType === StartCallbackType.CallbackOnEndEventReached) {
+      if (!endEventKey) {
+        throw new EssentialProjectErrors.BadRequestError(`Must provide an EndEventKey, when using callback type 'CallbackOnEndEventReached'!`);
+      }
 
-    return httpResponse.result;
+      url = `${url}&end_event_key=${endEventKey}`;
+    }
+
+    return url;
   }
 
   public async getProcessResultForCorrelation(context: ConsumerContext,
