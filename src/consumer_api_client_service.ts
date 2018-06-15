@@ -93,7 +93,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
     if (startCallbackType === StartCallbackType.CallbackOnEndEventReached) {
       if (!endEventKey) {
-        throw new EssentialProjectErrors.BadRequestError(`Must provide and EndEventKey, when using callback type 'CallbackOnEndEventReached'!`);
+        throw new EssentialProjectErrors.BadRequestError(`Must provide an EndEventKey, when using callback type 'CallbackOnEndEventReached'!`);
       }
 
       url = `${url}&end_event_key=${endEventKey}`;
