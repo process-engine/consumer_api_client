@@ -10,7 +10,6 @@ function registerInContainer(container) {
 
   container.register('ConsumerApiExternalAccessor', ExternalAccessor)
     .dependencies('HttpService')
-    .injectPromiseLazy('HttpService')
     .configure('consumer_api_client:consumer_api_external_accessor');
 
   container.register('ConsumerApiInternalAccessor', InternalAccessor)

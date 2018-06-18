@@ -15,27 +15,20 @@ import {
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
 
-import {IFactoryAsync} from 'addict-ioc';
-
 export class ExternalAccessor implements IConsumerApiAccessor {
 
   public config: any = undefined;
 
   private baseUrl: string = '/api/consumer/v1';
 
-  private _httpClientFactory: IFactoryAsync<IHttpClient> = undefined;
   private _httpClient: IHttpClient = undefined;
 
-  constructor(httpClientFactory: IFactoryAsync<IHttpClient>) {
-    this._httpClientFactory = httpClientFactory;
+  constructor(httpClient: IHttpClient) {
+    this._httpClient = httpClient;
   }
 
   public get httpClient(): IHttpClient {
     return this._httpClient;
-  }
-
-  public async initialize(): Promise<void> {
-    this._httpClient = await this._httpClientFactory(undefined, this.config);
   }
 
   public async getProcessModels(context: ConsumerContext): Promise<ProcessModelList> {
