@@ -4,7 +4,7 @@ import {
   ConsumerContext,
   EventList,
   EventTriggerPayload,
-  IConsumerApiConnector,
+  IConsumerApiAccessor,
   IConsumerApiService,
   ICorrelationResult,
   ProcessModel,
@@ -16,7 +16,7 @@ import {
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
 
-export class InternalConnector implements IConsumerApiConnector {
+export class InternalAccessor implements IConsumerApiAccessor {
 
   public config: any = undefined;
 

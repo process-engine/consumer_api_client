@@ -4,7 +4,7 @@ import {
   ConsumerContext,
   EventList,
   EventTriggerPayload,
-  IConsumerApiConnector,
+  IConsumerApiAccessor,
   ICorrelationResult,
   ProcessModel,
   ProcessModelList,
@@ -18,7 +18,7 @@ import {
 
 import {IFactoryAsync} from 'addict-ioc';
 
-export class ExternalConnector implements IConsumerApiConnector {
+export class ExternalAccessor implements IConsumerApiAccessor {
 
   public config: any = undefined;
 
