@@ -1,4 +1,3 @@
-import * as EssentialProjectErrors from '@essential-projects/errors_ts';
 import {
   ConsumerContext,
   EventList,
@@ -46,14 +45,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
                                     startCallbackType: StartCallbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
                                     endEventKey?: string,
                                   ): Promise<ProcessStartResponsePayload> {
-
-    if (!Object.values(StartCallbackType).includes(startCallbackType)) {
-      throw new EssentialProjectErrors.BadRequestError(`${startCallbackType} is not a valid return option!`);
-    }
-
-    if (startCallbackType === StartCallbackType.CallbackOnEndEventReached && !endEventKey) {
-      throw new EssentialProjectErrors.BadRequestError(`Must provide an EndEventKey, when using callback type 'CallbackOnEndEventReached'!`);
-    }
 
     return this.consumerApiService.startProcessInstance(context, processModelKey, startEventKey, payload, startCallbackType, endEventKey);
   }
