@@ -17,8 +17,6 @@ import {
 
 export class ConsumerApiClientService implements IConsumerApiService {
 
-  public config: any = undefined;
-
   private _consumerApiAccessor: IConsumerApiAccessor = undefined;
 
   constructor(consumerApiAccessor: IConsumerApiAccessor) {

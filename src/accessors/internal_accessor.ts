@@ -18,8 +18,6 @@ import {UnauthorizedError} from '@essential-projects/errors_ts';
 
 export class InternalAccessor implements IConsumerApiAccessor {
 
-  public config: any = undefined;
-
   private _consumerApiService: IConsumerApiService = undefined;
 
   constructor(consumerApiService: IConsumerApiService) {

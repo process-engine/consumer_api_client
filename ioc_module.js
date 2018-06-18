@@ -9,8 +9,7 @@ const {
 function registerInContainer(container) {
 
   container.register('ConsumerApiExternalAccessor', ExternalAccessor)
-    .dependencies('HttpService')
-    .configure('consumer_api_client:consumer_api_external_accessor');
+    .dependencies('HttpService');
 
   container.register('ConsumerApiInternalAccessor', InternalAccessor)
     .dependencies('ConsumerApiService');
