@@ -19,7 +19,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
   public config: any = undefined;
 
-  private baseUrl: string = '/api/consumer/v1';
+  private baseUrl: string = 'api/consumer/v1';
 
   private _httpClient: IHttpClient = undefined;
 
