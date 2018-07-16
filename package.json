@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/consumer_api_client",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "description": "the api-client package for process-engine-consumer",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
@@ -39,7 +39,7 @@
   },
   "scripts": {
     "build": "gulp build",
-    "prepare": "npm run build && npm run build-schemas && npm run build-doc",
+    "prepare": "npm run build",
     "build-doc": "gulp doc",
     "build-schemas": "gulp typescript-schema",
     "lint": "gulp lint",
