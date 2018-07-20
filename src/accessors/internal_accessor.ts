@@ -57,7 +57,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
 
   public async getProcessResultForCorrelation(context: ConsumerContext,
                                               correlationId: string,
-                                              processModelKey: string): Promise<ICorrelationResult> {
+                                              processModelKey: string): Promise<Array<ICorrelationResult>> {
 
     this._ensureIsAuthorized(context);
 

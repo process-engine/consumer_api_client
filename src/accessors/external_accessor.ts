@@ -92,7 +92,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
   public async getProcessResultForCorrelation(context: ConsumerContext,
                                               correlationId: string,
-                                              processModelKey: string): Promise<ICorrelationResult> {
+                                              processModelKey: string): Promise<Array<ICorrelationResult>> {
 
     let url: string = restSettings.paths.getProcessResultForCorrelation
       .replace(restSettings.params.correlationId, correlationId)
@@ -102,7 +102,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    const httpResponse: IResponse<ICorrelationResult> = await this.httpClient.get<ICorrelationResult>(url, requestAuthHeaders);
+    const httpResponse: IResponse<Array<ICorrelationResult>> = await this.httpClient.get<Array<ICorrelationResult>>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }

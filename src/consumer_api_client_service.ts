@@ -58,7 +58,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
   public async getProcessResultForCorrelation(context: ConsumerContext,
                                               correlationId: string,
-                                              processModelKey: string): Promise<ICorrelationResult> {
+                                              processModelKey: string): Promise<Array<ICorrelationResult>> {
 
     return this.consumerApiAccessor.getProcessResultForCorrelation(context, correlationId, processModelKey);
   }
