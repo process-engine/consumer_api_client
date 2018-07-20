@@ -1,10 +1,10 @@
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
 import {
   ConsumerContext,
+  CorrelationResult,
   EventList,
   EventTriggerPayload,
   IConsumerApiAccessor,
-  ICorrelationResult,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
@@ -92,7 +92,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
   public async getProcessResultForCorrelation(context: ConsumerContext,
                                               correlationId: string,
-                                              processModelKey: string): Promise<ICorrelationResult> {
+                                              processModelKey: string): Promise<Array<CorrelationResult>> {
 
     let url: string = restSettings.paths.getProcessResultForCorrelation
       .replace(restSettings.params.correlationId, correlationId)
@@ -102,7 +102,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    const httpResponse: IResponse<ICorrelationResult> = await this.httpClient.get<ICorrelationResult>(url, requestAuthHeaders);
+    const httpResponse: IResponse<Array<CorrelationResult>> = await this.httpClient.get<Array<CorrelationResult>>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
