@@ -1,10 +1,10 @@
 import {
   ConsumerContext,
+  CorrelationResult,
   EventList,
   EventTriggerPayload,
   IConsumerApiAccessor,
   IConsumerApiService,
-  ICorrelationResult,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
@@ -57,7 +57,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
 
   public async getProcessResultForCorrelation(context: ConsumerContext,
                                               correlationId: string,
-                                              processModelKey: string): Promise<Array<ICorrelationResult>> {
+                                              processModelKey: string): Promise<Array<CorrelationResult>> {
 
     this._ensureIsAuthorized(context);
 
