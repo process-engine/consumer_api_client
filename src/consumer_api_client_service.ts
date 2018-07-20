@@ -1,11 +1,11 @@
 import * as EssentialProjectErrors from '@essential-projects/errors_ts';
 import {
   ConsumerContext,
+  CorrelationResult,
   EventList,
   EventTriggerPayload,
   IConsumerApiAccessor,
   IConsumerApiService,
-  ICorrelationResult,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
@@ -58,7 +58,7 @@ export class ConsumerApiClientService implements IConsumerApiService {
 
   public async getProcessResultForCorrelation(context: ConsumerContext,
                                               correlationId: string,
-                                              processModelKey: string): Promise<ICorrelationResult> {
+                                              processModelKey: string): Promise<Array<CorrelationResult>> {
 
     return this.consumerApiAccessor.getProcessResultForCorrelation(context, correlationId, processModelKey);
   }
