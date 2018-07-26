@@ -40,11 +40,11 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async getProcessModelByKey(context: ConsumerContext, processModelKey: string): Promise<ProcessModel> {
+  public async getProcessModelById(context: ConsumerContext, processModelId: string): Promise<ProcessModel> {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    let url: string = restSettings.paths.processModelByKey.replace(restSettings.params.processModelKey, processModelKey);
+    let url: string = restSettings.paths.processModelById.replace(restSettings.params.processModelId, processModelId);
     url = this._applyBaseUrl(url);
 
     const httpResponse: IResponse<ProcessModel> = await this.httpClient.get<ProcessModel>(url, requestAuthHeaders);
@@ -53,14 +53,14 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   public async startProcessInstance(context: ConsumerContext,
-                                    processModelKey: string,
-                                    startEventKey: string,
+                                    processModelId: string,
+                                    startEventId: string,
                                     payload: ProcessStartRequestPayload,
                                     startCallbackType: StartCallbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
-                                    endEventKey?: string,
+                                    endEventId?: string,
                                   ): Promise<ProcessStartResponsePayload> {
 
-    const url: string = this._buildStartProcessInstanceUrl(processModelKey, startEventKey, startCallbackType, endEventKey);
+    const url: string = this._buildStartProcessInstanceUrl(processModelId, startEventId, startCallbackType, endEventId);
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
@@ -70,19 +70,19 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  private _buildStartProcessInstanceUrl(processModelKey: string,
-                                        startEventKey: string,
+  private _buildStartProcessInstanceUrl(processModelId: string,
+                                        startEventId: string,
                                         startCallbackType: StartCallbackType,
-                                        endEventKey: string): string {
+                                        endEventId: string): string {
 
     let url: string = restSettings.paths.startProcessInstance
-      .replace(restSettings.params.processModelKey, processModelKey)
-      .replace(restSettings.params.startEventKey, startEventKey);
+      .replace(restSettings.params.processModelId, processModelId)
+      .replace(restSettings.params.startEventId, startEventId);
 
     url = `${url}?start_callback_type=${startCallbackType}`;
 
     if (startCallbackType === StartCallbackType.CallbackOnEndEventReached) {
-      url = `${url}&end_event_key=${endEventKey}`;
+      url = `${url}&end_event_id=${endEventId}`;
     }
 
     url = this._applyBaseUrl(url);
@@ -92,11 +92,11 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
   public async getProcessResultForCorrelation(context: ConsumerContext,
                                               correlationId: string,
-                                              processModelKey: string): Promise<Array<CorrelationResult>> {
+                                              processModelId: string): Promise<Array<CorrelationResult>> {
 
     let url: string = restSettings.paths.getProcessResultForCorrelation
       .replace(restSettings.params.correlationId, correlationId)
-      .replace(restSettings.params.processModelKey, processModelKey);
+      .replace(restSettings.params.processModelId, processModelId);
 
     url = this._applyBaseUrl(url);
 
@@ -108,11 +108,11 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   // Events
-  public async getEventsForProcessModel(context: ConsumerContext, processModelKey: string): Promise<EventList> {
+  public async getEventsForProcessModel(context: ConsumerContext, processModelId: string): Promise<EventList> {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    let url: string = restSettings.paths.processModelEvents.replace(restSettings.params.processModelKey, processModelKey);
+    let url: string = restSettings.paths.processModelEvents.replace(restSettings.params.processModelId, processModelId);
     url = this._applyBaseUrl(url);
 
     const httpResponse: IResponse<EventList> = await this.httpClient.get<EventList>(url, requestAuthHeaders);
@@ -132,12 +132,12 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async getEventsForProcessModelInCorrelation(context: ConsumerContext, processModelKey: string, correlationId: string): Promise<EventList> {
+  public async getEventsForProcessModelInCorrelation(context: ConsumerContext, processModelId: string, correlationId: string): Promise<EventList> {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
     let url: string = restSettings.paths.processModelCorrelationEvents
-      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.processModelId, processModelId)
       .replace(restSettings.params.correlationId, correlationId);
 
     url = this._applyBaseUrl(url);
@@ -148,7 +148,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   public async triggerEvent(context: ConsumerContext,
-                            processModelKey: string,
+                            processModelId: string,
                             correlationId: string,
                             eventId: string,
                             eventTriggerPayload?: EventTriggerPayload): Promise<void> {
@@ -156,7 +156,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
     let url: string = restSettings.paths.triggerEvent
-      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.processModelId, processModelId)
       .replace(restSettings.params.correlationId, correlationId)
       .replace(restSettings.params.eventId, eventId);
 
@@ -166,11 +166,11 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   // UserTasks
-  public async getUserTasksForProcessModel(context: ConsumerContext, processModelKey: string): Promise<UserTaskList> {
+  public async getUserTasksForProcessModel(context: ConsumerContext, processModelId: string): Promise<UserTaskList> {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    let url: string = restSettings.paths.processModelUserTasks.replace(restSettings.params.processModelKey, processModelKey);
+    let url: string = restSettings.paths.processModelUserTasks.replace(restSettings.params.processModelId, processModelId);
     url = this._applyBaseUrl(url);
 
     const httpResponse: IResponse<UserTaskList> = await this.httpClient.get<UserTaskList>(url, requestAuthHeaders);
@@ -191,13 +191,13 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   public async getUserTasksForProcessModelInCorrelation(context: ConsumerContext,
-                                                        processModelKey: string,
+                                                        processModelId: string,
                                                         correlationId: string): Promise<UserTaskList> {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
     let url: string = restSettings.paths.processModelCorrelationUserTasks
-      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.processModelId, processModelId)
       .replace(restSettings.params.correlationId, correlationId);
 
     url = this._applyBaseUrl(url);
@@ -208,7 +208,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   public async finishUserTask(context: ConsumerContext,
-                              processModelKey: string,
+                              processModelId: string,
                               correlationId: string,
                               userTaskId: string,
                               userTaskResult: UserTaskResult): Promise<void> {
@@ -216,7 +216,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
     let url: string = restSettings.paths.finishUserTask
-      .replace(restSettings.params.processModelKey, processModelKey)
+      .replace(restSettings.params.processModelId, processModelId)
       .replace(restSettings.params.correlationId, correlationId)
       .replace(restSettings.params.userTaskId, userTaskId);
 
