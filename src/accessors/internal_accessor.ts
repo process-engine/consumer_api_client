@@ -35,41 +35,41 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this.consumerApiService.getProcessModels(context);
   }
 
-  public async getProcessModelByKey(context: ConsumerContext, processModelKey: string): Promise<ProcessModel> {
+  public async getProcessModelById(context: ConsumerContext, processModelId: string): Promise<ProcessModel> {
 
     this._ensureIsAuthorized(context);
 
-    return this.consumerApiService.getProcessModelByKey(context, processModelKey);
+    return this.consumerApiService.getProcessModelById(context, processModelId);
   }
 
   public async startProcessInstance(context: ConsumerContext,
-                                    processModelKey: string,
-                                    startEventKey: string,
+                                    processModelId: string,
+                                    startEventId: string,
                                     payload: ProcessStartRequestPayload,
                                     startCallbackType: StartCallbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
-                                    endEventKey?: string,
+                                    endEventId?: string,
                                   ): Promise<ProcessStartResponsePayload> {
 
     this._ensureIsAuthorized(context);
 
-    return this.consumerApiService.startProcessInstance(context, processModelKey, startEventKey, payload, startCallbackType, endEventKey);
+    return this.consumerApiService.startProcessInstance(context, processModelId, startEventId, payload, startCallbackType, endEventId);
   }
 
   public async getProcessResultForCorrelation(context: ConsumerContext,
                                               correlationId: string,
-                                              processModelKey: string): Promise<Array<CorrelationResult>> {
+                                              processModelId: string): Promise<Array<CorrelationResult>> {
 
     this._ensureIsAuthorized(context);
 
-    return this.consumerApiService.getProcessResultForCorrelation(context, correlationId, processModelKey);
+    return this.consumerApiService.getProcessResultForCorrelation(context, correlationId, processModelId);
   }
 
   // Events
-  public async getEventsForProcessModel(context: ConsumerContext, processModelKey: string): Promise<EventList> {
+  public async getEventsForProcessModel(context: ConsumerContext, processModelId: string): Promise<EventList> {
 
     this._ensureIsAuthorized(context);
 
-    return this.consumerApiService.getEventsForProcessModel(context, processModelKey);
+    return this.consumerApiService.getEventsForProcessModel(context, processModelId);
   }
 
   public async getEventsForCorrelation(context: ConsumerContext, correlationId: string): Promise<EventList> {
@@ -79,30 +79,30 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this.consumerApiService.getEventsForCorrelation(context, correlationId);
   }
 
-  public async getEventsForProcessModelInCorrelation(context: ConsumerContext, processModelKey: string, correlationId: string): Promise<EventList> {
+  public async getEventsForProcessModelInCorrelation(context: ConsumerContext, processModelId: string, correlationId: string): Promise<EventList> {
 
     this._ensureIsAuthorized(context);
 
-    return this.consumerApiService.getEventsForProcessModelInCorrelation(context, processModelKey, correlationId);
+    return this.consumerApiService.getEventsForProcessModelInCorrelation(context, processModelId, correlationId);
   }
 
   public async triggerEvent(context: ConsumerContext,
-                            processModelKey: string,
+                            processModelId: string,
                             correlationId: string,
                             eventId: string,
                             eventTriggerPayload?: EventTriggerPayload): Promise<void> {
 
     this._ensureIsAuthorized(context);
 
-    return this.consumerApiService.triggerEvent(context, processModelKey, correlationId, eventId, eventTriggerPayload);
+    return this.consumerApiService.triggerEvent(context, processModelId, correlationId, eventId, eventTriggerPayload);
   }
 
   // UserTasks
-  public async getUserTasksForProcessModel(context: ConsumerContext, processModelKey: string): Promise<UserTaskList> {
+  public async getUserTasksForProcessModel(context: ConsumerContext, processModelId: string): Promise<UserTaskList> {
 
     this._ensureIsAuthorized(context);
 
-    return this.consumerApiService.getUserTasksForProcessModel(context, processModelKey);
+    return this.consumerApiService.getUserTasksForProcessModel(context, processModelId);
   }
 
   public async getUserTasksForCorrelation(context: ConsumerContext, correlationId: string): Promise<UserTaskList> {
@@ -113,23 +113,23 @@ export class InternalAccessor implements IConsumerApiAccessor {
   }
 
   public async getUserTasksForProcessModelInCorrelation(context: ConsumerContext,
-                                                        processModelKey: string,
+                                                        processModelId: string,
                                                         correlationId: string): Promise<UserTaskList> {
 
     this._ensureIsAuthorized(context);
 
-    return this.consumerApiService.getUserTasksForProcessModelInCorrelation(context, processModelKey, correlationId);
+    return this.consumerApiService.getUserTasksForProcessModelInCorrelation(context, processModelId, correlationId);
   }
 
   public async finishUserTask(context: ConsumerContext,
-                              processModelKey: string,
+                              processModelId: string,
                               correlationId: string,
                               userTaskId: string,
                               userTaskResult: UserTaskResult): Promise<void> {
 
     this._ensureIsAuthorized(context);
 
-    return this.consumerApiService.finishUserTask(context, processModelKey, correlationId, userTaskId, userTaskResult);
+    return this.consumerApiService.finishUserTask(context, processModelId, correlationId, userTaskId, userTaskResult);
   }
 
   private _ensureIsAuthorized(context: ConsumerContext): void {
