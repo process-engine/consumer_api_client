@@ -44,7 +44,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    let url: string = restSettings.paths.processModelById.replace(restSettings.params.processModelId, processModelId);
+    const encodedProcessModelId: string = encodeURIComponent(processModelId);
+
+    let url: string = restSettings.paths.processModelById.replace(restSettings.params.processModelId, encodedProcessModelId);
     url = this._applyBaseUrl(url);
 
     const httpResponse: IResponse<ProcessModel> = await this.httpClient.get<ProcessModel>(url, requestAuthHeaders);
@@ -75,14 +77,20 @@ export class ExternalAccessor implements IConsumerApiAccessor {
                                         startCallbackType: StartCallbackType,
                                         endEventId: string): string {
 
+    const encodedProcessModelId: string = encodeURIComponent(processModelId);
+    const encodedStartEventId: string = encodeURIComponent(startEventId);
+
     let url: string = restSettings.paths.startProcessInstance
-      .replace(restSettings.params.processModelId, processModelId)
-      .replace(restSettings.params.startEventId, startEventId);
+      .replace(restSettings.params.processModelId, encodedProcessModelId)
+      .replace(restSettings.params.startEventId, encodedStartEventId);
 
     url = `${url}?start_callback_type=${startCallbackType}`;
 
     if (startCallbackType === StartCallbackType.CallbackOnEndEventReached) {
-      url = `${url}&end_event_id=${endEventId}`;
+
+      const encodedEndEventId: string = encodeURIComponent(endEventId);
+
+      url = `${url}&end_event_id=${encodedEndEventId}`;
     }
 
     url = this._applyBaseUrl(url);
@@ -94,9 +102,12 @@ export class ExternalAccessor implements IConsumerApiAccessor {
                                               correlationId: string,
                                               processModelId: string): Promise<Array<CorrelationResult>> {
 
+    const encodedCorrelationId: string = encodeURIComponent(correlationId);
+    const encodedProcessModelId: string = encodeURIComponent(processModelId);
+
     let url: string = restSettings.paths.getProcessResultForCorrelation
-      .replace(restSettings.params.correlationId, correlationId)
-      .replace(restSettings.params.processModelId, processModelId);
+      .replace(restSettings.params.correlationId, encodedCorrelationId)
+      .replace(restSettings.params.processModelId, encodedProcessModelId);
 
     url = this._applyBaseUrl(url);
 
@@ -112,7 +123,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    let url: string = restSettings.paths.processModelEvents.replace(restSettings.params.processModelId, processModelId);
+    const encodedProcessModelId: string = encodeURIComponent(processModelId);
+
+    let url: string = restSettings.paths.processModelEvents.replace(restSettings.params.processModelId, encodedProcessModelId);
     url = this._applyBaseUrl(url);
 
     const httpResponse: IResponse<EventList> = await this.httpClient.get<EventList>(url, requestAuthHeaders);
@@ -124,7 +137,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    let url: string = restSettings.paths.correlationEvents.replace(restSettings.params.correlationId, correlationId);
+    const encodedCorrelationId: string = encodeURIComponent(correlationId);
+
+    let url: string = restSettings.paths.correlationEvents.replace(restSettings.params.correlationId, encodedCorrelationId);
     url = this._applyBaseUrl(url);
 
     const httpResponse: IResponse<EventList> = await this.httpClient.get<EventList>(url, requestAuthHeaders);
@@ -136,9 +151,12 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
+    const encodedProcessModelId: string = encodeURIComponent(processModelId);
+    const encodedCorrelationId: string = encodeURIComponent(correlationId);
+
     let url: string = restSettings.paths.processModelCorrelationEvents
-      .replace(restSettings.params.processModelId, processModelId)
-      .replace(restSettings.params.correlationId, correlationId);
+      .replace(restSettings.params.processModelId, encodedProcessModelId)
+      .replace(restSettings.params.correlationId, encodedCorrelationId);
 
     url = this._applyBaseUrl(url);
 
@@ -155,10 +173,14 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
+    const encodedProcessModelId: string = encodeURIComponent(processModelId);
+    const encodedCorrelationId: string = encodeURIComponent(correlationId);
+    const encodedEventId: string = encodeURIComponent(eventId);
+
     let url: string = restSettings.paths.triggerEvent
-      .replace(restSettings.params.processModelId, processModelId)
-      .replace(restSettings.params.correlationId, correlationId)
-      .replace(restSettings.params.eventId, eventId);
+      .replace(restSettings.params.processModelId, encodedProcessModelId)
+      .replace(restSettings.params.correlationId, encodedCorrelationId)
+      .replace(restSettings.params.eventId, encodedEventId);
 
     url = this._applyBaseUrl(url);
 
@@ -170,7 +192,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    let url: string = restSettings.paths.processModelUserTasks.replace(restSettings.params.processModelId, processModelId);
+    const encodedProcessModelId: string = encodeURIComponent(processModelId);
+
+    let url: string = restSettings.paths.processModelUserTasks.replace(restSettings.params.processModelId, encodedProcessModelId);
     url = this._applyBaseUrl(url);
 
     const httpResponse: IResponse<UserTaskList> = await this.httpClient.get<UserTaskList>(url, requestAuthHeaders);
@@ -182,7 +206,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
-    let url: string = restSettings.paths.correlationUserTasks.replace(restSettings.params.correlationId, correlationId);
+    const encodedCorrelationId: string = encodeURIComponent(correlationId);
+
+    let url: string = restSettings.paths.correlationUserTasks.replace(restSettings.params.correlationId, encodedCorrelationId);
     url = this._applyBaseUrl(url);
 
     const httpResponse: IResponse<UserTaskList> = await this.httpClient.get<UserTaskList>(url, requestAuthHeaders);
@@ -196,9 +222,12 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
+    const encodedProcessModelId: string = encodeURIComponent(processModelId);
+    const encodedCorrelationId: string = encodeURIComponent(correlationId);
+
     let url: string = restSettings.paths.processModelCorrelationUserTasks
-      .replace(restSettings.params.processModelId, processModelId)
-      .replace(restSettings.params.correlationId, correlationId);
+      .replace(restSettings.params.processModelId, encodedProcessModelId)
+      .replace(restSettings.params.correlationId, encodedCorrelationId);
 
     url = this._applyBaseUrl(url);
 
@@ -215,10 +244,14 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
 
+    const encodedProcessModelId: string = encodeURIComponent(processModelId);
+    const encodedCorrelationId: string = encodeURIComponent(correlationId);
+    const encodedUserTaskId: string = encodeURIComponent(userTaskId);
+
     let url: string = restSettings.paths.finishUserTask
-      .replace(restSettings.params.processModelId, processModelId)
-      .replace(restSettings.params.correlationId, correlationId)
-      .replace(restSettings.params.userTaskId, userTaskId);
+      .replace(restSettings.params.processModelId, encodedProcessModelId)
+      .replace(restSettings.params.correlationId, encodedCorrelationId)
+      .replace(restSettings.params.userTaskId, encodedUserTaskId);
 
     url = this._applyBaseUrl(url);
 
