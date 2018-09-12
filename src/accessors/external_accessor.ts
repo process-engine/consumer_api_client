@@ -22,7 +22,7 @@ import {
   UserTaskFinishedMessage,
   UserTaskWaitingMessage,
 } from '@process-engine/process_engine_contracts';
-import io from 'socket.io-client';
+import * as io from 'socket.io-client';
 
 export class ExternalAccessor implements IConsumerApiAccessor {
 
