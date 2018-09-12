@@ -30,6 +30,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
   private _socket: SocketIOClient.Socket = undefined;
   private _httpClient: IHttpClient = undefined;
+  private _identity: IIdentity = undefined;
 
   public config: any;
 
@@ -37,14 +38,26 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return this._httpClient;
   }
 
+  public get identity(): IIdentity {
+    return this._identity;
+  }
+
   constructor(httpClient: IHttpClient, identity: IIdentity) {
     this._httpClient = httpClient;
+    this._identity = identity;
+  }
+
+  public initialize(): void {
+    this._initializeSocket();
+  }
+
+  private _initializeSocket(): void {
     const socketUrl: string = `${this.config.socketUrl}/${socketSettings.namespace}`;
     const socketIoOptions: SocketIOClient.ConnectOpts = {
       transportOptions: {
         polling: {
           extraHeaders: {
-            Authorization: identity.token,
+            Authorization: this.identity.token,
           },
         },
       },
