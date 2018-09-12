@@ -17,7 +17,6 @@ import {
 } from '@process-engine/consumer_api_contracts';
 import {
   ProcessEndedMessage,
-  ProcessTerminatedMessage,
   UserTaskFinishedMessage,
   UserTaskWaitingMessage,
 } from '@process-engine/process_engine_contracts';
@@ -50,8 +49,8 @@ export class ConsumerApiClientService implements IConsumerApi {
     });
   }
 
-  public onProcessTerminated(callback: (processTerminated: ProcessTerminatedMessage) => void|Promise<void>): void {
-    this.consumerApiAccessor.onProcessTerminated((processTerminated: ProcessTerminatedMessage) => {
+  public onProcessTerminated(callback: (processTerminated: ProcessEndedMessage) => void|Promise<void>): void {
+    this.consumerApiAccessor.onProcessTerminated((processTerminated: ProcessEndedMessage) => {
       callback(processTerminated);
     });
   }

@@ -17,7 +17,6 @@ import {
 import {
   eventAggregatorSettings,
   ProcessEndedMessage,
-  ProcessTerminatedMessage,
   UserTaskFinishedMessage,
   UserTaskWaitingMessage,
 } from '@process-engine/process_engine_contracts';
@@ -44,8 +43,8 @@ export class InternalAccessor implements IConsumerApiAccessor {
     });
   }
 
-  public onProcessTerminated(callback: (processTerminated: ProcessTerminatedMessage) => void|Promise<void>): void {
-    this._consumerApiService.onProcessTerminated((processTerminated: ProcessTerminatedMessage) => {
+  public onProcessTerminated(callback: (processTerminated: ProcessEndedMessage) => void|Promise<void>): void {
+    this._consumerApiService.onProcessTerminated((processTerminated: ProcessEndedMessage) => {
       callback(processTerminated);
     });
   }
