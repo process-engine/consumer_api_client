@@ -15,6 +15,12 @@ import {
   UserTaskList,
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
+import {
+  ProcessEndedMessage,
+  ProcessTerminatedMessage,
+  UserTaskFinishedMessage,
+  UserTaskWaitingMessage,
+} from '@process-engine/process_engine_contracts';
 
 export class ConsumerApiClientService implements IConsumerApi {
 
@@ -22,6 +28,38 @@ export class ConsumerApiClientService implements IConsumerApi {
 
   constructor(consumerApiAccessor: IConsumerApiAccessor) {
     this.consumerApiAccessor = consumerApiAccessor;
+  }
+
+  // public onUserTaskWaiting(correlationId: string, callback: (userTaskFinished: UserTaskFinishedMessage) => void|Promise<void>): void {
+  //   this.consumerApiAccessor.onUserTaskWaiting((userTaskFinished: UserTaskFinishedMessage) => {
+  //     if (userTaskFinished.correlationId === correlationId) {
+  //       callback(userTaskFinished);
+  //     }
+  //   });
+  // }
+
+  public onUserTaskWaiting(callback: (userTaskWaiting: UserTaskWaitingMessage) => void|Promise<void>): void {
+    this.consumerApiAccessor.onUserTaskWaiting((userTaskWaiting: UserTaskWaitingMessage) => {
+      callback(userTaskWaiting);
+    });
+  }
+
+  public onUserTaskFinished(callback: (userTaskFinished: UserTaskFinishedMessage) => void|Promise<void>): void {
+    this.consumerApiAccessor.onUserTaskFinished((userTaskFinished: UserTaskFinishedMessage) => {
+      callback(userTaskFinished);
+    });
+  }
+
+  public onProcessTerminated(callback: (processTerminated: ProcessTerminatedMessage) => void|Promise<void>): void {
+    this.consumerApiAccessor.onProcessTerminated((processTerminated: ProcessTerminatedMessage) => {
+      callback(processTerminated);
+    });
+  }
+
+  public onProcessEnded(callback: (processEnded: ProcessEndedMessage) => void|Promise<void>): void {
+    this.consumerApiAccessor.onProcessEnded((processEnded: ProcessEndedMessage) => {
+      callback(processEnded);
+    });
   }
 
   public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {

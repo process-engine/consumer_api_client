@@ -14,6 +14,13 @@ import {
   UserTaskList,
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
+import {
+  eventAggregatorSettings,
+  ProcessEndedMessage,
+  ProcessTerminatedMessage,
+  UserTaskFinishedMessage,
+  UserTaskWaitingMessage,
+} from '@process-engine/process_engine_contracts';
 
 import {UnauthorizedError} from '@essential-projects/errors_ts';
 
@@ -23,6 +30,30 @@ export class InternalAccessor implements IConsumerApiAccessor {
 
   constructor(consumerApiService: IConsumerApi) {
     this.consumerApiService = consumerApiService;
+  }
+
+  public onUserTaskWaiting(callback: (userTaskWaiting: UserTaskWaitingMessage) => void|Promise<void>): void {
+    this._consumerApiService.onUserTaskWaiting((userTaskWaiting: UserTaskWaitingMessage) => {
+      callback(userTaskWaiting);
+    });
+  }
+
+  public onUserTaskFinished(callback: (userTaskFinished: UserTaskFinishedMessage) => void|Promise<void>): void {
+    this._consumerApiService.onUserTaskFinished((userTaskFinished: UserTaskFinishedMessage) => {
+      callback(userTaskFinished);
+    });
+  }
+
+  public onProcessTerminated(callback: (processTerminated: ProcessTerminatedMessage) => void|Promise<void>): void {
+    this._consumerApiService.onProcessTerminated((processTerminated: ProcessTerminatedMessage) => {
+      callback(processTerminated);
+    });
+  }
+
+  public onProcessEnded(callback: (processEnded: ProcessEndedMessage) => void|Promise<void>): void {
+    this._consumerApiService.onProcessEnded((processEnded: ProcessEndedMessage) => {
+      callback(processEnded);
+    });
   }
 
   public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {

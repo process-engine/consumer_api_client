@@ -11,19 +11,75 @@ import {
   ProcessStartRequestPayload,
   ProcessStartResponsePayload,
   restSettings,
+  socketSettings,
   StartCallbackType,
   UserTaskList,
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
+import {
+  ProcessEndedMessage,
+  ProcessEndType,
+  UserTaskFinishedMessage,
+  UserTaskWaitingMessage,
+} from '@process-engine/process_engine_contracts';
+import io from 'socket.io-client';
 
 export class ExternalAccessor implements IConsumerApiAccessor {
 
   private baseUrl: string = 'api/consumer/v1';
 
-  private httpClient: IHttpClient = undefined;
+  private _socket: SocketIOClient.Socket = undefined;
+  private _httpClient: IHttpClient = undefined;
 
-  constructor(httpClient: IHttpClient) {
-    this.httpClient = httpClient;
+  public config: any;
+
+  public get httpClient(): IHttpClient {
+    return this._httpClient;
+  }
+
+  constructor(httpClient: IHttpClient, identity: IIdentity) {
+    this._httpClient = httpClient;
+    const socketUrl: string = `${this.config.socketUrl}/${socketSettings.namespace}`;
+    const socketIoOptions: SocketIOClient.ConnectOpts = {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: identity.token,
+          },
+        },
+      },
+    };
+    this._socket = io(socketUrl, socketIoOptions);
+  }
+
+  public onUserTaskWaiting(callback: (userTaskWaiting: UserTaskWaitingMessage) => void|Promise<void>): void {
+    this._socket.on(socketSettings.paths.userTaskWaiting, (userTaskWaiting: UserTaskWaitingMessage) => {
+      callback(userTaskWaiting);
+    });
+  }
+
+  public onUserTaskFinished(callback: (userTaskFinished: UserTaskFinishedMessage) => void|Promise<void>): void {
+    this._socket.on(socketSettings.paths.userTaskFinished, (userTaskFinished: UserTaskFinishedMessage) => {
+      callback(userTaskFinished);
+    });
+  }
+
+  public onProcessTerminated(callback: (processEnded: ProcessEndedMessage) => void|Promise<void>): void {
+    this._socket.on(socketSettings.paths.processEnded, (processEnded: ProcessEndedMessage) => {
+      const isProcessTerminated: boolean = processEnded.endType === ProcessEndType.Terminated;
+      if (isProcessTerminated) {
+        callback(processEnded);
+      }
+    });
+  }
+
+  public onProcessEnded(callback: (processEnded: ProcessEndedMessage) => void|Promise<void>): void {
+    this._socket.on(socketSettings.paths.processEnded, (processEnded: ProcessEndedMessage) => {
+      const isProcessEnded: boolean = processEnded.endType === ProcessEndType.Ended;
+      if (isProcessEnded) {
+        callback(processEnded);
+      }
+    });
   }
 
   public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {
@@ -55,6 +111,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
                                     payload: ProcessStartRequestPayload,
                                     startCallbackType: StartCallbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
                                     endEventId?: string,
+                                    processEndedCallback?: (processEnded: ProcessEndedMessage) => void|Promise<void>,
                                   ): Promise<ProcessStartResponsePayload> {
 
     const url: string = this._buildStartProcessInstanceUrl(processModelId, startEventId, startCallbackType, endEventId);
@@ -63,6 +120,12 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const httpResponse: IResponse<ProcessStartResponsePayload> =
       await this.httpClient.post<ProcessStartRequestPayload, ProcessStartResponsePayload>(url, payload, requestAuthHeaders);
+
+    if (processEndedCallback !== undefined) {
+      this._socket.on(socketSettings.paths.processEnded, (processEnded: ProcessEndedMessage) => {
+        processEndedCallback(processEnded);
+      });
+    }
 
     return httpResponse.result;
   }
