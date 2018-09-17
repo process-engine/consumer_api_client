@@ -41,8 +41,6 @@
   "scripts": {
     "build": "gulp build",
     "prepare": "npm run build",
-    "build-doc": "gulp doc",
-    "build-schemas": "gulp typescript-schema",
     "lint": "gulp lint",
     "test": "gulp test"
   }
