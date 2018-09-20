@@ -68,7 +68,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   public onProcessTerminated(callback: (processEnded: ProcessEndedMessage) => void|Promise<void>): void {
-    this._socket.on(socketSettings.paths.processEnded, (processEnded: ProcessEndedMessage) => {
+    this._socket.on(socketSettings.paths.processTerminated, (processEnded: ProcessEndedMessage) => {
       const isProcessTerminated: boolean = processEnded.endType === ProcessEndType.Terminated;
       if (isProcessTerminated) {
         callback(processEnded);
