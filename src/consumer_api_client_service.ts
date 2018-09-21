@@ -29,14 +29,6 @@ export class ConsumerApiClientService implements IConsumerApi {
     this.consumerApiAccessor = consumerApiAccessor;
   }
 
-  // public onUserTaskWaiting(correlationId: string, callback: (userTaskFinished: UserTaskFinishedMessage) => void|Promise<void>): void {
-  //   this.consumerApiAccessor.onUserTaskWaiting((userTaskFinished: UserTaskFinishedMessage) => {
-  //     if (userTaskFinished.correlationId === correlationId) {
-  //       callback(userTaskFinished);
-  //     }
-  //   });
-  // }
-
   public onUserTaskWaiting(callback: (userTaskWaiting: UserTaskWaitingMessage) => void|Promise<void>): void {
     this.consumerApiAccessor.onUserTaskWaiting((userTaskWaiting: UserTaskWaitingMessage) => {
       callback(userTaskWaiting);
