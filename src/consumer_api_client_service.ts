@@ -1,11 +1,12 @@
 import * as EssentialProjectErrors from '@essential-projects/errors_ts';
+import {IIdentity} from '@essential-projects/iam_contracts';
+
 import {
-  ConsumerContext,
   CorrelationResult,
   EventList,
   EventTriggerPayload,
+  IConsumerApi,
   IConsumerApiAccessor,
-  IConsumerApiService,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
@@ -15,29 +16,25 @@ import {
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
 
-export class ConsumerApiClientService implements IConsumerApiService {
+export class ConsumerApiClientService implements IConsumerApi {
 
-  private _consumerApiAccessor: IConsumerApiAccessor = undefined;
+  private consumerApiAccessor: IConsumerApiAccessor = undefined;
 
   constructor(consumerApiAccessor: IConsumerApiAccessor) {
-    this._consumerApiAccessor = consumerApiAccessor;
+    this.consumerApiAccessor = consumerApiAccessor;
   }
 
-  public get consumerApiAccessor(): IConsumerApiAccessor {
-    return this._consumerApiAccessor;
+  public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {
+
+    return this.consumerApiAccessor.getProcessModels(identity);
   }
 
-  public async getProcessModels(context: ConsumerContext): Promise<ProcessModelList> {
+  public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<ProcessModel> {
 
-    return this.consumerApiAccessor.getProcessModels(context);
+    return this.consumerApiAccessor.getProcessModelById(identity, processModelId);
   }
 
-  public async getProcessModelById(context: ConsumerContext, processModelId: string): Promise<ProcessModel> {
-
-    return this.consumerApiAccessor.getProcessModelById(context, processModelId);
-  }
-
-  public async startProcessInstance(context: ConsumerContext,
+  public async startProcessInstance(identity: IIdentity,
                                     processModelId: string,
                                     startEventId: string,
                                     payload: ProcessStartRequestPayload,
@@ -53,65 +50,65 @@ export class ConsumerApiClientService implements IConsumerApiService {
       throw new EssentialProjectErrors.BadRequestError(`Must provide an EndEventId, when using callback type 'CallbackOnEndEventReached'!`);
     }
 
-    return this.consumerApiAccessor.startProcessInstance(context, processModelId, startEventId, payload, startCallbackType, endEventId);
+    return this.consumerApiAccessor.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
   }
 
-  public async getProcessResultForCorrelation(context: ConsumerContext,
+  public async getProcessResultForCorrelation(identity: IIdentity,
                                               correlationId: string,
                                               processModelId: string): Promise<Array<CorrelationResult>> {
 
-    return this.consumerApiAccessor.getProcessResultForCorrelation(context, correlationId, processModelId);
+    return this.consumerApiAccessor.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
 
   // Events
-  public async getEventsForProcessModel(context: ConsumerContext, processModelId: string): Promise<EventList> {
+  public async getEventsForProcessModel(identity: IIdentity, processModelId: string): Promise<EventList> {
 
-    return this.consumerApiAccessor.getEventsForProcessModel(context, processModelId);
+    return this.consumerApiAccessor.getEventsForProcessModel(identity, processModelId);
   }
 
-  public async getEventsForCorrelation(context: ConsumerContext, correlationId: string): Promise<EventList> {
+  public async getEventsForCorrelation(identity: IIdentity, correlationId: string): Promise<EventList> {
 
-    return this.consumerApiAccessor.getEventsForCorrelation(context, correlationId);
+    return this.consumerApiAccessor.getEventsForCorrelation(identity, correlationId);
   }
 
-  public async getEventsForProcessModelInCorrelation(context: ConsumerContext, processModelId: string, correlationId: string): Promise<EventList> {
+  public async getEventsForProcessModelInCorrelation(identity: IIdentity, processModelId: string, correlationId: string): Promise<EventList> {
 
-    return this.consumerApiAccessor.getEventsForProcessModelInCorrelation(context, processModelId, correlationId);
+    return this.consumerApiAccessor.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
-  public async triggerEvent(context: ConsumerContext,
+  public async triggerEvent(identity: IIdentity,
                             processModelId: string,
                             correlationId: string,
                             eventId: string,
                             eventTriggerPayload?: EventTriggerPayload): Promise<void> {
 
-    return this.consumerApiAccessor.triggerEvent(context, processModelId, correlationId, eventId, eventTriggerPayload);
+    return this.consumerApiAccessor.triggerEvent(identity, processModelId, correlationId, eventId, eventTriggerPayload);
   }
 
   // UserTasks
-  public async getUserTasksForProcessModel(context: ConsumerContext, processModelId: string): Promise<UserTaskList> {
+  public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<UserTaskList> {
 
-    return this.consumerApiAccessor.getUserTasksForProcessModel(context, processModelId);
+    return this.consumerApiAccessor.getUserTasksForProcessModel(identity, processModelId);
   }
 
-  public async getUserTasksForCorrelation(context: ConsumerContext, correlationId: string): Promise<UserTaskList> {
+  public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<UserTaskList> {
 
-    return this.consumerApiAccessor.getUserTasksForCorrelation(context, correlationId);
+    return this.consumerApiAccessor.getUserTasksForCorrelation(identity, correlationId);
   }
 
-  public async getUserTasksForProcessModelInCorrelation(context: ConsumerContext,
+  public async getUserTasksForProcessModelInCorrelation(identity: IIdentity,
                                                         processModelId: string,
                                                         correlationId: string): Promise<UserTaskList> {
 
-    return this.consumerApiAccessor.getUserTasksForProcessModelInCorrelation(context, processModelId, correlationId);
+    return this.consumerApiAccessor.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
-  public async finishUserTask(context: ConsumerContext,
+  public async finishUserTask(identity: IIdentity,
                               processModelId: string,
                               correlationId: string,
                               userTaskId: string,
                               userTaskResult: UserTaskResult): Promise<void> {
 
-    return this.consumerApiAccessor.finishUserTask(context, processModelId, correlationId, userTaskId, userTaskResult);
+    return this.consumerApiAccessor.finishUserTask(identity, processModelId, correlationId, userTaskId, userTaskResult);
   }
 }
