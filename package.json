@@ -22,7 +22,7 @@
     "@essential-projects/errors_ts": "1.3.2",
     "@essential-projects/http_contracts": "2.1.0",
     "@essential-projects/iam_contracts": "3.1.0",
-    "@process-engine/consumer_api_contracts": "feature~remove_execution_context",
+    "@process-engine/consumer_api_contracts": "0.17.0",
     "async-middleware": "1.2.1",
     "bluebird": "3.5.1",
     "loggerhythm": "3.0.3"
