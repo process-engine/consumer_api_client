@@ -1,6 +1,7 @@
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
+import {IIdentity} from '@essential-projects/iam_contracts';
+
 import {
-  ConsumerContext,
   CorrelationResult,
   EventList,
   EventTriggerPayload,
@@ -19,19 +20,15 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
   private baseUrl: string = 'api/consumer/v1';
 
-  private _httpClient: IHttpClient = undefined;
+  private httpClient: IHttpClient = undefined;
 
   constructor(httpClient: IHttpClient) {
-    this._httpClient = httpClient;
+    this.httpClient = httpClient;
   }
 
-  public get httpClient(): IHttpClient {
-    return this._httpClient;
-  }
+  public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {
 
-  public async getProcessModels(context: ConsumerContext): Promise<ProcessModelList> {
-
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const url: string = this._applyBaseUrl(restSettings.paths.processModels);
 
@@ -40,9 +37,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async getProcessModelById(context: ConsumerContext, processModelId: string): Promise<ProcessModel> {
+  public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<ProcessModel> {
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.processModelById.replace(restSettings.params.processModelId, processModelId);
     url = this._applyBaseUrl(url);
@@ -52,7 +49,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async startProcessInstance(context: ConsumerContext,
+  public async startProcessInstance(identity: IIdentity,
                                     processModelId: string,
                                     startEventId: string,
                                     payload: ProcessStartRequestPayload,
@@ -62,7 +59,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const url: string = this._buildStartProcessInstanceUrl(processModelId, startEventId, startCallbackType, endEventId);
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const httpResponse: IResponse<ProcessStartResponsePayload> =
       await this.httpClient.post<ProcessStartRequestPayload, ProcessStartResponsePayload>(url, payload, requestAuthHeaders);
@@ -90,7 +87,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return url;
   }
 
-  public async getProcessResultForCorrelation(context: ConsumerContext,
+  public async getProcessResultForCorrelation(identity: IIdentity,
                                               correlationId: string,
                                               processModelId: string): Promise<Array<CorrelationResult>> {
 
@@ -100,7 +97,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     url = this._applyBaseUrl(url);
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const httpResponse: IResponse<Array<CorrelationResult>> = await this.httpClient.get<Array<CorrelationResult>>(url, requestAuthHeaders);
 
@@ -108,9 +105,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   // Events
-  public async getEventsForProcessModel(context: ConsumerContext, processModelId: string): Promise<EventList> {
+  public async getEventsForProcessModel(identity: IIdentity, processModelId: string): Promise<EventList> {
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.processModelEvents.replace(restSettings.params.processModelId, processModelId);
     url = this._applyBaseUrl(url);
@@ -120,9 +117,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async getEventsForCorrelation(context: ConsumerContext, correlationId: string): Promise<EventList> {
+  public async getEventsForCorrelation(identity: IIdentity, correlationId: string): Promise<EventList> {
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.correlationEvents.replace(restSettings.params.correlationId, correlationId);
     url = this._applyBaseUrl(url);
@@ -132,9 +129,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async getEventsForProcessModelInCorrelation(context: ConsumerContext, processModelId: string, correlationId: string): Promise<EventList> {
+  public async getEventsForProcessModelInCorrelation(identity: IIdentity, processModelId: string, correlationId: string): Promise<EventList> {
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.processModelCorrelationEvents
       .replace(restSettings.params.processModelId, processModelId)
@@ -147,13 +144,13 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async triggerEvent(context: ConsumerContext,
+  public async triggerEvent(identity: IIdentity,
                             processModelId: string,
                             correlationId: string,
                             eventId: string,
                             eventTriggerPayload?: EventTriggerPayload): Promise<void> {
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.triggerEvent
       .replace(restSettings.params.processModelId, processModelId)
@@ -166,9 +163,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   // UserTasks
-  public async getUserTasksForProcessModel(context: ConsumerContext, processModelId: string): Promise<UserTaskList> {
+  public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<UserTaskList> {
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.processModelUserTasks.replace(restSettings.params.processModelId, processModelId);
     url = this._applyBaseUrl(url);
@@ -178,9 +175,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async getUserTasksForCorrelation(context: ConsumerContext, correlationId: string): Promise<UserTaskList> {
+  public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<UserTaskList> {
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.correlationUserTasks.replace(restSettings.params.correlationId, correlationId);
     url = this._applyBaseUrl(url);
@@ -190,11 +187,11 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async getUserTasksForProcessModelInCorrelation(context: ConsumerContext,
+  public async getUserTasksForProcessModelInCorrelation(identity: IIdentity,
                                                         processModelId: string,
                                                         correlationId: string): Promise<UserTaskList> {
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.processModelCorrelationUserTasks
       .replace(restSettings.params.processModelId, processModelId)
@@ -207,13 +204,13 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async finishUserTask(context: ConsumerContext,
+  public async finishUserTask(identity: IIdentity,
                               processModelId: string,
                               correlationId: string,
                               userTaskId: string,
                               userTaskResult: UserTaskResult): Promise<void> {
 
-    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(context);
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.finishUserTask
       .replace(restSettings.params.processModelId, processModelId)
@@ -225,14 +222,16 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     await this.httpClient.post<UserTaskResult, any>(url, userTaskResult, requestAuthHeaders);
   }
 
-  private _createRequestAuthHeaders(context: ConsumerContext): IRequestOptions {
-    if (context.identity === undefined || context.identity === null) {
+  private _createRequestAuthHeaders(identity: IIdentity): IRequestOptions {
+
+    const noAuthTokenProvided: boolean = !identity || typeof identity.token !== 'string';
+    if (noAuthTokenProvided) {
       return {};
     }
 
     const requestAuthHeaders: IRequestOptions = {
       headers: {
-        Authorization: `Bearer ${context.identity}`,
+        Authorization: `Bearer ${identity.token}`,
       },
     };
 
