@@ -1,10 +1,11 @@
+import {IIdentity} from '@essential-projects/iam_contracts';
+
 import {
-  ConsumerContext,
   CorrelationResult,
   EventList,
   EventTriggerPayload,
+  IConsumerApi,
   IConsumerApiAccessor,
-  IConsumerApiService,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
@@ -18,31 +19,27 @@ import {UnauthorizedError} from '@essential-projects/errors_ts';
 
 export class InternalAccessor implements IConsumerApiAccessor {
 
-  private _consumerApiService: IConsumerApiService = undefined;
+  private consumerApiService: IConsumerApi = undefined;
 
-  constructor(consumerApiService: IConsumerApiService) {
-    this._consumerApiService = consumerApiService;
+  constructor(consumerApiService: IConsumerApi) {
+    this.consumerApiService = consumerApiService;
   }
 
-  public get consumerApiService(): IConsumerApiService {
-    return this._consumerApiService;
+  public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {
+
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiService.getProcessModels(identity);
   }
 
-  public async getProcessModels(context: ConsumerContext): Promise<ProcessModelList> {
+  public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<ProcessModel> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.getProcessModels(context);
+    return this.consumerApiService.getProcessModelById(identity, processModelId);
   }
 
-  public async getProcessModelById(context: ConsumerContext, processModelId: string): Promise<ProcessModel> {
-
-    this._ensureIsAuthorized(context);
-
-    return this.consumerApiService.getProcessModelById(context, processModelId);
-  }
-
-  public async startProcessInstance(context: ConsumerContext,
+  public async startProcessInstance(identity: IIdentity,
                                     processModelId: string,
                                     startEventId: string,
                                     payload: ProcessStartRequestPayload,
@@ -50,93 +47,94 @@ export class InternalAccessor implements IConsumerApiAccessor {
                                     endEventId?: string,
                                   ): Promise<ProcessStartResponsePayload> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.startProcessInstance(context, processModelId, startEventId, payload, startCallbackType, endEventId);
+    return this.consumerApiService.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
   }
 
-  public async getProcessResultForCorrelation(context: ConsumerContext,
+  public async getProcessResultForCorrelation(identity: IIdentity,
                                               correlationId: string,
                                               processModelId: string): Promise<Array<CorrelationResult>> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.getProcessResultForCorrelation(context, correlationId, processModelId);
+    return this.consumerApiService.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
 
   // Events
-  public async getEventsForProcessModel(context: ConsumerContext, processModelId: string): Promise<EventList> {
+  public async getEventsForProcessModel(identity: IIdentity, processModelId: string): Promise<EventList> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.getEventsForProcessModel(context, processModelId);
+    return this.consumerApiService.getEventsForProcessModel(identity, processModelId);
   }
 
-  public async getEventsForCorrelation(context: ConsumerContext, correlationId: string): Promise<EventList> {
+  public async getEventsForCorrelation(identity: IIdentity, correlationId: string): Promise<EventList> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.getEventsForCorrelation(context, correlationId);
+    return this.consumerApiService.getEventsForCorrelation(identity, correlationId);
   }
 
-  public async getEventsForProcessModelInCorrelation(context: ConsumerContext, processModelId: string, correlationId: string): Promise<EventList> {
+  public async getEventsForProcessModelInCorrelation(identity: IIdentity, processModelId: string, correlationId: string): Promise<EventList> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.getEventsForProcessModelInCorrelation(context, processModelId, correlationId);
+    return this.consumerApiService.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
-  public async triggerEvent(context: ConsumerContext,
+  public async triggerEvent(identity: IIdentity,
                             processModelId: string,
                             correlationId: string,
                             eventId: string,
                             eventTriggerPayload?: EventTriggerPayload): Promise<void> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.triggerEvent(context, processModelId, correlationId, eventId, eventTriggerPayload);
+    return this.consumerApiService.triggerEvent(identity, processModelId, correlationId, eventId, eventTriggerPayload);
   }
 
   // UserTasks
-  public async getUserTasksForProcessModel(context: ConsumerContext, processModelId: string): Promise<UserTaskList> {
+  public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<UserTaskList> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.getUserTasksForProcessModel(context, processModelId);
+    return this.consumerApiService.getUserTasksForProcessModel(identity, processModelId);
   }
 
-  public async getUserTasksForCorrelation(context: ConsumerContext, correlationId: string): Promise<UserTaskList> {
+  public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<UserTaskList> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.getUserTasksForCorrelation(context, correlationId);
+    return this.consumerApiService.getUserTasksForCorrelation(identity, correlationId);
   }
 
-  public async getUserTasksForProcessModelInCorrelation(context: ConsumerContext,
+  public async getUserTasksForProcessModelInCorrelation(identity: IIdentity,
                                                         processModelId: string,
                                                         correlationId: string): Promise<UserTaskList> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.getUserTasksForProcessModelInCorrelation(context, processModelId, correlationId);
+    return this.consumerApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
-  public async finishUserTask(context: ConsumerContext,
+  public async finishUserTask(identity: IIdentity,
                               processModelId: string,
                               correlationId: string,
                               userTaskId: string,
                               userTaskResult: UserTaskResult): Promise<void> {
 
-    this._ensureIsAuthorized(context);
+    this._ensureIsAuthorized(identity);
 
-    return this.consumerApiService.finishUserTask(context, processModelId, correlationId, userTaskId, userTaskResult);
+    return this.consumerApiService.finishUserTask(identity, processModelId, correlationId, userTaskId, userTaskResult);
   }
 
-  private _ensureIsAuthorized(context: ConsumerContext): void {
+  private _ensureIsAuthorized(identity: IIdentity): void {
 
     // Note: When using an external accessor, this check is performed by the ConsumerApiHttp module.
     // Since that component is bypassed by the internal accessor, we need to perform this check here.
-    if (!context || !context.identity) {
+    const noAuthTokenProvided: boolean = !identity || typeof identity.token !== 'string';
+    if (noAuthTokenProvided) {
       throw new UnauthorizedError('No auth token provided!');
     }
   }
