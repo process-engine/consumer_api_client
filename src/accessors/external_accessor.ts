@@ -6,6 +6,7 @@ import {
   EventList,
   EventTriggerPayload,
   IConsumerApiAccessor,
+  Messages,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
@@ -16,12 +17,6 @@ import {
   UserTaskList,
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
-import {
-  ProcessEndedMessage,
-  ProcessEndType,
-  UserTaskFinishedMessage,
-  UserTaskWaitingMessage,
-} from '@process-engine/process_engine_contracts';
 import * as io from 'socket.io-client';
 
 export class ExternalAccessor implements IConsumerApiAccessor {
@@ -55,31 +50,31 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._socket = io(socketUrl, socketIoOptions);
   }
 
-  public onUserTaskWaiting(callback: (userTaskWaiting: UserTaskWaitingMessage) => void|Promise<void>): void {
-    this._socket.on(socketSettings.paths.userTaskWaiting, (userTaskWaiting: UserTaskWaitingMessage) => {
+  public onUserTaskWaiting(callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
+    this._socket.on(socketSettings.paths.userTaskWaiting, (userTaskWaiting: Messages.SystemEvents.UserTaskReachedMessage) => {
       callback(userTaskWaiting);
     });
   }
 
-  public onUserTaskFinished(callback: (userTaskFinished: UserTaskFinishedMessage) => void|Promise<void>): void {
-    this._socket.on(socketSettings.paths.userTaskFinished, (userTaskFinished: UserTaskFinishedMessage) => {
+  public onUserTaskFinished(callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
+    this._socket.on(socketSettings.paths.userTaskFinished, (userTaskFinished: Messages.SystemEvents.UserTaskFinishedMessage) => {
       callback(userTaskFinished);
     });
   }
 
-  public onProcessTerminated(callback: (processEnded: ProcessEndedMessage) => void|Promise<void>): void {
-    this._socket.on(socketSettings.paths.processTerminated, (processEnded: ProcessEndedMessage) => {
-      const isProcessTerminated: boolean = processEnded.endType === ProcessEndType.Terminated;
+  public onProcessTerminated(callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
+    this._socket.on(socketSettings.paths.processTerminated, (processTerminated: Messages.SystemEvents.ProcessTerminatedMessage) => {
+      const isProcessTerminated: boolean = processTerminated.constructor.name === 'ProcessTerminatedMessage';
       if (isProcessTerminated) {
-        callback(processEnded);
+        callback(processTerminated);
       }
     });
   }
 
-  public onProcessEnded(callback: (processEnded: ProcessEndedMessage) => void|Promise<void>): void {
-    this._socket.on(socketSettings.paths.processEnded, (processEnded: ProcessEndedMessage) => {
-      const isProcessEnded: boolean = processEnded.endType === ProcessEndType.Ended;
-      if (isProcessEnded) {
+  public onProcessEnded(callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
+    this._socket.on(socketSettings.paths.processEnded, (processEnded: Messages.SystemEvents.ProcessEndedMessage) => {
+      const isProcessTerminated: boolean = processEnded.constructor.name === 'ProcessEndedMessage';
+      if (isProcessTerminated) {
         callback(processEnded);
       }
     });
@@ -114,7 +109,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
                                     payload: ProcessStartRequestPayload,
                                     startCallbackType: StartCallbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
                                     endEventId?: string,
-                                    processEndedCallback?: (processEnded: ProcessEndedMessage) => void|Promise<void>,
+                                    processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
                                   ): Promise<ProcessStartResponsePayload> {
 
     const url: string = this._buildStartProcessInstanceUrl(processModelId, startEventId, startCallbackType, endEventId);
@@ -125,7 +120,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
       await this.httpClient.post<ProcessStartRequestPayload, ProcessStartResponsePayload>(url, payload, requestAuthHeaders);
 
     if (processEndedCallback !== undefined) {
-      this._socket.on(socketSettings.paths.processEnded, (processEnded: ProcessEndedMessage) => {
+      this._socket.on(socketSettings.paths.processEnded, (processEnded: Messages.SystemEvents.ProcessEndedMessage) => {
         processEndedCallback(processEnded);
       });
     }
