@@ -101,10 +101,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     const httpResponse: IResponse<ProcessStartResponsePayload> =
       await this._httpClient.post<ProcessStartRequestPayload, ProcessStartResponsePayload>(url, payload, requestAuthHeaders);
 
-    if (processEndedCallback !== undefined) {
-      this._socket.on(socketSettings.paths.processEnded, (processEnded: Messages.SystemEvents.ProcessEndedMessage) => {
-        processEndedCallback(processEnded);
-      });
+    const callbackProvided: boolean = processEndedCallback !== undefined;
+    if (callbackProvided) {
+      this._socket.on(socketSettings.paths.processEnded, processEndedCallback);
     }
 
     return httpResponse.result;
