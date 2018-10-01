@@ -7,6 +7,7 @@ import {
   EventTriggerPayload,
   IConsumerApi,
   IConsumerApiAccessor,
+  Messages,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
@@ -22,6 +23,22 @@ export class ConsumerApiClientService implements IConsumerApi {
 
   constructor(consumerApiAccessor: IConsumerApiAccessor) {
     this.consumerApiAccessor = consumerApiAccessor;
+  }
+
+  public onUserTaskWaiting(callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
+    this.consumerApiAccessor.onUserTaskWaiting(callback);
+  }
+
+  public onUserTaskFinished(callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
+    this.consumerApiAccessor.onUserTaskFinished(callback);
+  }
+
+  public onProcessTerminated(callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
+    this.consumerApiAccessor.onProcessTerminated(callback);
+  }
+
+  public onProcessEnded(callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
+    this.consumerApiAccessor.onProcessEnded(callback);
   }
 
   public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {
