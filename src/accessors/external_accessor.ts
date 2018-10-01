@@ -6,24 +6,60 @@ import {
   EventList,
   EventTriggerPayload,
   IConsumerApiAccessor,
+  Messages,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
   ProcessStartResponsePayload,
   restSettings,
+  socketSettings,
   StartCallbackType,
   UserTaskList,
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
+import * as io from 'socket.io-client';
 
 export class ExternalAccessor implements IConsumerApiAccessor {
 
   private baseUrl: string = 'api/consumer/v1';
 
-  private httpClient: IHttpClient = undefined;
+  private _httpClient: IHttpClient = undefined;
+  private _socket: SocketIOClient.Socket = undefined;
+
+  public config: any;
 
   constructor(httpClient: IHttpClient) {
-    this.httpClient = httpClient;
+    this._httpClient = httpClient;
+  }
+
+  public initializeSocket(identity: IIdentity): void {
+    const socketUrl: string = `${this.config.socketUrl}/${socketSettings.namespace}`;
+    const socketIoOptions: SocketIOClient.ConnectOpts = {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+            Authorization: identity.token,
+          },
+        },
+      },
+    };
+    this._socket = io(socketUrl, socketIoOptions);
+  }
+
+  public onUserTaskWaiting(callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
+    this._socket.on(socketSettings.paths.userTaskWaiting, callback);
+  }
+
+  public onUserTaskFinished(callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
+    this._socket.on(socketSettings.paths.userTaskFinished, callback);
+  }
+
+  public onProcessTerminated(callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
+    this._socket.on(socketSettings.paths.processTerminated, callback);
+  }
+
+  public onProcessEnded(callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
+    this._socket.on(socketSettings.paths.processEnded, callback);
   }
 
   public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {
@@ -32,7 +68,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const url: string = this._applyBaseUrl(restSettings.paths.processModels);
 
-    const httpResponse: IResponse<ProcessModelList> = await this.httpClient.get<ProcessModelList>(url, requestAuthHeaders);
+    const httpResponse: IResponse<ProcessModelList> = await this._httpClient.get<ProcessModelList>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -44,7 +80,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     let url: string = restSettings.paths.processModelById.replace(restSettings.params.processModelId, processModelId);
     url = this._applyBaseUrl(url);
 
-    const httpResponse: IResponse<ProcessModel> = await this.httpClient.get<ProcessModel>(url, requestAuthHeaders);
+    const httpResponse: IResponse<ProcessModel> = await this._httpClient.get<ProcessModel>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -55,6 +91,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
                                     payload: ProcessStartRequestPayload,
                                     startCallbackType: StartCallbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
                                     endEventId?: string,
+                                    processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
                                   ): Promise<ProcessStartResponsePayload> {
 
     const url: string = this._buildStartProcessInstanceUrl(processModelId, startEventId, startCallbackType, endEventId);
@@ -62,7 +99,12 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const httpResponse: IResponse<ProcessStartResponsePayload> =
-      await this.httpClient.post<ProcessStartRequestPayload, ProcessStartResponsePayload>(url, payload, requestAuthHeaders);
+      await this._httpClient.post<ProcessStartRequestPayload, ProcessStartResponsePayload>(url, payload, requestAuthHeaders);
+
+    const callbackProvided: boolean = processEndedCallback !== undefined;
+    if (callbackProvided) {
+      this._socket.on(socketSettings.paths.processEnded, processEndedCallback);
+    }
 
     return httpResponse.result;
   }
@@ -99,7 +141,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
-    const httpResponse: IResponse<Array<CorrelationResult>> = await this.httpClient.get<Array<CorrelationResult>>(url, requestAuthHeaders);
+    const httpResponse: IResponse<Array<CorrelationResult>> = await this._httpClient.get<Array<CorrelationResult>>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -112,7 +154,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     let url: string = restSettings.paths.processModelEvents.replace(restSettings.params.processModelId, processModelId);
     url = this._applyBaseUrl(url);
 
-    const httpResponse: IResponse<EventList> = await this.httpClient.get<EventList>(url, requestAuthHeaders);
+    const httpResponse: IResponse<EventList> = await this._httpClient.get<EventList>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -124,7 +166,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     let url: string = restSettings.paths.correlationEvents.replace(restSettings.params.correlationId, correlationId);
     url = this._applyBaseUrl(url);
 
-    const httpResponse: IResponse<EventList> = await this.httpClient.get<EventList>(url, requestAuthHeaders);
+    const httpResponse: IResponse<EventList> = await this._httpClient.get<EventList>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -139,7 +181,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     url = this._applyBaseUrl(url);
 
-    const httpResponse: IResponse<EventList> = await this.httpClient.get<EventList>(url, requestAuthHeaders);
+    const httpResponse: IResponse<EventList> = await this._httpClient.get<EventList>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -159,7 +201,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     url = this._applyBaseUrl(url);
 
-    await this.httpClient.post<EventTriggerPayload, any>(url, eventTriggerPayload, requestAuthHeaders);
+    await this._httpClient.post<EventTriggerPayload, any>(url, eventTriggerPayload, requestAuthHeaders);
   }
 
   // UserTasks
@@ -170,7 +212,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     let url: string = restSettings.paths.processModelUserTasks.replace(restSettings.params.processModelId, processModelId);
     url = this._applyBaseUrl(url);
 
-    const httpResponse: IResponse<UserTaskList> = await this.httpClient.get<UserTaskList>(url, requestAuthHeaders);
+    const httpResponse: IResponse<UserTaskList> = await this._httpClient.get<UserTaskList>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -182,7 +224,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     let url: string = restSettings.paths.correlationUserTasks.replace(restSettings.params.correlationId, correlationId);
     url = this._applyBaseUrl(url);
 
-    const httpResponse: IResponse<UserTaskList> = await this.httpClient.get<UserTaskList>(url, requestAuthHeaders);
+    const httpResponse: IResponse<UserTaskList> = await this._httpClient.get<UserTaskList>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -199,7 +241,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     url = this._applyBaseUrl(url);
 
-    const httpResponse: IResponse<UserTaskList> = await this.httpClient.get<UserTaskList>(url, requestAuthHeaders);
+    const httpResponse: IResponse<UserTaskList> = await this._httpClient.get<UserTaskList>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -219,7 +261,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     url = this._applyBaseUrl(url);
 
-    await this.httpClient.post<UserTaskResult, any>(url, userTaskResult, requestAuthHeaders);
+    await this._httpClient.post<UserTaskResult, any>(url, userTaskResult, requestAuthHeaders);
   }
 
   private _createRequestAuthHeaders(identity: IIdentity): IRequestOptions {
