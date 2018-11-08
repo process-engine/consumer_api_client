@@ -22,7 +22,7 @@
     "@essential-projects/errors_ts": "~1.4.0",
     "@essential-projects/http_contracts": "~2.3.0",
     "@essential-projects/iam_contracts": "~3.2.0",
-    "@process-engine/consumer_api_contracts": "~0.19.0",
+    "@process-engine/consumer_api_contracts": "feature~use_unique_ids_for_usertask_events",
     "async-middleware": "1.2.1",
     "bluebird": "3.5.2",
     "loggerhythm": "3.0.3"
