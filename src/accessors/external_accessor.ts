@@ -247,17 +247,17 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   public async finishUserTask(identity: IIdentity,
-                              processModelId: string,
+                              processInstanceId: string,
                               correlationId: string,
-                              userTaskId: string,
+                              userTaskInstanceId: string,
                               userTaskResult: UserTaskResult): Promise<void> {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.finishUserTask
-      .replace(restSettings.params.processModelId, processModelId)
+      .replace(restSettings.params.processInstanceId, processInstanceId)
       .replace(restSettings.params.correlationId, correlationId)
-      .replace(restSettings.params.userTaskId, userTaskId);
+      .replace(restSettings.params.userTaskInstanceId, userTaskInstanceId);
 
     url = this._applyBaseUrl(url);
 
