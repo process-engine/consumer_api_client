@@ -25,7 +25,8 @@
     "@process-engine/consumer_api_contracts": "feature~use_unique_ids_for_usertask_events",
     "async-middleware": "1.2.1",
     "bluebird": "3.5.2",
-    "loggerhythm": "3.0.3"
+    "loggerhythm": "3.0.3",
+    "socket.io-client": "2.1.1"
   },
   "devDependencies": {
     "@essential-projects/tslint-config": "^1.1.3",
