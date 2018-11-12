@@ -47,22 +47,9 @@ export class InternalAccessor implements IConsumerApiAccessor {
     this._consumerApiService.onManualTaskFinished(identity, callback);
   }
 
-<<<<<<< HEAD
   public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
     this._ensureIsAuthorized(identity);
     this._consumerApiService.onProcessTerminated(identity, callback);
-=======
-  public onManualTaskWaiting(callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
-    this._consumerApiService.onManualTaskWaiting(callback);
-  }
-
-  public onManualTaskFinished(callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
-    this._consumerApiService.onManualTaskFinished(callback);
-  }
-
-  public onProcessTerminated(callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
-    this._consumerApiService.onProcessTerminated(callback);
->>>>>>> :sparkles: Add ManualTask methods to Internal Accessor
   }
 
   public onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
