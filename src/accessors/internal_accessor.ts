@@ -28,25 +28,31 @@ export class InternalAccessor implements IConsumerApiAccessor {
 
   public onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
     this._ensureIsAuthorized(identity);
-
     this._consumerApiService.onUserTaskWaiting(identity, callback);
   }
 
   public onUserTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
     this._ensureIsAuthorized(identity);
-
     this._consumerApiService.onUserTaskFinished(identity, callback);
+  }
+
+  public onManualTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onManualTaskWaiting(identity, callback);
+  }
+
+  public onManualTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onManualTaskFinished(identity, callback);
   }
 
   public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
     this._ensureIsAuthorized(identity);
-
     this._consumerApiService.onProcessTerminated(identity, callback);
   }
 
   public onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
     this._ensureIsAuthorized(identity);
-
     this._consumerApiService.onProcessEnded(identity, callback);
   }
 
