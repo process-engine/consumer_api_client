@@ -343,7 +343,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     url = this._applyBaseUrl(url);
 
-    await this._httpClient.get(url, requestAuthHeaders);
+    await this._httpClient.post(url, requestAuthHeaders);
   }
 
   private _createRequestAuthHeaders(identity: IIdentity): IRequestOptions {
