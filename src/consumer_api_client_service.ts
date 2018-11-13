@@ -121,11 +121,11 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   public async finishUserTask(identity: IIdentity,
-                              processModelId: string,
+                              processInstanceId: string,
                               correlationId: string,
-                              userTaskId: string,
+                              userTaskInstanceId: string,
                               userTaskResult: UserTaskResult): Promise<void> {
 
-    return this.consumerApiAccessor.finishUserTask(identity, processModelId, correlationId, userTaskId, userTaskResult);
+    return this.consumerApiAccessor.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
   }
 }
