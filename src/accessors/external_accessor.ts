@@ -336,7 +336,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
-    let url: string = restSettings.paths.finishUserTask
+    let url: string = restSettings.paths.finishManualTask
       .replace(restSettings.params.processModelId, processModelId)
       .replace(restSettings.params.correlationId, correlationId)
       .replace(restSettings.params.manualTaskId, manualTaskId);
