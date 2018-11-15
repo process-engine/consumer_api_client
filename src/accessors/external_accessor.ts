@@ -186,22 +186,28 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     return httpResponse.result;
   }
 
-  public async triggerEvent(identity: IIdentity,
-                            processModelId: string,
-                            correlationId: string,
-                            eventId: string,
-                            eventTriggerPayload?: EventTriggerPayload): Promise<void> {
+  public async triggerMessageEvent(identity: IIdentity, messageName: string, payload?: EventTriggerPayload): Promise<void> {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
-    let url: string = restSettings.paths.triggerEvent
-      .replace(restSettings.params.processModelId, processModelId)
-      .replace(restSettings.params.correlationId, correlationId)
-      .replace(restSettings.params.eventId, eventId);
+    let url: string = restSettings.paths.triggerMessageEvent
+      .replace(restSettings.params.eventName, messageName);
 
     url = this._applyBaseUrl(url);
 
-    await this._httpClient.post<EventTriggerPayload, any>(url, eventTriggerPayload, requestAuthHeaders);
+    await this._httpClient.post<EventTriggerPayload, any>(url, payload, requestAuthHeaders);
+  }
+
+  public async triggerSignalEvent(identity: IIdentity, signalName: string, payload?: EventTriggerPayload): Promise<void> {
+
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    let url: string = restSettings.paths.triggerSignalEvent
+      .replace(restSettings.params.eventName, signalName);
+
+    url = this._applyBaseUrl(url);
+
+    await this._httpClient.post<EventTriggerPayload, any>(url, payload, requestAuthHeaders);
   }
 
   // UserTasks

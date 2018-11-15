@@ -100,15 +100,18 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this._consumerApiService.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
-  public async triggerEvent(identity: IIdentity,
-                            processModelId: string,
-                            correlationId: string,
-                            eventId: string,
-                            eventTriggerPayload?: EventTriggerPayload): Promise<void> {
+  public async triggerMessageEvent(identity: IIdentity, messageName: string, payload?: EventTriggerPayload): Promise<void> {
 
     this._ensureIsAuthorized(identity);
 
-    return this._consumerApiService.triggerEvent(identity, processModelId, correlationId, eventId, eventTriggerPayload);
+    return this._consumerApiService.triggerMessageEvent(identity, messageName, payload);
+  }
+
+  public async triggerSignalEvent(identity: IIdentity, signalName: string, payload?: EventTriggerPayload): Promise<void> {
+
+    this._ensureIsAuthorized(identity);
+
+    return this._consumerApiService.triggerSignalEvent(identity, signalName, payload);
   }
 
   // UserTasks
