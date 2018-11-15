@@ -142,19 +142,22 @@ export class ConsumerApiClientService implements IConsumerApi {
   // ManualTasks
   public async getManualTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<ManualTaskList> {
 
-    return this.consumerApiAccessor.getManualTasksForProcessModel(identity, processModelId);
+    return this.consumerApiAccessor
+               .getManualTasksForProcessModel(identity, processModelId);
   }
 
   public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<ManualTaskList> {
 
-    return this.consumerApiAccessor.getManualTasksForCorrelation(identity, correlationId);
+    return this.consumerApiAccessor
+               .getManualTasksForCorrelation(identity, correlationId);
   }
 
   public async getManualTasksForProcessModelInCorrelation(identity: IIdentity,
                                                           processModelId: string,
                                                           correlationId: string): Promise<ManualTaskList> {
 
-    return this.consumerApiAccessor.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.consumerApiAccessor
+               .getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async finishManualTask(identity: IIdentity,
@@ -162,6 +165,7 @@ export class ConsumerApiClientService implements IConsumerApi {
                                 correlationId: string,
                                 manualTaskId: string): Promise<void> {
 
-    return this.consumerApiAccessor.finishManualTask(identity, processModelId, correlationId, manualTaskId);
+    return this.consumerApiAccessor
+               .finishManualTask(identity, processModelId, correlationId, manualTaskId);
   }
 }
