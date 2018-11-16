@@ -192,14 +192,13 @@ export class InternalAccessor implements IConsumerApiAccessor {
   }
 
   public async finishManualTask(identity: IIdentity,
-                                processModelId: string,
+                                processInstanceId: string,
                                 correlationId: string,
-                                userTaskId: string): Promise<void> {
+                                manualTaskInstanceId: string): Promise<void> {
 
     this._ensureIsAuthorized(identity);
-
     return this._consumerApiService
-               .finishManualTask(identity, processModelId, correlationId, userTaskId);
+               .finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
   }
 
   private _ensureIsAuthorized(identity: IIdentity): void {

@@ -334,21 +334,20 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   public async finishManualTask(identity: IIdentity,
-                                processModelId: string,
+                                processInstanceId: string,
                                 correlationId: string,
-                                manualTaskId: string): Promise<void> {
+                                manualTaskInstanceId: string): Promise<void> {
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const urlRestPart: string = restSettings.paths.finishManualTask
-      .replace(restSettings.params.processModelId, processModelId)
+      .replace(restSettings.params.processInstanceId, processInstanceId)
       .replace(restSettings.params.correlationId, correlationId)
-      .replace(restSettings.params.manualTaskId, manualTaskId);
+      .replace(restSettings.params.manualTaskInstanceId, manualTaskInstanceId);
 
     const url: string = this._applyBaseUrl(urlRestPart);
 
     const body: {} = {};
-
     await this._httpClient.post(url, body, requestAuthHeaders);
   }
 
