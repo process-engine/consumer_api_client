@@ -295,7 +295,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     const urlRestPart: string = restSettings.paths
                                                   .processModelManualTasks
                                                   .replace(restSettings.params.processModelId, processModelId);
-    const url = this._applyBaseUrl(urlRestPart);
+    const url: string = this._applyBaseUrl(urlRestPart);
 
     const httpResponse: IResponse<ManualTaskList> = await this._httpClient.get<ManualTaskList>(url, requestAuthHeaders);
 
@@ -309,7 +309,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     const urlRestPart: string = restSettings.paths
                                             .correlationManualTasks
                                             .replace(restSettings.params.correlationId, correlationId);
-    const url = this._applyBaseUrl(urlRestPart);
+    const url: string = this._applyBaseUrl(urlRestPart);
 
     const httpResponse: IResponse<ManualTaskList> = await this._httpClient.get<ManualTaskList>(url, requestAuthHeaders);
 
@@ -326,7 +326,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
       .replace(restSettings.params.processModelId, processModelId)
       .replace(restSettings.params.correlationId, correlationId);
 
-    const url = this._applyBaseUrl(urlRestPart);
+    const url: string = this._applyBaseUrl(urlRestPart);
 
     const httpResponse: IResponse<ManualTaskList> = await this._httpClient.get<ManualTaskList>(url, requestAuthHeaders);
 
@@ -345,10 +345,10 @@ export class ExternalAccessor implements IConsumerApiAccessor {
       .replace(restSettings.params.correlationId, correlationId)
       .replace(restSettings.params.manualTaskId, manualTaskId);
 
-    const url = this._applyBaseUrl(urlRestPart);
+    const url: string = this._applyBaseUrl(urlRestPart);
 
-    const body = {};
-     
+    const body: {} = {};
+
     await this._httpClient.post(url, body, requestAuthHeaders);
   }
 
