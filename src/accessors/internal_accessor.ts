@@ -26,20 +26,20 @@ export class InternalAccessor implements IConsumerApiAccessor {
     this._consumerApiService = consumerApiService;
   }
 
-  public onUserTaskWaiting(callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
-    this._consumerApiService.onUserTaskWaiting(callback);
+  public onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
+    this._consumerApiService.onUserTaskWaiting(identity, callback);
   }
 
-  public onUserTaskFinished(callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
-    this._consumerApiService.onUserTaskFinished(callback);
+  public onUserTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
+    this._consumerApiService.onUserTaskFinished(identity, callback);
   }
 
-  public onProcessTerminated(callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
-    this._consumerApiService.onProcessTerminated(callback);
+  public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
+    this._consumerApiService.onProcessTerminated(identity, callback);
   }
 
-  public onProcessEnded(callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
-    this._consumerApiService.onProcessEnded(callback);
+  public onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
+    this._consumerApiService.onProcessEnded(identity, callback);
   }
 
   public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {
