@@ -1,3 +1,5 @@
+import * as io from 'socket.io-client';
+
 import {UnauthorizedError} from '@essential-projects/errors_ts';
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
@@ -18,7 +20,6 @@ import {
   UserTaskList,
   UserTaskResult,
 } from '@process-engine/consumer_api_contracts';
-import * as io from 'socket.io-client';
 
 export class ExternalAccessor implements IConsumerApiAccessor {
 
