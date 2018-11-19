@@ -22,7 +22,7 @@
     "@essential-projects/errors_ts": "~1.4.0",
     "@essential-projects/http_contracts": "~2.3.0",
     "@essential-projects/iam_contracts": "~3.2.0",
-    "@process-engine/consumer_api_contracts": "~1.0.0",
+    "@process-engine/consumer_api_contracts": "~1.1.0",
     "async-middleware": "1.2.1",
     "bluebird": "3.5.2",
     "loggerhythm": "3.0.3",
