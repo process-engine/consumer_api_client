@@ -9,6 +9,7 @@ import {
   EventList,
   EventTriggerPayload,
   IConsumerApiAccessor,
+  ManualTaskList,
   Messages,
   ProcessModel,
   ProcessModelList,
@@ -50,25 +51,31 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
   public onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
     this._ensureIsAuthorized(identity);
-
     this._socket.on(socketSettings.paths.userTaskWaiting, callback);
   }
 
   public onUserTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
     this._ensureIsAuthorized(identity);
-
     this._socket.on(socketSettings.paths.userTaskFinished, callback);
   }
 
   public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
     this._ensureIsAuthorized(identity);
-
     this._socket.on(socketSettings.paths.processTerminated, callback);
+  }
+
+  public onManualTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._socket.on(socketSettings.paths.manualTaskWaiting, callback);
+  }
+
+  public onManualTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._socket.on(socketSettings.paths.manualTaskFinished, callback);
   }
 
   public onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
     this._ensureIsAuthorized(identity);
-
     this._socket.on(socketSettings.paths.processEnded, callback);
   }
 
@@ -278,6 +285,70 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     url = this._applyBaseUrl(url);
 
     await this._httpClient.post<UserTaskResult, any>(url, userTaskResult, requestAuthHeaders);
+  }
+
+  // ManualTasks
+  public async getManualTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<ManualTaskList> {
+
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    const urlRestPart: string = restSettings.paths
+                                                  .processModelManualTasks
+                                                  .replace(restSettings.params.processModelId, processModelId);
+    const url: string = this._applyBaseUrl(urlRestPart);
+
+    const httpResponse: IResponse<ManualTaskList> = await this._httpClient.get<ManualTaskList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<ManualTaskList> {
+
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    const urlRestPart: string = restSettings.paths
+                                            .correlationManualTasks
+                                            .replace(restSettings.params.correlationId, correlationId);
+    const url: string = this._applyBaseUrl(urlRestPart);
+
+    const httpResponse: IResponse<ManualTaskList> = await this._httpClient.get<ManualTaskList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getManualTasksForProcessModelInCorrelation(identity: IIdentity,
+                                                          processModelId: string,
+                                                          correlationId: string): Promise<ManualTaskList> {
+
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    const urlRestPart: string = restSettings.paths.processModelCorrelationManualTasks
+      .replace(restSettings.params.processModelId, processModelId)
+      .replace(restSettings.params.correlationId, correlationId);
+
+    const url: string = this._applyBaseUrl(urlRestPart);
+
+    const httpResponse: IResponse<ManualTaskList> = await this._httpClient.get<ManualTaskList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async finishManualTask(identity: IIdentity,
+                                processInstanceId: string,
+                                correlationId: string,
+                                manualTaskInstanceId: string): Promise<void> {
+
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    const urlRestPart: string = restSettings.paths.finishManualTask
+      .replace(restSettings.params.processInstanceId, processInstanceId)
+      .replace(restSettings.params.correlationId, correlationId)
+      .replace(restSettings.params.manualTaskInstanceId, manualTaskInstanceId);
+
+    const url: string = this._applyBaseUrl(urlRestPart);
+
+    const body: {} = {};
+    await this._httpClient.post(url, body, requestAuthHeaders);
   }
 
   private _createRequestAuthHeaders(identity: IIdentity): IRequestOptions {
