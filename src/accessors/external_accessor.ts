@@ -75,8 +75,8 @@ export class ExternalAccessor implements IConsumerApiAccessor {
                                             processModelId: string): void {
 
     this._ensureIsAuthorized(identity);
-    const eventName: string = restSettings.paths.processInstanceStarted
-      .replace(restSettings.params.processModelId, processModelId);
+    const eventName: string = socketSettings.paths.processInstanceStarted
+      .replace(socketSettings.pathParams.processModelId, processModelId);
 
     this._socket.on(eventName, callback);
   }
