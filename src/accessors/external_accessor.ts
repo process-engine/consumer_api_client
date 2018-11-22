@@ -63,7 +63,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(identity);
   }
 
-  public onProcessStarted(callback: Messages.CallbackTypes.OnProcessStartedCallback): void {
+  public onProcessStarted(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessStartedCallback): void {
     this._socket.on(socketSettings.paths.processStarted, callback);
   }
 
