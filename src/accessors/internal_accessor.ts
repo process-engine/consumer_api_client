@@ -48,7 +48,16 @@ export class InternalAccessor implements IConsumerApiAccessor {
   }
 
   public onProcessStarted(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessStartedCallback): void {
+    this._ensureIsAuthorized(identity);
     this._consumerApiService.onProcessStarted(identity, callback);
+  }
+
+  public onProcessWithProcessModelIdStarted(
+                                            identity: IIdentity,
+                                            callback: Messages.CallbackTypes.OnProcessStartedCallback,
+                                            processModelId: string): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onProcessWithProcessModelIdStarted(identity, callback, processModelId);
   }
 
   public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
