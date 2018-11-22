@@ -42,10 +42,6 @@ export class ConsumerApiClientService implements IConsumerApi {
     this.consumerApiAccessor.onProcessStarted(callback);
   }
 
-  public onProcessTerminated(callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
-    this.consumerApiAccessor.onProcessTerminated(callback);
-  }
-
   public onManualTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
     this.consumerApiAccessor.onManualTaskWaiting(identity, callback);
   }
