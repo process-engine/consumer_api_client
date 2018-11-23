@@ -70,9 +70,10 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   public onProcessWithProcessModelIdStarted(
-                                            identity: IIdentity,
-                                            callback: Messages.CallbackTypes.OnProcessStartedCallback,
-                                            processModelId: string): void {
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessStartedCallback,
+    processModelId: string,
+    ): void {
 
     this._ensureIsAuthorized(identity);
     const eventName: string = socketSettings.paths.processInstanceStarted

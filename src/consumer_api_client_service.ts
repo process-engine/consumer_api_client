@@ -43,9 +43,10 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   public onProcessWithProcessModelIdStarted(
-                                            identity: IIdentity,
-                                            callback: Messages.CallbackTypes.OnProcessStartedCallback,
-                                            processModelId: string): void {
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessStartedCallback,
+    processModelId: string,
+  ): void {
     this.consumerApiAccessor.onProcessWithProcessModelIdStarted(identity, callback, processModelId);
   }
 
