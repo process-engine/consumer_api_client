@@ -73,7 +73,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnProcessStartedCallback,
     processModelId: string,
-    ): void {
+  ): void {
 
     this._ensureIsAuthorized(identity);
     const eventName: string = socketSettings.paths.processInstanceStarted
