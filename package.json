@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/consumer_api_client",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "the api-client package for process-engine-consumer",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
@@ -35,8 +35,8 @@
     "@types/socket.io": "2.1.0",
     "@types/socket.io-client": "1.4.32",
     "gulp": "4.0.0",
-    "gulptraum": "3.0.0",
-    "gulptraum-typescript": "2.0.0",
+    "gulptraum": "~3.0.0",
+    "gulptraum-typescript": "~2.0.0",
     "tsconfig": "7.0.0",
     "tslint": "5.11.0",
     "typescript": "3.1.6"
