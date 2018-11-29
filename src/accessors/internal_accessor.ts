@@ -6,6 +6,7 @@ import {
   EventTriggerPayload,
   IConsumerApi,
   IConsumerApiAccessor,
+  ManualTaskList,
   Messages,
   ProcessModel,
   ProcessModelList,
@@ -26,20 +27,48 @@ export class InternalAccessor implements IConsumerApiAccessor {
     this._consumerApiService = consumerApiService;
   }
 
-  public onUserTaskWaiting(callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
-    this._consumerApiService.onUserTaskWaiting(callback);
+  public onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onUserTaskWaiting(identity, callback);
   }
 
-  public onUserTaskFinished(callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
-    this._consumerApiService.onUserTaskFinished(callback);
+  public onUserTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onUserTaskFinished(identity, callback);
   }
 
-  public onProcessTerminated(callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
-    this._consumerApiService.onProcessTerminated(callback);
+  public onManualTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onManualTaskWaiting(identity, callback);
   }
 
-  public onProcessEnded(callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
-    this._consumerApiService.onProcessEnded(callback);
+  public onManualTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onManualTaskFinished(identity, callback);
+  }
+
+  public onProcessStarted(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessStartedCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onProcessStarted(identity, callback);
+  }
+
+  public onProcessWithProcessModelIdStarted(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessStartedCallback,
+    processModelId: string,
+  ): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onProcessWithProcessModelIdStarted(identity, callback, processModelId);
+  }
+
+  public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onProcessTerminated(identity, callback);
+  }
+
+  public onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._consumerApiService.onProcessEnded(identity, callback);
   }
 
   public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {
@@ -147,6 +176,40 @@ export class InternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(identity);
 
     return this._consumerApiService.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
+  }
+
+  // ManualTasks
+  public async getManualTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<ManualTaskList> {
+
+    this._ensureIsAuthorized(identity);
+
+    return this._consumerApiService.getManualTasksForProcessModel(identity, processModelId);
+  }
+
+  public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<ManualTaskList> {
+
+    this._ensureIsAuthorized(identity);
+
+    return this._consumerApiService.getManualTasksForCorrelation(identity, correlationId);
+  }
+
+  public async getManualTasksForProcessModelInCorrelation(identity: IIdentity,
+                                                          processModelId: string,
+                                                          correlationId: string): Promise<ManualTaskList> {
+
+    this._ensureIsAuthorized(identity);
+
+    return this._consumerApiService.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+  }
+
+  public async finishManualTask(identity: IIdentity,
+                                processInstanceId: string,
+                                correlationId: string,
+                                manualTaskInstanceId: string): Promise<void> {
+
+    this._ensureIsAuthorized(identity);
+
+    return this._consumerApiService.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
   }
 
   private _ensureIsAuthorized(identity: IIdentity): void {
