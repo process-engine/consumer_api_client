@@ -64,6 +64,24 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._socket.on(socketSettings.paths.processTerminated, callback);
   }
 
+  public onProcessStarted(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessStartedCallback): void {
+    this._ensureIsAuthorized(identity);
+    this._socket.on(socketSettings.paths.processStarted, callback);
+  }
+
+  public onProcessWithProcessModelIdStarted(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessStartedCallback,
+    processModelId: string,
+  ): void {
+
+    this._ensureIsAuthorized(identity);
+    const eventName: string = socketSettings.paths.processInstanceStarted
+      .replace(socketSettings.pathParams.processModelId, processModelId);
+
+    this._socket.on(eventName, callback);
+  }
+
   public onManualTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
     this._ensureIsAuthorized(identity);
     this._socket.on(socketSettings.paths.manualTaskWaiting, callback);
