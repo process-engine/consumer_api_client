@@ -66,10 +66,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(requestingIdentity);
     this._socket.on(socketSettings.paths.userTaskWaiting, (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
-      const decodedRequestingIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(requestingIdentity.token);
-      const decodedUserTaskIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(message.identity.token);
-
-      const identitiesMatch: boolean = decodedRequestingIdentity.sub === decodedUserTaskIdentity.sub;
+      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.identity);
       if (identitiesMatch) {
         callback(message);
       }
@@ -80,10 +77,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(requestingIdentity);
     this._socket.on(socketSettings.paths.userTaskFinished, (message: Messages.SystemEvents.UserTaskFinishedMessage) => {
 
-      const decodedRequestingIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(requestingIdentity.token);
-      const decodedUserTaskIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(message.identity.token);
-
-      const identitiesMatch: boolean = decodedRequestingIdentity.sub === decodedUserTaskIdentity.sub;
+      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.identity);
       if (identitiesMatch) {
         callback(message);
       }
@@ -124,10 +118,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(requestingIdentity);
     this._socket.on(socketSettings.paths.manualTaskWaiting, (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
-      const decodedRequestingIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(requestingIdentity.token);
-      const decodedUserTaskIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(message.identity.token);
-
-      const identitiesMatch: boolean = decodedRequestingIdentity.sub === decodedUserTaskIdentity.sub;
+      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.identity);
       if (identitiesMatch) {
         callback(message);
       }
@@ -138,10 +129,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(requestingIdentity);
     this._socket.on(socketSettings.paths.manualTaskFinished, (message: Messages.SystemEvents.ManualTaskFinishedMessage) => {
 
-      const decodedRequestingIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(requestingIdentity.token);
-      const decodedUserTaskIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(message.identity.token);
-
-      const identitiesMatch: boolean = decodedRequestingIdentity.sub === decodedUserTaskIdentity.sub;
+      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.identity);
       if (identitiesMatch) {
         callback(message);
       }
@@ -465,5 +453,13 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     if (noAuthTokenProvided) {
       throw new UnauthorizedError('No auth token provided!');
     }
+  }
+
+  private _checkIfIdentityUserIDsMatch(identityA: IIdentity, identityB: IIdentity): boolean {
+
+    const decodedRequestingIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(identityA.token);
+    const decodedUserTaskIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(identityB.token);
+
+    return decodedRequestingIdentity.sub === decodedUserTaskIdentity.sub;
   }
 }
