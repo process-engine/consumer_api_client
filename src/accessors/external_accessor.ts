@@ -65,7 +65,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(requestingIdentity);
     this._socket.on(socketSettings.paths.userTaskWaiting, (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
-      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.identity);
+      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.processInstanceOwner);
       if (identitiesMatch) {
         callback(message);
       }
@@ -76,7 +76,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(requestingIdentity);
     this._socket.on(socketSettings.paths.userTaskFinished, (message: Messages.SystemEvents.UserTaskFinishedMessage) => {
 
-      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.identity);
+      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.processInstanceOwner);
       if (identitiesMatch) {
         callback(message);
       }
@@ -117,7 +117,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(requestingIdentity);
     this._socket.on(socketSettings.paths.manualTaskWaiting, (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
-      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.identity);
+      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.processInstanceOwner);
       if (identitiesMatch) {
         callback(message);
       }
@@ -128,7 +128,7 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(requestingIdentity);
     this._socket.on(socketSettings.paths.manualTaskFinished, (message: Messages.SystemEvents.ManualTaskFinishedMessage) => {
 
-      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.identity);
+      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.processInstanceOwner);
       if (identitiesMatch) {
         callback(message);
       }
