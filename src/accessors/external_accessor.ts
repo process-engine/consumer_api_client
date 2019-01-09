@@ -3,11 +3,10 @@ import * as io from 'socket.io-client';
 
 import {UnauthorizedError} from '@essential-projects/errors_ts';
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
-import {IIdentity} from '@essential-projects/iam_contracts';
+import {IIdentity, TokenBody} from '@essential-projects/iam_contracts';
 
 import {
   CorrelationResult,
-  DecodedIdentityToken,
   EventList,
   EventTriggerPayload,
   IConsumerApiAccessor,
@@ -457,8 +456,8 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
   private _checkIfIdentityUserIDsMatch(identityA: IIdentity, identityB: IIdentity): boolean {
 
-    const decodedRequestingIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(identityA.token);
-    const decodedUserTaskIdentity: DecodedIdentityToken = <DecodedIdentityToken> jsonwebtoken.decode(identityB.token);
+    const decodedRequestingIdentity: TokenBody = <TokenBody> jsonwebtoken.decode(identityA.token);
+    const decodedUserTaskIdentity: TokenBody = <TokenBody> jsonwebtoken.decode(identityB.token);
 
     return decodedRequestingIdentity.sub === decodedUserTaskIdentity.sub;
   }
