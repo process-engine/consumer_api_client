@@ -9,6 +9,7 @@ import {
   IConsumerApiAccessor,
   ManualTaskList,
   Messages,
+  ProcessInstance,
   ProcessModel,
   ProcessModelList,
   ProcessStartRequestPayload,
@@ -26,12 +27,21 @@ export class ConsumerApiClientService implements IConsumerApi {
     this.consumerApiAccessor = consumerApiAccessor;
   }
 
+  // Notifications
   public onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
     this.consumerApiAccessor.onUserTaskWaiting(identity, callback);
   }
 
   public onUserTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
     this.consumerApiAccessor.onUserTaskFinished(identity, callback);
+  }
+
+  public onUserTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
+    this.consumerApiAccessor.onUserTaskForIdentityWaiting(identity, callback);
+  }
+
+  public onUserTaskForIdentityFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
+    this.consumerApiAccessor.onUserTaskForIdentityFinished(identity, callback);
   }
 
   public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
@@ -42,11 +52,9 @@ export class ConsumerApiClientService implements IConsumerApi {
     this.consumerApiAccessor.onProcessStarted(identity, callback);
   }
 
-  public onProcessWithProcessModelIdStarted(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnProcessStartedCallback,
-    processModelId: string,
-  ): void {
+  public onProcessWithProcessModelIdStarted(identity: IIdentity,
+                                            callback: Messages.CallbackTypes.OnProcessStartedCallback,
+                                            processModelId: string): void {
     this.consumerApiAccessor.onProcessWithProcessModelIdStarted(identity, callback, processModelId);
   }
 
@@ -58,17 +66,24 @@ export class ConsumerApiClientService implements IConsumerApi {
     this.consumerApiAccessor.onManualTaskFinished(identity, callback);
   }
 
+  public onManualTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
+    this.consumerApiAccessor.onManualTaskForIdentityWaiting(identity, callback);
+  }
+
+  public onManualTaskForIdentityFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
+    this.consumerApiAccessor.onManualTaskForIdentityFinished(identity, callback);
+  }
+
   public onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
     this.consumerApiAccessor.onProcessEnded(identity, callback);
   }
 
+  // Process models and instances
   public async getProcessModels(identity: IIdentity): Promise<ProcessModelList> {
-
     return this.consumerApiAccessor.getProcessModels(identity);
   }
 
   public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<ProcessModel> {
-
     return this.consumerApiAccessor.getProcessModelById(identity, processModelId);
   }
 
@@ -98,40 +113,37 @@ export class ConsumerApiClientService implements IConsumerApi {
     return this.consumerApiAccessor.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
 
+  public async getProcessInstancesByIdentity(identity: IIdentity): Promise<Array<ProcessInstance>> {
+    return this.consumerApiAccessor.getProcessInstancesByIdentity(identity);
+  }
+
   // Events
   public async getEventsForProcessModel(identity: IIdentity, processModelId: string): Promise<EventList> {
-
     return this.consumerApiAccessor.getEventsForProcessModel(identity, processModelId);
   }
 
   public async getEventsForCorrelation(identity: IIdentity, correlationId: string): Promise<EventList> {
-
     return this.consumerApiAccessor.getEventsForCorrelation(identity, correlationId);
   }
 
   public async getEventsForProcessModelInCorrelation(identity: IIdentity, processModelId: string, correlationId: string): Promise<EventList> {
-
     return this.consumerApiAccessor.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async triggerMessageEvent(identity: IIdentity, messageName: string, payload?: EventTriggerPayload): Promise<void> {
-
     return this.consumerApiAccessor.triggerMessageEvent(identity, messageName, payload);
   }
 
   public async triggerSignalEvent(identity: IIdentity, signalName: string, payload?: EventTriggerPayload): Promise<void> {
-
     return this.consumerApiAccessor.triggerSignalEvent(identity, signalName, payload);
   }
 
   // UserTasks
   public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<UserTaskList> {
-
     return this.consumerApiAccessor.getUserTasksForProcessModel(identity, processModelId);
   }
 
   public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<UserTaskList> {
-
     return this.consumerApiAccessor.getUserTasksForCorrelation(identity, correlationId);
   }
 
@@ -140,6 +152,10 @@ export class ConsumerApiClientService implements IConsumerApi {
                                                         correlationId: string): Promise<UserTaskList> {
 
     return this.consumerApiAccessor.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+  }
+
+  public async getWaitingUserTasksByIdentity(identity: IIdentity): Promise<UserTaskList> {
+    return this.consumerApiAccessor.getWaitingUserTasksByIdentity(identity);
   }
 
   public async finishUserTask(identity: IIdentity,
@@ -153,23 +169,22 @@ export class ConsumerApiClientService implements IConsumerApi {
 
   // ManualTasks
   public async getManualTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<ManualTaskList> {
-
-    return this.consumerApiAccessor
-               .getManualTasksForProcessModel(identity, processModelId);
+    return this.consumerApiAccessor.getManualTasksForProcessModel(identity, processModelId);
   }
 
   public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<ManualTaskList> {
-
-    return this.consumerApiAccessor
-               .getManualTasksForCorrelation(identity, correlationId);
+    return this.consumerApiAccessor.getManualTasksForCorrelation(identity, correlationId);
   }
 
   public async getManualTasksForProcessModelInCorrelation(identity: IIdentity,
                                                           processModelId: string,
                                                           correlationId: string): Promise<ManualTaskList> {
 
-    return this.consumerApiAccessor
-               .getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.consumerApiAccessor.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+  }
+
+  public async getWaitingManualTasksByIdentity(identity: IIdentity): Promise<ManualTaskList> {
+    return this.consumerApiAccessor.getWaitingManualTasksByIdentity(identity);
   }
 
   public async finishManualTask(identity: IIdentity,
@@ -177,7 +192,6 @@ export class ConsumerApiClientService implements IConsumerApi {
                                 correlationId: string,
                                 manualTaskInstanceId: string): Promise<void> {
 
-  return this.consumerApiAccessor
-               .finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
+  return this.consumerApiAccessor.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
   }
 }
