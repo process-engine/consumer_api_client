@@ -61,26 +61,28 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._socket.on(socketSettings.paths.userTaskFinished, callback);
   }
 
-  public onUserTaskForIdentityWaiting(requestingIdentity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
-    this._ensureIsAuthorized(requestingIdentity);
-    this._socket.on(socketSettings.paths.userTaskWaiting, (message: Messages.SystemEvents.UserTaskReachedMessage) => {
+  public onUserTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
+    this._ensureIsAuthorized(identity);
 
-      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.processInstanceOwner);
-      if (identitiesMatch) {
-        callback(message);
-      }
-    });
+    const decodedIdentity: TokenBody = <TokenBody> jsonwebtoken.decode(identity.token);
+    const userId: string = decodedIdentity.sub;
+
+    const socketEventName: string = socketSettings.paths.userTaskForIdentityWaiting
+      .replace(socketSettings.pathParams.userId, userId);
+
+    this._socket.on(socketEventName, callback);
   }
 
-  public onUserTaskForIdentityFinished(requestingIdentity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
-    this._ensureIsAuthorized(requestingIdentity);
-    this._socket.on(socketSettings.paths.userTaskFinished, (message: Messages.SystemEvents.UserTaskFinishedMessage) => {
+  public onUserTaskForIdentityFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
+    this._ensureIsAuthorized(identity);
 
-      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.processInstanceOwner);
-      if (identitiesMatch) {
-        callback(message);
-      }
-    });
+    const decodedIdentity: TokenBody = <TokenBody> jsonwebtoken.decode(identity.token);
+    const userId: string = decodedIdentity.sub;
+
+    const socketEventName: string = socketSettings.paths.userTaskForIdentityFinished
+      .replace(socketSettings.pathParams.userId, userId);
+
+    this._socket.on(socketEventName, callback);
   }
 
   public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
@@ -113,26 +115,28 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._socket.on(socketSettings.paths.manualTaskFinished, callback);
   }
 
-  public onManualTaskForIdentityWaiting(requestingIdentity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
-    this._ensureIsAuthorized(requestingIdentity);
-    this._socket.on(socketSettings.paths.manualTaskWaiting, (message: Messages.SystemEvents.UserTaskReachedMessage) => {
+  public onManualTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
+    this._ensureIsAuthorized(identity);
 
-      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.processInstanceOwner);
-      if (identitiesMatch) {
-        callback(message);
-      }
-    });
+    const decodedIdentity: TokenBody = <TokenBody> jsonwebtoken.decode(identity.token);
+    const userId: string = decodedIdentity.sub;
+
+    const socketEventName: string = socketSettings.paths.manualTaskForIdentityWaiting
+      .replace(socketSettings.pathParams.userId, userId);
+
+    this._socket.on(socketEventName, callback);
   }
 
-  public onManualTaskForIdentityFinished(requestingIdentity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
-    this._ensureIsAuthorized(requestingIdentity);
-    this._socket.on(socketSettings.paths.manualTaskFinished, (message: Messages.SystemEvents.ManualTaskFinishedMessage) => {
+  public onManualTaskForIdentityFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
+    this._ensureIsAuthorized(identity);
 
-      const identitiesMatch: boolean = this._checkIfIdentityUserIDsMatch(requestingIdentity, message.processInstanceOwner);
-      if (identitiesMatch) {
-        callback(message);
-      }
-    });
+    const decodedIdentity: TokenBody = <TokenBody> jsonwebtoken.decode(identity.token);
+    const userId: string = decodedIdentity.sub;
+
+    const socketEventName: string = socketSettings.paths.manualTaskForIdentityFinished
+      .replace(socketSettings.pathParams.userId, userId);
+
+    this._socket.on(socketEventName, callback);
   }
 
   public onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
@@ -452,13 +456,5 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     if (noAuthTokenProvided) {
       throw new UnauthorizedError('No auth token provided!');
     }
-  }
-
-  private _checkIfIdentityUserIDsMatch(identityA: IIdentity, identityB: IIdentity): boolean {
-
-    const decodedRequestingIdentity: TokenBody = <TokenBody> jsonwebtoken.decode(identityA.token);
-    const decodedUserTaskIdentity: TokenBody = <TokenBody> jsonwebtoken.decode(identityB.token);
-
-    return decodedRequestingIdentity.sub === decodedUserTaskIdentity.sub;
   }
 }
