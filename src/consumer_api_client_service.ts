@@ -85,7 +85,7 @@ export class ConsumerApiClientService implements IConsumerApi {
                                   ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
 
     const useDefaultStartCallbackType: boolean = !startCallbackType;
-    if (!useDefaultStartCallbackType) {
+    if (useDefaultStartCallbackType) {
       startCallbackType = DataModels.ProcessModels.StartCallbackType.CallbackOnProcessInstanceCreated;
     }
 
