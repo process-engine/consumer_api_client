@@ -158,6 +158,10 @@ export class ConsumerApiClientService implements IConsumerApi {
     return this.consumerApiAccessor.getProcessModelById(identity, processModelId);
   }
 
+  public async getProcessModelByProcessInstanceId(identity: IIdentity, processInstanceId: string): Promise<DataModels.ProcessModels.ProcessModel> {
+    return this.consumerApiAccessor.getProcessModelByProcessInstanceId(identity, processInstanceId);
+  }
+
   public async startProcessInstance(identity: IIdentity,
                                     processModelId: string,
                                     startEventId: string,

@@ -213,15 +213,26 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return httpResponse.result;
   }
 
-  public async startProcessInstance(
-    identity: IIdentity,
-    processModelId: string,
-    startEventId: string,
-    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
-    startCallbackType: DataModels.ProcessModels.StartCallbackType,
-    endEventId?: string,
-    processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
-  ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
+  public async getProcessModelByProcessInstanceId(identity: IIdentity, processInstanceId: string): Promise<DataModels.ProcessModels.ProcessModel> {
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    let url: string = restSettings.paths.processModelByProcessInstanceId.replace(restSettings.params.processInstanceId, processInstanceId);
+    url = this._applyBaseUrl(url);
+
+    const httpResponse: IResponse<DataModels.ProcessModels.ProcessModel> =
+      await this._httpClient.get<DataModels.ProcessModels.ProcessModel>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async startProcessInstance(identity: IIdentity,
+                                    processModelId: string,
+                                    startEventId: string,
+                                    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
+                                    startCallbackType: DataModels.ProcessModels.StartCallbackType,
+                                    endEventId?: string,
+                                    processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
+                                  ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
 
     const url: string = this._buildStartProcessInstanceUrl(processModelId, startEventId, startCallbackType, endEventId);
 
