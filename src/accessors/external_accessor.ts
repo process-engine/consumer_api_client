@@ -194,7 +194,8 @@ export class ExternalAccessor implements IConsumerApiAccessor {
 
     url = `${url}?start_callback_type=${startCallbackType}`;
 
-    if (startCallbackType === DataModels.ProcessModels.StartCallbackType.CallbackOnEndEventReached) {
+    const attachEndEventId: boolean = startCallbackType === DataModels.ProcessModels.StartCallbackType.CallbackOnEndEventReached;
+    if (attachEndEventId) {
       url = `${url}&end_event_id=${endEventId}`;
     }
 

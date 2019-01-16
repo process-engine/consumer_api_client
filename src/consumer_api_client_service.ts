@@ -89,11 +89,13 @@ export class ConsumerApiClientService implements IConsumerApi {
       startCallbackType = DataModels.ProcessModels.StartCallbackType.CallbackOnProcessInstanceCreated;
     }
 
-    if (!Object.values(DataModels.ProcessModels.StartCallbackType).includes(startCallbackType)) {
+    const invalidStartCallbackType: boolean = !Object.values(DataModels.ProcessModels.StartCallbackType).includes(startCallbackType);
+    if (invalidStartCallbackType) {
       throw new EssentialProjectErrors.BadRequestError(`${startCallbackType} is not a valid return option!`);
     }
 
-    if (startCallbackType === DataModels.ProcessModels.StartCallbackType.CallbackOnEndEventReached && !endEventId) {
+    const noEndEventIdProvided: boolean = startCallbackType === DataModels.ProcessModels.StartCallbackType.CallbackOnEndEventReached && !endEventId;
+    if (noEndEventIdProvided) {
       throw new EssentialProjectErrors.BadRequestError(`Must provide an EndEventId, when using callback type 'CallbackOnEndEventReached'!`);
     }
 
