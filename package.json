@@ -22,7 +22,7 @@
     "@essential-projects/errors_ts": "~1.4.0",
     "@essential-projects/http_contracts": "~2.3.0",
     "@essential-projects/iam_contracts": "~3.3.0",
-    "@process-engine/consumer_api_contracts": "feature~implement_notification_subscription_removal",
+    "@process-engine/consumer_api_contracts": "~3.0.0",
     "async-middleware": "~1.2.1",
     "bluebird": "~3.5.3",
     "jsonwebtoken": "~8.4.0",
