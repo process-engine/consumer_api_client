@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>7.0.0</Version>
+    <RootNamespace>ProcessEngine.ConsumerAPI.Client</RootNamespace>
+    <AssemblyName>ProcessEngine.ConsumerAPI.Client</AssemblyName>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Sebastian Meier;</Authors>
+    <Company>5Minds IT-Solutions GmbH &amp; Co. KG</Company>
+    <Description />
+    <Copyright>Copyright © 5Minds IT-Solutions GmbH &amp; Co. KG 2018</Copyright>
+    <PackageProjectUrl>https://github.com/process-engine/consumer_api_client</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/process-engine/consumer_api_client</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>ConsumerAPI;5Minds</PackageTags>
+    <PackageLicenseUrl />
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SocketIoClientDotNet" Version="1.0.8" />
+  </ItemGroup>
+
+</Project>

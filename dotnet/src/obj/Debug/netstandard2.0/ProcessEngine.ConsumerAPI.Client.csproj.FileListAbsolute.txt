@@ -1,0 +1,4 @@
+/Users/seb/_dev/Contrib/_2019/consumer_api_meta/consumer_api_client/dotnet/src/obj/Debug/netstandard2.0/ProcessEngine.ConsumerAPI.Client.csprojAssemblyReference.cache
+/Users/seb/_dev/Contrib/_2019/consumer_api_meta/consumer_api_client/dotnet/src/obj/Debug/netstandard2.0/ProcessEngine.ConsumerAPI.Client.csproj.CoreCompileInputs.cache
+/Users/seb/_dev/Contrib/_2019/consumer_api_meta/consumer_api_client/dotnet/src/obj/Debug/netstandard2.0/ProcessEngine.ConsumerAPI.Client.AssemblyInfoInputs.cache
+/Users/seb/_dev/Contrib/_2019/consumer_api_meta/consumer_api_client/dotnet/src/obj/Debug/netstandard2.0/ProcessEngine.ConsumerAPI.Client.AssemblyInfo.cs
