@@ -4,7 +4,7 @@
     using ProcessEngine.ConsumerAPI.Contracts;
     using Quobject.SocketIoClientDotNet.Client;
 
-    public class ConsumerApiClientService : IConsumerApi, IDisposable
+    public class ConsumerApiClientService : IConsumerAPI
     {
 
       private delegate void ProcessEndedDelegate();
