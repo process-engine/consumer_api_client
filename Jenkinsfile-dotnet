@@ -42,6 +42,22 @@ pipeline {
         }
       }
     }
+    stage('test') {
+      steps {
+        script {
+          dockerNode(image: 'microsoft/dotnet:2.1-sdk', sideContainers: ['5minds/process_engine_runtime:latest']) {
+            checkout(scm)
+
+            process_engine_rest_api_url = "http://localhost:8000"
+            sh "while ! curl --silent ${process_engine_rest_api_url} > /dev/null; do sleep 1; done"
+
+            sh("PROCESS_ENGINE_REST_API_URL=${process_engine_rest_api_url} dotnet test --logger trx --configuration Release tests/ProcessEngine.ConsumerAPI.Client.Tests.csproj");
+
+            step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
+          }
+        }
+      }
+    }
     stage('publish') {
       when {
         branch 'master'
