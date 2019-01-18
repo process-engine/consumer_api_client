@@ -1,4 +1,5 @@
 import * as EssentialProjectErrors from '@essential-projects/errors_ts';
+import {Subscription} from '@essential-projects/event_aggregator_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
 import {
@@ -17,54 +18,65 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   // Notifications
-  public onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
-    this.consumerApiAccessor.onUserTaskWaiting(identity, callback);
+  public async onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): Promise<Subscription> {
+    return this.consumerApiAccessor.onUserTaskWaiting(identity, callback);
   }
 
-  public onUserTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
-    this.consumerApiAccessor.onUserTaskFinished(identity, callback);
+  public async onUserTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): Promise<Subscription> {
+    return this.consumerApiAccessor.onUserTaskFinished(identity, callback);
   }
 
-  public onUserTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
-    this.consumerApiAccessor.onUserTaskForIdentityWaiting(identity, callback);
+  public async onUserTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): Promise<Subscription> {
+    return this.consumerApiAccessor.onUserTaskForIdentityWaiting(identity, callback);
   }
 
-  public onUserTaskForIdentityFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
-    this.consumerApiAccessor.onUserTaskForIdentityFinished(identity, callback);
+  public async onUserTaskForIdentityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onUserTaskForIdentityFinished(identity, callback);
   }
 
-  public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
-    this.consumerApiAccessor.onProcessTerminated(identity, callback);
+  public async onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): Promise<Subscription> {
+    return this.consumerApiAccessor.onProcessTerminated(identity, callback);
   }
 
-  public onProcessStarted(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessStartedCallback): void {
-    this.consumerApiAccessor.onProcessStarted(identity, callback);
+  public async onProcessStarted(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessStartedCallback): Promise<Subscription> {
+    return this.consumerApiAccessor.onProcessStarted(identity, callback);
   }
 
-  public onProcessWithProcessModelIdStarted(identity: IIdentity,
-                                            callback: Messages.CallbackTypes.OnProcessStartedCallback,
-                                            processModelId: string): void {
-    this.consumerApiAccessor.onProcessWithProcessModelIdStarted(identity, callback, processModelId);
+  public async onProcessWithProcessModelIdStarted(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessStartedCallback,
+    processModelId: string,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onProcessWithProcessModelIdStarted(identity, callback, processModelId);
   }
 
-  public onManualTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
-    this.consumerApiAccessor.onManualTaskWaiting(identity, callback);
+  public async onManualTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): Promise<Subscription> {
+    return this.consumerApiAccessor.onManualTaskWaiting(identity, callback);
   }
 
-  public onManualTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
-    this.consumerApiAccessor.onManualTaskFinished(identity, callback);
+  public async onManualTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): Promise<Subscription> {
+    return this.consumerApiAccessor.onManualTaskFinished(identity, callback);
   }
 
-  public onManualTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
-    this.consumerApiAccessor.onManualTaskForIdentityWaiting(identity, callback);
+  public async onManualTaskForIdentityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onManualTaskForIdentityWaiting(identity, callback);
   }
 
-  public onManualTaskForIdentityFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
-    this.consumerApiAccessor.onManualTaskForIdentityFinished(identity, callback);
+  public async onManualTaskForIdentityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onManualTaskForIdentityFinished(identity, callback);
   }
 
-  public onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
-    this.consumerApiAccessor.onProcessEnded(identity, callback);
+  public async onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): Promise<Subscription> {
+    return this.consumerApiAccessor.onProcessEnded(identity, callback);
   }
 
   // Process models and instances
