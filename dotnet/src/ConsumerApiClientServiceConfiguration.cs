@@ -5,6 +5,5 @@ namespace ProcessEngine.ConsumerAPI.Client
 
       public string BaseUrl { get; set; }
 
-      public string SocketUrl { get; set; }
     }
 }
