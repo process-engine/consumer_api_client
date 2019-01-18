@@ -45,7 +45,7 @@ pipeline {
     stage('test') {
       steps {
         script {
-          dockerNode(image: 'microsoft/dotnet:2.1-sdk', sideContainers: ['5minds/process_engine_runtime:latest']) {
+          dockerNode(image: 'microsoft/dotnet:2.1-sdk', sideContainers: ['5minds/process_engine_runtime:develop']) {
             checkout(scm)
 
             process_engine_rest_api_url = "http://localhost:8000"
