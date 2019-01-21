@@ -7,10 +7,13 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
 
     using Xunit;
 
+    using EssentialProjects.IAM.Contracts;
     using ProcessEngine.ConsumerAPI.Contracts;
+    using ProcessEngine.ConsumerAPI.Client.Tests.xUnit;
+  using System.Text;
 
-    [Collection("ConsumerAPI collection")]
-    public class StartProcessInstanceTests
+  [Collection("ConsumerAPI collection")]
+    public class StartProcessInstanceTests : ProcessEngineBaseTest
     {
         private readonly ConsumerAPIFixture fixture;
 
@@ -22,43 +25,35 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public void StartProcessInstance_EmptyParameters_ShouldThrowException()
         {
-            var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await this.fixture.ConsumerAPIClient.StartProcessInstance<ProcessStartRequestPayload, ProcessStartResponsePayload>(
+            var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await this.fixture.ConsumerAPIClient.StartProcessInstance(
+                GetDummyIdentity(),
                 "",
-                "",
-                "",
+                "Test",
                 new ProcessStartRequestPayload()));
         }
 
         [Fact]
         public void StartProcessInstance_ProcessModelNotFound_ShouldThrowException()
         {
-            var ex = Assert.ThrowsAsync<Exception>(async () => await this.fixture.ConsumerAPIClient.StartProcessInstance<ProcessStartRequestPayload, ProcessStartResponsePayload>(
-                "",
+            var ex = Assert.ThrowsAsync<Exception>(async () => await this.fixture.ConsumerAPIClient.StartProcessInstance(
+                GetDummyIdentity(),
                 "Test",
-                "",
+                "Test",
                 new ProcessStartRequestPayload()));
         }
-
-        // ----------------------------------------------------------------------------------------------------
-        // The next tests use: bpmn/test_start_process.bpmn
-        // 
-        // Simple process with just one start event and one end event
-        // ----------------------------------------------------------------------------------------------------
 
         [Fact]
         public async Task BPMN_StartProcessInstance_ShouldCreateAndFinishProcess()
         {
             string processModelId = "test_start_process";
 
-            ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance<ProcessStartRequestPayload, ProcessStartResponsePayload>(
-                "",
+            ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
+                GetDummyIdentity(),
                 processModelId,
-                "",
-                new ProcessStartRequestPayload());
-
-            IEnumerable<IProcessInstance> processes = await GetFinishedProcesses(processModelId);
-
-            Assert.Single(processes, p => p.ProcessInstanceId.Equals(processInstance.ProcessInstanceId));
+                "StartEvent_1",
+                new ProcessStartRequestPayload(),
+                StartCallbackType.CallbackOnEndEventReached,
+                "EndEvent_1");
         }
 
         [Fact]
@@ -69,18 +64,16 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
 
             var requestPayload = new ProcessStartRequestPayload
             {
-                CorrelationId = correlationId
+                correlationId = correlationId
             };
 
-            ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance<ProcessStartRequestPayload, ProcessStartResponsePayload>(
-                "",
+            ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
+                GetDummyIdentity(),
                 processModelId,
-                "",
+                "StartEvent_1",
                 requestPayload);
 
-            IEnumerable<IProcessInstance> processes = await GetFinishedProcesses(processModelId);
-
-            Assert.Single(processes, p => p.CorrelationId.Equals(correlationId) && p.ProcessInstanceId.Equals(processInstance.ProcessInstanceId));
+            Assert.Equal(processStartResponsePayload.correlationId, correlationId);
         }
 
         [Fact]
@@ -88,18 +81,15 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         {
             string processModelId = "test_start_process";
 
-            // No correlation id provided
             var requestPayload = new ProcessStartRequestPayload();
 
-            ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance<ProcessStartRequestPayload, ProcessStartResponsePayload>(
-                "",
+            ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
+                GetDummyIdentity(),
                 processModelId,
-                "",
+                "StartEvent_1",
                 requestPayload);
 
-            IEnumerable<IProcessInstance> processes = await GetFinishedProcesses(processModelId);
-
-            Assert.Single(processes, p => p.ProcessInstanceId.Equals(processInstance.ProcessInstanceId) && !string.IsNullOrEmpty(p.CorrelationId));
+            Assert.NotEmpty(processStartResponsePayload.correlationId);
         }
     }
 }

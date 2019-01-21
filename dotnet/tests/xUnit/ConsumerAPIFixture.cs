@@ -5,9 +5,11 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Threading.Tasks;
-
-    using ProcessEngine.ConsumerAPI.Client;
+  using System.Text;
+  using System.Threading.Tasks;
+  using EssentialProjects.IAM.Contracts;
+  using Newtonsoft.Json;
+  using ProcessEngine.ConsumerAPI.Client;
 
     public class ConsumerAPIFixture : IDisposable
     {
@@ -42,7 +44,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
         private void SetProcessEngineRestApiUrl()
         {
             string baseUrlFromEnv = Environment.GetEnvironmentVariable("PROCESS_ENGINE_REST_API_URL");
-            string baseUrl = string.IsNullOrEmpty(baseUrlFromEnv) ? "http://127.0.0.1:8080" : baseUrlFromEnv;
+            string baseUrl = string.IsNullOrEmpty(baseUrlFromEnv) ? "http://localhost:8000" : baseUrlFromEnv;
 
             this.processEngineRestApiUrl = baseUrl;
         }
@@ -52,14 +54,17 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
             try
             {
                 var bpmnFileContent = File.ReadAllText(bpmnFile.FullName);
-                using (HttpClient client = CreateHttpClient())
+                using (HttpClient client = _createHttpClient(null))
                 {
                     var importPayload = new {
+                        name = "Test1",
                         xml = bpmnFileContent,
                         overwriteExisting = true
                     };
 
-                    var response = await client.PostAsync("api/deployment/v1", importPayload);
+                    var jsonImportPayload = JsonConvert.SerializeObject(importPayload);
+Console.WriteLine(jsonImportPayload);
+                    var response = await client.PostAsync("api/deployment/v1/import_process_model", new StringContent(jsonImportPayload, Encoding.UTF8, "application/json"));
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
@@ -73,15 +78,32 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
             }
         }
 
-        private HttpClient CreateHttpClient()
+        private HttpClient _createHttpClient(IIdentity identity)
         {
-            var result = new HttpClient();
+            var client = new HttpClient(new HttpClientHandler()
+            {
+                UseDefaultCredentials = true
+            });
+            client.BaseAddress = new Uri(this.processEngineRestApiUrl);
 
-            result.DefaultRequestHeaders.Accept.Clear();
-            result.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            result.BaseAddress = new Uri(this.processEngineRestApiUrl);
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            return result;
+
+            string token;
+
+            if (identity == null)
+            {
+                // throw new UnauthorizedAccessException();
+                token = Convert.ToBase64String(Encoding.UTF8.GetBytes("dummy_token"));
+            } else 
+            {
+                token = identity.token;
+            }
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            return client;
         }
 
         public void Dispose()
