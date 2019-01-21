@@ -9,21 +9,32 @@
   using System.Threading.Tasks;
   using Newtonsoft.Json;
   using System.Collections.Generic;
+  using System.Text;
 
   public class ConsumerApiClientService : IConsumerAPI
   {
 
     public ConsumerApiClientServiceConfiguration Configuration { get; set; }
 
-    public async Task<TProcessStartResponsePayload> StartProcessInstanceAsync<TProcessStartRequestPayload, TProcessStartResponsePayload>(
+    public async Task<ProcessStartResponsePayload> StartProcessInstance(
           IIdentity identity,
           string processModelId,
           string startEventKey,
-          TProcessStartRequestPayload payload,
+          object payload,
           StartCallbackType callbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
           string endEventKey = "")
-          where TProcessStartResponsePayload : new()
     {
+
+      if (identity == null) {
+        throw new ArgumentNullException(nameof(identity));
+      }
+
+      var noStartEventIdProvided = String.IsNullOrEmpty(startEventKey);
+
+      if (noStartEventIdProvided)
+      {
+        throw new ArgumentNullException(nameof(startEventKey));
+      }
 
       var noEndEventIdProvided = callbackType == StartCallbackType.CallbackOnEndEventReached
         && String.IsNullOrEmpty(endEventKey);
@@ -33,30 +44,31 @@
         throw new ArgumentNullException(nameof(endEventKey));
       }
 
-      var url = $"/process_models/{processModelId}/start_events/{startEventKey}/start";
+      var url = $"/api/consumer/v1/process_models/{processModelId}/start_events/{startEventKey}/start";
 
       var attachEndEventId = callbackType == StartCallbackType.CallbackOnEndEventReached;
 
       if (attachEndEventId)
       {
-        url = $"{url}&end_event_id={endEventKey}";
+        url = $"{url}?end_event_id={endEventKey}";
       }
 
       var jsonResult = "";
 
       using(var client = _createHttpClient(identity))
       {
-        var result = await client.PostAsJsonAsync(url, payload);
+        var jsonPayload = JsonConvert.SerializeObject(payload);
+        var result = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
 
         if (result.IsSuccessStatusCode)
         {
           jsonResult = await result.Content.ReadAsStringAsync();
-          var parsedResult = JsonConvert.DeserializeObject<TProcessStartResponsePayload>(jsonResult);
+          var parsedResult = JsonConvert.DeserializeObject<ProcessStartResponsePayload>(jsonResult);
           return parsedResult;
         }
-      }
 
-      return default(TProcessStartResponsePayload);
+        throw new Exception("Process could not be started.");
+      }
     }
 
     public async Task<IEnumerable<CorrelationResult<TPayload>>> GetProcessResultForCorrelation<TPayload>(
@@ -104,7 +116,8 @@
 
       if (token == null)
       {
-        throw new UnauthorizedAccessException();
+        // throw new UnauthorizedAccessException();
+        token = Convert.ToBase64String(Encoding.UTF8.GetBytes("dummy_token"));
       }
 
       client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", identity.token);
