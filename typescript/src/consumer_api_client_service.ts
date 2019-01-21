@@ -18,65 +18,101 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   // Notifications
-  public async onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): Promise<Subscription> {
-    return this.consumerApiAccessor.onUserTaskWaiting(identity, callback);
+  public async onUserTaskWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onUserTaskWaiting(identity, callback, subscribeOnce);
   }
 
-  public async onUserTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): Promise<Subscription> {
-    return this.consumerApiAccessor.onUserTaskFinished(identity, callback);
+  public async onUserTaskFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onUserTaskFinished(identity, callback, subscribeOnce);
   }
 
-  public async onUserTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): Promise<Subscription> {
-    return this.consumerApiAccessor.onUserTaskForIdentityWaiting(identity, callback);
+  public async onUserTaskForIdentityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onUserTaskForIdentityWaiting(identity, callback, subscribeOnce);
   }
 
   public async onUserTaskForIdentityFinished(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
+    subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this.consumerApiAccessor.onUserTaskForIdentityFinished(identity, callback);
+    return this.consumerApiAccessor.onUserTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
-  public async onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): Promise<Subscription> {
-    return this.consumerApiAccessor.onProcessTerminated(identity, callback);
+  public async onProcessTerminated(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessTerminatedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onProcessTerminated(identity, callback, subscribeOnce);
   }
 
-  public async onProcessStarted(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessStartedCallback): Promise<Subscription> {
-    return this.consumerApiAccessor.onProcessStarted(identity, callback);
+  public async onProcessStarted(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessStartedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onProcessStarted(identity, callback, subscribeOnce);
   }
 
   public async onProcessWithProcessModelIdStarted(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnProcessStartedCallback,
     processModelId: string,
+    subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this.consumerApiAccessor.onProcessWithProcessModelIdStarted(identity, callback, processModelId);
+    return this.consumerApiAccessor.onProcessWithProcessModelIdStarted(identity, callback, processModelId, subscribeOnce);
   }
 
-  public async onManualTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): Promise<Subscription> {
-    return this.consumerApiAccessor.onManualTaskWaiting(identity, callback);
+  public async onManualTaskWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onManualTaskWaiting(identity, callback, subscribeOnce);
   }
 
-  public async onManualTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): Promise<Subscription> {
-    return this.consumerApiAccessor.onManualTaskFinished(identity, callback);
+  public async onManualTaskFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onManualTaskFinished(identity, callback, subscribeOnce);
   }
 
   public async onManualTaskForIdentityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
+    subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this.consumerApiAccessor.onManualTaskForIdentityWaiting(identity, callback);
+    return this.consumerApiAccessor.onManualTaskForIdentityWaiting(identity, callback, subscribeOnce);
   }
 
   public async onManualTaskForIdentityFinished(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
+    subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this.consumerApiAccessor.onManualTaskForIdentityFinished(identity, callback);
+    return this.consumerApiAccessor.onManualTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
-  public async onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): Promise<Subscription> {
-    return this.consumerApiAccessor.onProcessEnded(identity, callback);
+  public async onProcessEnded(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessEndedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiAccessor.onProcessEnded(identity, callback, subscribeOnce);
   }
 
   public async removeSubscription(identity: IIdentity, subscription: Subscription): Promise<void> {
