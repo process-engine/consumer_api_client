@@ -16,13 +16,14 @@
 
     public ConsumerApiClientServiceConfiguration Configuration { get; set; }
 
-    public async Task<ProcessStartResponsePayload> StartProcessInstance(
+    public async Task<ProcessStartResponsePayload> StartProcessInstance<TInputValues>(
           IIdentity identity,
           string processModelId,
           string startEventKey,
-          object payload,
+          ProcessStartRequestPayload<TInputValues> processStartRequestPayload,
           StartCallbackType callbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
           string endEventKey = "")
+          where TInputValues : new()
     {
 
       if (identity == null) {
@@ -57,7 +58,7 @@
 
       using(var client = _createHttpClient(identity))
       {
-        var jsonPayload = JsonConvert.SerializeObject(payload);
+        var jsonPayload = JsonConvert.SerializeObject(processStartRequestPayload);
         var result = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
 
         if (result.IsSuccessStatusCode)
@@ -77,9 +78,11 @@
       string processModelId)
           where TPayload : new()
     {
-      var url = $"/correlations/{correlationId}/process_models/${processModelId}/results";
+      var url = $"api/consumer/v1/correlations/{correlationId}/process_models/{processModelId}/results";
 
       var jsonResult = "";
+
+      IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
 
       using(var client = _createHttpClient(identity))
       {
@@ -88,12 +91,11 @@
         if (result.IsSuccessStatusCode)
         {
           jsonResult = await result.Content.ReadAsStringAsync();
-          var parsedResult = JsonConvert.DeserializeObject<IEnumerable<CorrelationResult<TPayload>>>(jsonResult);
-          return parsedResult;
+          parsedResult = JsonConvert.DeserializeObject<IEnumerable<CorrelationResult<TPayload>>>(jsonResult);
         }
       }
 
-      return null;
+      return parsedResult;
     }
 
     public void Dispose()

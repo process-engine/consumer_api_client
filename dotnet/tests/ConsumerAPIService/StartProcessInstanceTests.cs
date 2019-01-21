@@ -29,7 +29,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 GetDummyIdentity(),
                 "",
                 "Test",
-                new ProcessStartRequestPayload()));
+                new ProcessStartRequestPayload<object>()));
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 GetDummyIdentity(),
                 "Test",
                 "Test",
-                new ProcessStartRequestPayload()));
+                new ProcessStartRequestPayload<object>()));
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 GetDummyIdentity(),
                 processModelId,
                 "StartEvent_1",
-                new ProcessStartRequestPayload(),
+                new ProcessStartRequestPayload<object>(),
                 StartCallbackType.CallbackOnEndEventReached,
                 "EndEvent_1");
         }
@@ -62,7 +62,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
             string processModelId = "test_start_process";
             string correlationId = "CorrelationId_1";
 
-            var requestPayload = new ProcessStartRequestPayload
+            var requestPayload = new ProcessStartRequestPayload<object>
             {
                 correlationId = correlationId
             };
@@ -81,7 +81,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         {
             string processModelId = "test_start_process";
 
-            var requestPayload = new ProcessStartRequestPayload();
+            var requestPayload = new ProcessStartRequestPayload<object>();
 
             ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
                 GetDummyIdentity(),

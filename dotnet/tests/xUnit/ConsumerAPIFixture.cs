@@ -5,11 +5,11 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
-  using System.Text;
-  using System.Threading.Tasks;
-  using EssentialProjects.IAM.Contracts;
-  using Newtonsoft.Json;
-  using ProcessEngine.ConsumerAPI.Client;
+    using System.Text;
+    using System.Threading.Tasks;
+    using EssentialProjects.IAM.Contracts;
+    using Newtonsoft.Json;
+    using ProcessEngine.ConsumerAPI.Client;
 
     public class ConsumerAPIFixture : IDisposable
     {
@@ -57,13 +57,13 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
                 using (HttpClient client = _createHttpClient(null))
                 {
                     var importPayload = new {
-                        name = "Test1",
+                        name = bpmnFile.Name.Replace(bpmnFile.Extension, ""),
                         xml = bpmnFileContent,
                         overwriteExisting = true
                     };
 
                     var jsonImportPayload = JsonConvert.SerializeObject(importPayload);
-Console.WriteLine(jsonImportPayload);
+
                     var response = await client.PostAsync("api/deployment/v1/import_process_model", new StringContent(jsonImportPayload, Encoding.UTF8, "application/json"));
 
                     if (response.StatusCode != HttpStatusCode.OK)
