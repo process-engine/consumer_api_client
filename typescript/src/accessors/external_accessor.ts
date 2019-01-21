@@ -40,6 +40,11 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._socket = io(socketUrl, socketIoOptions);
   }
 
+  public disconnectSocket(identity: IIdentity): void {
+    this._socket.disconnect();
+    this._socket.close();
+  }
+
   // Notifications
   public async onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): Promise<any> {
     this._ensureIsAuthorized(identity);
