@@ -136,6 +136,12 @@ export class ExternalAccessor implements IConsumerApiAccessor {
     this._socket.on(socketSettings.paths.processEnded, callback); // TODO
   }
 
+  public async removeSubscription(identity: IIdentity, subscription: Subscription): Promise<void> {
+    this._ensureIsAuthorized(identity);
+
+    return Promise.resolve(); // TODO
+  }
+
   // Process models and instances
   public async getProcessModels(identity: IIdentity): Promise<DataModels.ProcessModels.ProcessModelList> {
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);

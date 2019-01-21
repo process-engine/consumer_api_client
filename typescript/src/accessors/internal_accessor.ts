@@ -104,6 +104,12 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this._consumerApiService.onProcessEnded(identity, callback);
   }
 
+  public async removeSubscription(identity: IIdentity, subscription: Subscription): Promise<void> {
+    this._ensureIsAuthorized(identity);
+
+    return this._consumerApiService.removeSubscription(identity, subscription);
+  }
+
   // Process models and instances
   public async getProcessModels(identity: IIdentity): Promise<DataModels.ProcessModels.ProcessModelList> {
 
