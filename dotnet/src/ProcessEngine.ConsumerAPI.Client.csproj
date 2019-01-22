@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>7.0.0</Version>
+    <Version>0.1.0</Version>
     <RootNamespace>ProcessEngine.ConsumerAPI.Client</RootNamespace>
     <AssemblyName>ProcessEngine.ConsumerAPI.Client</AssemblyName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -21,6 +21,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="8.0.0" />
+    <PackageReference Include="EssentialProjects.IAM.Contracts" Version="0.1.2" />
   </ItemGroup>
 
   
