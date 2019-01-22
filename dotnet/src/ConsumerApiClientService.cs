@@ -17,7 +17,12 @@
   public class ConsumerApiClientService : IConsumerAPI
   {
 
-    public ConsumerApiClientServiceConfiguration Configuration { get; set; }
+    private ConsumerApiClientServiceConfiguration Configuration { get; set; }
+
+    public ConsumerApiClientService(ConsumerApiClientServiceConfiguration configuration)
+    {
+        this.Configuration = configuration;
+    }
 
     public async Task<ProcessStartResponsePayload> StartProcessInstance<TInputValues>(
           IIdentity identity,

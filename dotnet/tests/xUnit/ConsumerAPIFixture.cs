@@ -47,12 +47,12 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
 
         private void CreateConsumerAPIClient()
         { 
-            this.ConsumerAPIClient = new ConsumerApiClientService();
-
-            this.ConsumerAPIClient.Configuration = new ConsumerApiClientServiceConfiguration()
+            var clientConfiguration = new ConsumerApiClientServiceConfiguration()
             {
                 BaseUrl = this.processEngineRestApiUrl
             };
+
+            this.ConsumerAPIClient = new ConsumerApiClientService(clientConfiguration);
         }
 
         private async Task DeployTestBpmnFilesAsync(FileInfo bpmnFile)
