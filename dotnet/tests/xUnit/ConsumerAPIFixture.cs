@@ -74,7 +74,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
 
                     if (response.StatusCode != HttpStatusCode.OK)
                     {
-                        throw new Exception($"Process Engine Rest API returned status {response.StatusCode}.");
+                        throw new Exception($"ProcessEngine Rest API returned status {response.StatusCode}.");
                     }
                 }
             }
