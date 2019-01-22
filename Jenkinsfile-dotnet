@@ -18,15 +18,15 @@ def cleanup_workspace() {
 pipeline {
   agent any
   environment {
-    HOME = "$WORKSPACE/dotnet"
+    HOME = "$WORKSPACE"
   }
 
   stages {
     stage('prepare') {
       steps {
-        dir('dotnet') {
-          script {
-            docker.image('microsoft/dotnet:2.1-sdk').inside() {
+        script {
+          docker.image('microsoft/dotnet:2.1-sdk').inside() {
+            dir('dotnet') {
               sh('dotnet --version')
               sh('dotnet restore src')
             }
