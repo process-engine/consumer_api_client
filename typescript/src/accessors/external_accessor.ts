@@ -37,6 +37,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   }
 
   public initializeSocket(identity: IIdentity): void {
+
+    this._ensureIsAuthorized(identity);
+
     const socketUrl: string = `${this.config.socketUrl}/${socketSettings.namespace}`;
     const socketIoOptions: SocketIOClient.ConnectOpts = {
       transportOptions: {
