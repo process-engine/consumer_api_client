@@ -11,6 +11,7 @@
   using Newtonsoft.Json.Serialization;
 
   using ProcessEngine.ConsumerAPI.Contracts;
+  using ProcessEngine.ConsumerAPI.Contracts.RestSettings;
   using EssentialProjects.IAM.Contracts;
 
   public class ConsumerApiClientService : IConsumerAPI
@@ -29,7 +30,7 @@
     {
 
       if (identity == null) {
-        throw new ArgumentNullException(nameof(identity));
+        throw new UnauthorizedAccessException(nameof(identity));
       }
 
       var noStartEventIdProvided = String.IsNullOrEmpty(startEventKey);
@@ -47,9 +48,11 @@
         throw new ArgumentNullException(nameof(endEventKey));
       }
 
-      var url = $"/api/consumer/v1/process_models/{processModelId}/start_events/{startEventKey}/start";
+      var url = Paths.StartProcessInstance
+        .Replace(Params.ProcessModelId, processModelId)
+        .Replace(Params.StartEventId, startEventKey);
 
-      url = $"{url}?start_callback_type={(int)callbackType}";
+      url = $"{Endpoints.ConsumerAPI}/{url}?start_callback_type={(int)callbackType}";
 
       var attachEndEventId = callbackType == StartCallbackType.CallbackOnEndEventReached;
 
@@ -82,8 +85,12 @@
       string processModelId)
           where TPayload : new()
     {
-      var url = $"api/consumer/v1/correlations/{correlationId}/process_models/{processModelId}/results";
+      var url = Paths.GetProcessResultForCorrelation
+        .Replace(Params.CorrelationId, correlationId)
+        .Replace(Params.ProcessModelId, processModelId);
 
+      url = $"{Endpoints.ConsumerAPI}/{url}";
+      
       var jsonResult = "";
 
       IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
@@ -124,26 +131,24 @@
 
     private HttpClient CreateHttpClient(IIdentity identity)
     {
-      var client = new HttpClient(new HttpClientHandler()
-      {
-        UseDefaultCredentials = true
-      });
-      client.BaseAddress = new Uri(this.Configuration.BaseUrl);
+        var client = new HttpClient(new HttpClientHandler()
+        {
+            UseDefaultCredentials = true
+        });
+        client.BaseAddress = new Uri(this.Configuration.BaseUrl);
 
-      client.DefaultRequestHeaders.Accept.Clear();
-      client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-      var token = identity.token;
+        var hasNoIdentity = identity == null || identity.token == null;
+        if (hasNoIdentity)
+        {
+            throw new UnauthorizedAccessException();
+        }
 
-      if (token == null)
-      {
-        // throw new UnauthorizedAccessException();
-        token = Convert.ToBase64String(Encoding.UTF8.GetBytes("dummy_token"));
-      }
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", identity.token);
 
-      client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", identity.token);
-
-      return client;
+        return client;
     }
   }
 }

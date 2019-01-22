@@ -12,7 +12,6 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
 
   public class ProcessEngineBaseTest
     {        
-        
         private string processEngineRestApiUrl;
 
         public ProcessEngineBaseTest()
@@ -25,14 +24,11 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
             string baseUrlFromEnv = Environment.GetEnvironmentVariable("PROCESS_ENGINE_REST_API_URL");
             string baseUrl = string.IsNullOrEmpty(baseUrlFromEnv) ? "http://localhost:8080" : baseUrlFromEnv;
 
-            this.processEngineRestApiUrl = $"{baseUrl}/engine-rest/";
+            this.processEngineRestApiUrl = $"{baseUrl}";
         }
 
         protected IIdentity GetDummyIdentity() {
           return new Identity() { token = Convert.ToBase64String(Encoding.UTF8.GetBytes("dummy_token"))};
         }
-
     }
-
-
 }
