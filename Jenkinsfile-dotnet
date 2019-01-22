@@ -16,6 +16,7 @@ def cleanup_workspace() {
 }
 
 pipeline {
+  agent any
   environment {
     HOME = "$WORKSPACE"
   }
