@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import {UnauthorizedError} from '@essential-projects/errors_ts';
 import {Subscription} from '@essential-projects/event_aggregator_contracts';
 import {IHttpClient, IRequestOptions, IResponse} from '@essential-projects/http_contracts';
-import {IIdentity, TokenBody} from '@essential-projects/iam_contracts';
+import {IIdentity} from '@essential-projects/iam_contracts';
 
 import {
   DataModels,
