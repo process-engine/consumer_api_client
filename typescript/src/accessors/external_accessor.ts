@@ -548,9 +548,9 @@ export class ExternalAccessor implements IConsumerApiAccessor {
   private _createSocketIoSubscription(route: string, callback: any, subscribeOnce: boolean): Subscription {
 
     if (subscribeOnce) {
-      this._socket.once(socketSettings.paths.userTaskFinished, callback);
+      this._socket.once(route, callback);
     } else {
-      this._socket.on(socketSettings.paths.userTaskFinished, callback);
+      this._socket.on(route, callback);
     }
 
     const subscriptionId: string = uuid.v4();
