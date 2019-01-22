@@ -11,6 +11,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using ProcessEngine.ConsumerAPI.Contracts;
     using ProcessEngine.ConsumerAPI.Client.Tests.xUnit;
   using System.Text;
+  using System.Threading;
 
   [Collection("ConsumerAPI collection")]
     public class GetProcessResultForCorrelationTests : ProcessEngineBaseTest
@@ -27,17 +28,24 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         {
             string processModelId = "test_consumer_api_correlation_result";
             string endEventId = "EndEvent_Success";
+            var identity = GetDummyIdentity();
 
             ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                GetDummyIdentity(),
+                identity,
                 processModelId,
                 "StartEvent_1",
                 new ProcessStartRequestPayload<object>(),
                 StartCallbackType.CallbackOnEndEventReached,
                 endEventId);
 
+            // This sleep was necessary because of an unidentified timing
+            // problem.
+            // Without the sleep debugging the test works just fine, but in a
+            // regular run the list of correlation results is always empty.
+            Thread.Sleep(100);
+
             var correlationResults = await this.fixture.ConsumerAPIClient.GetProcessResultForCorrelation<TestResult>(
-                GetDummyIdentity(),
+                identity,
                 processInstance.correlationId,
                 processModelId);
 
