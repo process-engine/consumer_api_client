@@ -49,11 +49,13 @@
 
       var url = $"/api/consumer/v1/process_models/{processModelId}/start_events/{startEventKey}/start";
 
+      url = $"{url}?start_callback_type={(int)callbackType}";
+
       var attachEndEventId = callbackType == StartCallbackType.CallbackOnEndEventReached;
 
       if (attachEndEventId)
       {
-        url = $"{url}?end_event_id={endEventKey}";
+        url = $"{url}&end_event_id={endEventKey}";
       }
 
       var jsonResult = "";

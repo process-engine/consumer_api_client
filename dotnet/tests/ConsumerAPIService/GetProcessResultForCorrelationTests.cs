@@ -38,12 +38,6 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 StartCallbackType.CallbackOnEndEventReached,
                 endEventId);
 
-            // This sleep was necessary because of an unidentified timing
-            // problem.
-            // Without the sleep debugging the test works just fine, but in a
-            // regular run the list of correlation results is always empty.
-            Thread.Sleep(100);
-
             var correlationResults = await this.fixture.ConsumerAPIClient.GetProcessResultForCorrelation<TestResult>(
                 identity,
                 processInstance.CorrelationId,

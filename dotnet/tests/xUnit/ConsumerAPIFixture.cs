@@ -10,6 +10,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
     using EssentialProjects.IAM.Contracts;
     using Newtonsoft.Json;
     using ProcessEngine.ConsumerAPI.Client;
+    using ProcessEngine.ConsumerAPI.Contracts;
 
     public class ConsumerAPIFixture : IDisposable
     {
@@ -21,12 +22,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
         {
             SetProcessEngineRestApiUrl();
 
-            this.ConsumerAPIClient = new ConsumerApiClientService();
-
-            this.ConsumerAPIClient.Configuration = new ConsumerApiClientServiceConfiguration()
-            {
-                BaseUrl = this.processEngineRestApiUrl
-            };
+            CreateConsumerAPIClient();
 
             // Deploy test files from ./bpmn folder. The property "Copy to output directory" has to be true for these files.
             foreach (var file in Directory.GetFiles("./bpmn"))
@@ -47,6 +43,16 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
             string baseUrl = string.IsNullOrEmpty(baseUrlFromEnv) ? "http://localhost:8000" : baseUrlFromEnv;
 
             this.processEngineRestApiUrl = baseUrl;
+        }
+
+        private void CreateConsumerAPIClient()
+        { 
+            this.ConsumerAPIClient = new ConsumerApiClientService();
+
+            this.ConsumerAPIClient.Configuration = new ConsumerApiClientServiceConfiguration()
+            {
+                BaseUrl = this.processEngineRestApiUrl
+            };
         }
 
         private async Task DeployTestBpmnFilesAsync(FileInfo bpmnFile)
