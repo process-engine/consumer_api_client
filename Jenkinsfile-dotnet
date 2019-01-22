@@ -16,11 +16,6 @@ def cleanup_workspace() {
 }
 
 pipeline {
-  agent {
-    docker {
-      image 'microsoft/dotnet:2.1-sdk'
-    }
-  }
   environment {
     HOME = "$WORKSPACE"
   }
