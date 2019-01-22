@@ -25,9 +25,11 @@ pipeline {
     stage('prepare') {
       steps {
         dir('dotnet') {
-          docker.image('microsoft/dotnet:2.1-sdk').inside() {
-            sh('dotnet --version')
-            sh('dotnet restore src')
+          script {
+            docker.image('microsoft/dotnet:2.1-sdk').inside() {
+              sh('dotnet --version')
+              sh('dotnet restore src')
+            }
           }
         }
       }
@@ -35,9 +37,11 @@ pipeline {
     stage('build') {
       steps {
         dir('dotnet') {
-          docker.image('microsoft/dotnet:2.1-sdk').inside() {
-            sh('dotnet --version')
-            sh('dotnet build --configuration Release src')
+          script {
+            docker.image('microsoft/dotnet:2.1-sdk').inside() {
+              sh('dotnet --version')
+              sh('dotnet build --configuration Release src')
+            }
           }
         }
       }
@@ -46,14 +50,16 @@ pipeline {
       steps {
         script {
           dir('dotnet') {
-            docker.image('5minds/process_engine_runtime:develop').withRun() { c ->
-              docker.image('microsoft/dotnet:2.1-sdk').inside("--link ${c.id}:process_engine_runtime") {
-                
-                process_engine_rest_api_url = "http://process_engine_runtime:8000"
-                sh "while ! curl --silent ${process_engine_rest_api_url} > /dev/null; do sleep 1; done"
-                sh("PROCESS_ENGINE_REST_API_URL=${process_engine_rest_api_url} dotnet test --logger trx --configuration Release tests/ProcessEngine.ConsumerAPI.Client.Tests.csproj");
+            script {
+              docker.image('5minds/process_engine_runtime:develop').withRun() { c ->
+                docker.image('microsoft/dotnet:2.1-sdk').inside("--link ${c.id}:process_engine_runtime") {
+                  
+                  process_engine_rest_api_url = "http://process_engine_runtime:8000"
+                  sh "while ! curl --silent ${process_engine_rest_api_url} > /dev/null; do sleep 1; done"
+                  sh("PROCESS_ENGINE_REST_API_URL=${process_engine_rest_api_url} dotnet test --logger trx --configuration Release tests/ProcessEngine.ConsumerAPI.Client.Tests.csproj");
 
-                step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
+                  step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
+                }
               }
             }
           }
@@ -67,27 +73,29 @@ pipeline {
       steps {
         withCredentials([string(credentialsId: 'myget_process_engine_public_feed_token', variable: 'PROCESS_ENGINE_PUBLIC')]) {
           dir('dotnet') {
-          docker.image('microsoft/dotnet:2.1-sdk').inside() {
-              sh('dotnet --version')
-              script {
+            script {
+              docker.image('microsoft/dotnet:2.1-sdk').inside() {
+                sh('dotnet --version')
+                script {
 
-                def packageVersion = nuGetTools.getPackageVersionFromCSProjFile(
-                  fileName: 'src/ProcessEngine.ConsumerAPI.Client.csproj',
-                );
+                  def packageVersion = nuGetTools.getPackageVersionFromCSProjFile(
+                    fileName: 'src/ProcessEngine.ConsumerAPI.Client.csproj',
+                  );
 
-                echo "Package version is ${packageVersion}.";
+                  echo "Package version is ${packageVersion}.";
 
-                def packageWasAlreadyPublished = nuGetTools.isNuGetPackagePublished(
-                  nuGetFeedURL: "https://5minds.myget.org/F/process_engine_public/api/v3/index.json",
-                  package: "ProcessEngine.ConsumerAPI.Client",
-                  version: packageVersion,
-                  nuGetToken: PROCESS_ENGINE_PUBLIC,
-                );
+                  def packageWasAlreadyPublished = nuGetTools.isNuGetPackagePublished(
+                    nuGetFeedURL: "https://5minds.myget.org/F/process_engine_public/api/v3/index.json",
+                    package: "ProcessEngine.ConsumerAPI.Client",
+                    version: packageVersion,
+                    nuGetToken: PROCESS_ENGINE_PUBLIC,
+                  );
 
-                if (packageWasAlreadyPublished) {
-                  echo "Package version was already published, skipping publish.";
-                } else {
-                  sh("dotnet nuget push src/bin/Release/ProcessEngine.ConsumerAPI.Client.*.nupkg --api-key $PROCESS_ENGINE_PUBLIC --source https://5minds.myget.org/F/process_engine_public/api/v2");
+                  if (packageWasAlreadyPublished) {
+                    echo "Package version was already published, skipping publish.";
+                  } else {
+                    sh("dotnet nuget push src/bin/Release/ProcessEngine.ConsumerAPI.Client.*.nupkg --api-key $PROCESS_ENGINE_PUBLIC --source https://5minds.myget.org/F/process_engine_public/api/v2");
+                  }
                 }
               }
             }
