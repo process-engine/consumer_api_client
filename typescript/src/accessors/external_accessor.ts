@@ -10,6 +10,7 @@ import {IIdentity} from '@essential-projects/iam_contracts';
 import {
   DataModels,
   IConsumerApiAccessor,
+  IConsumerSocketIoAccessor,
   Messages,
   restSettings,
   socketSettings,
@@ -22,7 +23,7 @@ import {
  */
 type SubscriptionCallbackAssociation = {[subscriptionId: string]: any};
 
-export class ExternalAccessor implements IConsumerApiAccessor {
+export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIoAccessor {
   private baseUrl: string = 'api/consumer/v1';
 
   private _subscriptionCollection: SubscriptionCallbackAssociation = {};
