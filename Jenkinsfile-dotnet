@@ -36,9 +36,9 @@ pipeline {
     }
     stage('build') {
       steps {
-        dir('dotnet') {
-          script {
-            docker.image('microsoft/dotnet:2.1-sdk').inside() {
+        script {
+          docker.image('microsoft/dotnet:2.1-sdk').inside() {
+            dir('dotnet') {
               sh('dotnet --version')
               sh('dotnet build --configuration Release src')
             }
@@ -49,11 +49,10 @@ pipeline {
     stage('test') {
       steps {
         script {
-          dir('dotnet') {
-            script {
-              docker.image('5minds/process_engine_runtime:develop').withRun() { c ->
-                docker.image('microsoft/dotnet:2.1-sdk').inside("--link ${c.id}:process_engine_runtime") {
-                  
+          script {
+            docker.image('5minds/process_engine_runtime:develop').withRun() { c ->
+              docker.image('microsoft/dotnet:2.1-sdk').inside("--link ${c.id}:process_engine_runtime") {
+                dir('dotnet') {
                   process_engine_rest_api_url = "http://process_engine_runtime:8000"
                   sh "while ! curl --silent ${process_engine_rest_api_url} > /dev/null; do sleep 1; done"
                   sh("PROCESS_ENGINE_REST_API_URL=${process_engine_rest_api_url} dotnet test --logger trx --configuration Release tests/ProcessEngine.ConsumerAPI.Client.Tests.csproj");
@@ -72,9 +71,9 @@ pipeline {
       }
       steps {
         withCredentials([string(credentialsId: 'myget_process_engine_public_feed_token', variable: 'PROCESS_ENGINE_PUBLIC')]) {
-          dir('dotnet') {
-            script {
-              docker.image('microsoft/dotnet:2.1-sdk').inside() {
+          script {
+            docker.image('microsoft/dotnet:2.1-sdk').inside() {
+              dir('dotnet') {
                 sh('dotnet --version')
                 script {
 
@@ -113,11 +112,11 @@ pipeline {
       }
     }
   }
-  // post {
-  //   always {
-  //     script {
-  //       cleanup_workspace();
-  //     }
-  //   }
-  // }
+  post {
+    always {
+      script {
+        cleanup_workspace();
+      }
+    }
+  }
 }
