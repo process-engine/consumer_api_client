@@ -10,10 +10,10 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using EssentialProjects.IAM.Contracts;
     using ProcessEngine.ConsumerAPI.Contracts;
     using ProcessEngine.ConsumerAPI.Client.Tests.xUnit;
-  using System.Text;
-  using System.Threading;
+    using System.Text;
+    using System.Threading;
 
-  [Collection("ConsumerAPI collection")]
+    [Collection("ConsumerAPI collection")]
     public class GetProcessResultForCorrelationTests : ProcessEngineBaseTest
     {
         private readonly ConsumerAPIFixture fixture;
@@ -46,14 +46,14 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
 
             var correlationResults = await this.fixture.ConsumerAPIClient.GetProcessResultForCorrelation<TestResult>(
                 identity,
-                processInstance.correlationId,
+                processInstance.CorrelationId,
                 processModelId);
 
             var expectedCorrelationResult = new CorrelationResult<TestResult> {
                 TokenPayload = new TestResult() {
                     scriptOutput = "hello world"
                 },
-                CorrelationId = processInstance.correlationId,
+                CorrelationId = processInstance.CorrelationId,
                 EndEventId = endEventId
             };
             
