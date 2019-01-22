@@ -60,7 +60,7 @@
 
       var jsonResult = "";
 
-      using(var client = _createHttpClient(identity))
+      using(var client = CreateHttpClient(identity))
       {
         var jsonPayload = SerializeForProcessEngine(processStartRequestPayload);
         var result = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
@@ -76,21 +76,6 @@
       }
     }
 
-    private string SerializeForProcessEngine(object payload) {
-
-        var contractResolver = new DefaultContractResolver
-        {
-            NamingStrategy = new CamelCaseNamingStrategy()
-        };
-        var serializerSettings = new JsonSerializerSettings
-        {
-            ContractResolver = contractResolver,
-            Formatting = Formatting.None
-        };
-        var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
-        return jsonPayload;
-    }
-
     public async Task<IEnumerable<CorrelationResult<TPayload>>> GetProcessResultForCorrelation<TPayload>(
       IIdentity identity,
       string correlationId,
@@ -103,7 +88,7 @@
 
       IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
 
-      using(var client = _createHttpClient(identity))
+      using(var client = CreateHttpClient(identity))
       {
         var result = await client.GetAsync(url);
 
@@ -122,7 +107,22 @@
 
     }
 
-    private HttpClient _createHttpClient(IIdentity identity)
+    private string SerializeForProcessEngine(object payload)
+    {
+        var contractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new CamelCaseNamingStrategy()
+        };
+        var serializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = contractResolver,
+            Formatting = Formatting.None
+        };
+        var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
+        return jsonPayload;
+    }
+
+    private HttpClient CreateHttpClient(IIdentity identity)
     {
       var client = new HttpClient(new HttpClientHandler()
       {
