@@ -16,6 +16,9 @@
     <ProjectReference Include="..\..\..\..\iam_contracts\dotnet\src\EssentialProjects.IAM.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="bpmn\test_consumer_api_correlation_result.bpmn">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="bpmn\test_start_process.bpmn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

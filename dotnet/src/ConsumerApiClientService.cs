@@ -1,15 +1,17 @@
 ﻿namespace ProcessEngine.ConsumerAPI.Client
 {
   using System;
-  using ProcessEngine.ConsumerAPI.Contracts;
-  using EssentialProjects.IAM.Contracts;
-  using Quobject.SocketIoClientDotNet.Client;
+  using System.Collections.Generic;
   using System.Net.Http;
   using System.Net.Http.Headers;
-  using System.Threading.Tasks;
-  using Newtonsoft.Json;
-  using System.Collections.Generic;
   using System.Text;
+  using System.Threading.Tasks;
+
+  using Newtonsoft.Json;
+  using Newtonsoft.Json.Serialization;
+
+  using ProcessEngine.ConsumerAPI.Contracts;
+  using EssentialProjects.IAM.Contracts;
 
   public class ConsumerApiClientService : IConsumerAPI
   {
@@ -58,7 +60,7 @@
 
       using(var client = _createHttpClient(identity))
       {
-        var jsonPayload = JsonConvert.SerializeObject(processStartRequestPayload);
+        var jsonPayload = SerializeForProcessEngine(processStartRequestPayload);
         var result = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
 
         if (result.IsSuccessStatusCode)
@@ -70,6 +72,21 @@
 
         throw new Exception("Process could not be started.");
       }
+    }
+
+    private string SerializeForProcessEngine(object payload) {
+
+        var contractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new CamelCaseNamingStrategy()
+        };
+        var serializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = contractResolver,
+            Formatting = Formatting.None
+        };
+        var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
+        return jsonPayload;
     }
 
     public async Task<IEnumerable<CorrelationResult<TPayload>>> GetProcessResultForCorrelation<TPayload>(

@@ -3,6 +3,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
 
     using Xunit;
@@ -10,9 +11,8 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using EssentialProjects.IAM.Contracts;
     using ProcessEngine.ConsumerAPI.Contracts;
     using ProcessEngine.ConsumerAPI.Client.Tests.xUnit;
-  using System.Text;
 
-  [Collection("ConsumerAPI collection")]
+    [Collection("ConsumerAPI collection")]
     public class StartProcessInstanceTests : ProcessEngineBaseTest
     {
         private readonly ConsumerAPIFixture fixture;
@@ -64,7 +64,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
 
             var requestPayload = new ProcessStartRequestPayload<object>
             {
-                correlationId = correlationId
+                CorrelationId = correlationId
             };
 
             ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
@@ -73,7 +73,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 "StartEvent_1",
                 requestPayload);
 
-            Assert.Equal(processStartResponsePayload.correlationId, correlationId);
+            Assert.Equal(processStartResponsePayload.CorrelationId, correlationId);
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 "StartEvent_1",
                 requestPayload);
 
-            Assert.NotEmpty(processStartResponsePayload.correlationId);
+            Assert.NotEmpty(processStartResponsePayload.CorrelationId);
         }
     }
 }

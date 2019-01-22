@@ -19,8 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="7.0.0" />
-    <PackageReference Include="SocketIoClientDotNet" Version="1.0.2-beta1" />
+    <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="8.0.0" />
   </ItemGroup>
 
   
