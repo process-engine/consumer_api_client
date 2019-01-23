@@ -62,7 +62,7 @@
 
             var jsonResult = "";
 
-            using (var client = CreateHttpClient (identity)) {
+            using (var client = CreateHttpClient(identity)) {
                 var jsonPayload = SerializeForProcessEngine (processStartRequestPayload);
                 var result = await client.PostAsync (url, new StringContent (jsonPayload, Encoding.UTF8, "application/json"));
 
@@ -91,7 +91,7 @@
 
             IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
 
-            using (var client = CreateHttpClient (identity)) {
+            using (var client = ProcessEngineHttpClientFactory.CreateHttpClient(identity, this.Configuration.BaseUrl)) {
                 var result = await client.GetAsync (url);
 
                 if (result.IsSuccessStatusCode) {
@@ -101,10 +101,6 @@
             }
 
             return parsedResult;
-        }
-
-        public void Dispose () {
-
         }
 
         private string SerializeForProcessEngine (object payload) {
@@ -117,25 +113,6 @@
             };
             var jsonPayload = JsonConvert.SerializeObject (payload, serializerSettings);
             return jsonPayload;
-        }
-
-        private HttpClient CreateHttpClient (IIdentity identity) {
-            var client = new HttpClient (new HttpClientHandler () {
-                UseDefaultCredentials = true
-            });
-            client.BaseAddress = new Uri (this.Configuration.BaseUrl);
-
-            client.DefaultRequestHeaders.Accept.Clear ();
-            client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/json"));
-
-            var hasNoIdentity = identity == null || identity.token == null;
-            if (hasNoIdentity) {
-                throw new UnauthorizedAccessException ();
-            }
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", identity.token);
-
-            return client;
         }
     }
 }

@@ -52,7 +52,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
         private async Task DeployTestBpmnFilesAsync (FileInfo bpmnFile) {
             try {
                 var bpmnFileContent = File.ReadAllText (bpmnFile.FullName);
-                using (HttpClient client = _createHttpClient (null)) {
+                using (var client = ProcessEngineHttpClientFactory.CreateHttpClient(null, this.processEngineRestApiUrl)) {
                     var importPayload = new {
                     name = bpmnFile.Name.Replace (bpmnFile.Extension, ""),
                     xml = bpmnFileContent,
