@@ -260,6 +260,8 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   public async getWaitingUserTasksByIdentity(identity: IIdentity): Promise<DataModels.UserTasks.UserTaskList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getWaitingUserTasksByIdentity(identity);
   }
 

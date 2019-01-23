@@ -213,14 +213,15 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return httpResponse.result;
   }
 
-  public async startProcessInstance(identity: IIdentity,
-                                    processModelId: string,
-                                    startEventId: string,
-                                    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
-                                    startCallbackType: DataModels.ProcessModels.StartCallbackType,
-                                    endEventId?: string,
-                                    processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
-                                  ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
+  public async startProcessInstance(
+    identity: IIdentity,
+    processModelId: string,
+    startEventId: string,
+    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
+    startCallbackType: DataModels.ProcessModels.StartCallbackType,
+    endEventId?: string,
+    processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
+  ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
 
     const url: string = this._buildStartProcessInstanceUrl(processModelId, startEventId, startCallbackType, endEventId);
 
@@ -240,10 +241,12 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return httpResponse.result;
   }
 
-  private _buildStartProcessInstanceUrl(processModelId: string,
-                                        startEventId: string,
-                                        startCallbackType: DataModels.ProcessModels.StartCallbackType,
-                                        endEventId: string): string {
+  private _buildStartProcessInstanceUrl(
+    processModelId: string,
+    startEventId: string,
+    startCallbackType: DataModels.ProcessModels.StartCallbackType,
+    endEventId: string,
+  ): string {
     let url: string = restSettings.paths.startProcessInstance
       .replace(restSettings.params.processModelId, processModelId)
       .replace(restSettings.params.startEventId, startEventId);
@@ -260,9 +263,11 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return url;
   }
 
-  public async getProcessResultForCorrelation(identity: IIdentity,
-                                              correlationId: string,
-                                              processModelId: string): Promise<Array<DataModels.CorrelationResult>> {
+  public async getProcessResultForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    processModelId: string,
+  ): Promise<Array<DataModels.CorrelationResult>> {
     let url: string = restSettings.paths.getProcessResultForCorrelation
       .replace(restSettings.params.correlationId, correlationId)
       .replace(restSettings.params.processModelId, processModelId);
@@ -377,9 +382,11 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return httpResponse.result;
   }
 
-  public async getUserTasksForProcessModelInCorrelation(identity: IIdentity,
-                                                        processModelId: string,
-                                                        correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
+  public async getUserTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.processModelCorrelationUserTasks
@@ -406,11 +413,13 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return httpResponse.result;
   }
 
-  public async finishUserTask(identity: IIdentity,
-                              processInstanceId: string,
-                              correlationId: string,
-                              userTaskInstanceId: string,
-                              userTaskResult: DataModels.UserTasks.UserTaskResult): Promise<void> {
+  public async finishUserTask(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    userTaskInstanceId: string,
+    userTaskResult: DataModels.UserTasks.UserTaskResult,
+  ): Promise<void> {
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     let url: string = restSettings.paths.finishUserTask
@@ -452,9 +461,11 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return httpResponse.result;
   }
 
-  public async getManualTasksForProcessModelInCorrelation(identity: IIdentity,
-                                                          processModelId: string,
-                                                          correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
+  public async getManualTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const urlRestPart: string = restSettings.paths.processModelCorrelationManualTasks
@@ -481,10 +492,12 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return httpResponse.result;
   }
 
-  public async finishManualTask(identity: IIdentity,
-                                processInstanceId: string,
-                                correlationId: string,
-                                manualTaskInstanceId: string): Promise<void> {
+  public async finishManualTask(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    manualTaskInstanceId: string,
+  ): Promise<void> {
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const urlRestPart: string = restSettings.paths.finishManualTask

@@ -120,29 +120,30 @@ export class InternalAccessor implements IConsumerApiAccessor {
 
   // Process models and instances
   public async getProcessModels(identity: IIdentity): Promise<DataModels.ProcessModels.ProcessModelList> {
-
     return this._consumerApiService.getProcessModels(identity);
   }
 
   public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<DataModels.ProcessModels.ProcessModel> {
-
     return this._consumerApiService.getProcessModelById(identity, processModelId);
   }
 
-  public async startProcessInstance(identity: IIdentity,
-                                    processModelId: string,
-                                    startEventId: string,
-                                    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
-                                    startCallbackType?: DataModels.ProcessModels.StartCallbackType,
-                                    endEventId?: string,
-                                  ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
+  public async startProcessInstance(
+    identity: IIdentity,
+    processModelId: string,
+    startEventId: string,
+    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
+    startCallbackType?: DataModels.ProcessModels.StartCallbackType,
+    endEventId?: string,
+  ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
 
     return this._consumerApiService.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
   }
 
-  public async getProcessResultForCorrelation(identity: IIdentity,
-                                              correlationId: string,
-                                              processModelId: string): Promise<Array<DataModels.CorrelationResult>> {
+  public async getProcessResultForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    processModelId: string,
+  ): Promise<Array<DataModels.CorrelationResult>> {
 
     return this._consumerApiService.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
@@ -165,6 +166,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     processModelId: string,
     correlationId: string,
   ): Promise<DataModels.Events.EventList> {
+
     return this._consumerApiService.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
@@ -185,9 +187,12 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this._consumerApiService.getUserTasksForCorrelation(identity, correlationId);
   }
 
-  public async getUserTasksForProcessModelInCorrelation(identity: IIdentity,
-                                                        processModelId: string,
-                                                        correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
+  public async getUserTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
+
     return this._consumerApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
@@ -195,11 +200,14 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this._consumerApiService.getWaitingUserTasksByIdentity(identity);
   }
 
-  public async finishUserTask(identity: IIdentity,
-                              processInstanceId: string,
-                              correlationId: string,
-                              userTaskInstanceId: string,
-                              userTaskResult: DataModels.UserTasks.UserTaskResult): Promise<void> {
+  public async finishUserTask(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    userTaskInstanceId: string,
+    userTaskResult: DataModels.UserTasks.UserTaskResult,
+  ): Promise<void> {
+
     return this._consumerApiService.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
   }
 
@@ -212,9 +220,12 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this._consumerApiService.getManualTasksForCorrelation(identity, correlationId);
   }
 
-  public async getManualTasksForProcessModelInCorrelation(identity: IIdentity,
-                                                          processModelId: string,
-                                                          correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
+  public async getManualTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+
     return this._consumerApiService.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
@@ -222,10 +233,13 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this._consumerApiService.getWaitingManualTasksByIdentity(identity);
   }
 
-  public async finishManualTask(identity: IIdentity,
-                                processInstanceId: string,
-                                correlationId: string,
-                                manualTaskInstanceId: string): Promise<void> {
+  public async finishManualTask(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    manualTaskInstanceId: string,
+  ): Promise<void> {
+
     return this._consumerApiService.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
   }
 }
