@@ -172,6 +172,12 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this._consumerApiService.getUserTasksForProcessModel(identity, processModelId);
   }
 
+  public async getUserTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.UserTasks.UserTaskList> {
+    this._ensureIsAuthorized(identity);
+
+    return this._consumerApiService.getUserTasksForProcessInstance(identity, processInstanceId);
+  }
+
   public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
     this._ensureIsAuthorized(identity);
 
@@ -207,6 +213,12 @@ export class InternalAccessor implements IConsumerApiAccessor {
     this._ensureIsAuthorized(identity);
 
     return this._consumerApiService.getManualTasksForProcessModel(identity, processModelId);
+  }
+
+  public async getManualTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this._ensureIsAuthorized(identity);
+
+    return this._consumerApiService.getManualTasksForProcessInstance(identity, processInstanceId);
   }
 
   public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
