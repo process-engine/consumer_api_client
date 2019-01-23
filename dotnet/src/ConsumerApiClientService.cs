@@ -18,39 +18,39 @@
 
         private ConsumerApiClientServiceConfiguration Configuration { get; set; }
 
-        public ConsumerApiClientService (ConsumerApiClientServiceConfiguration configuration) {
+        public ConsumerApiClientService(ConsumerApiClientServiceConfiguration configuration) {
             this.Configuration = configuration;
         }
 
-        public async Task<ProcessStartResponsePayload> StartProcessInstance<TInputValues> (
+        public async Task<ProcessStartResponsePayload> StartProcessInstance<TInputValues>(
             IIdentity identity,
             string processModelId,
             string startEventKey,
             ProcessStartRequestPayload<TInputValues> processStartRequestPayload,
             StartCallbackType callbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
             string endEventKey = "")
-        where TInputValues : new () {
+        where TInputValues : new() {
 
             if (identity == null) {
-                throw new UnauthorizedAccessException (nameof (identity));
+                throw new UnauthorizedAccessException(nameof(identity));
             }
 
-            var noStartEventIdProvided = String.IsNullOrEmpty (startEventKey);
+            var noStartEventIdProvided = String.IsNullOrEmpty(startEventKey);
 
             if (noStartEventIdProvided) {
-                throw new ArgumentNullException (nameof (startEventKey));
+                throw new ArgumentNullException(nameof(startEventKey));
             }
 
             var noEndEventIdProvided = callbackType == StartCallbackType.CallbackOnEndEventReached &&
-                String.IsNullOrEmpty (endEventKey);
+                String.IsNullOrEmpty(endEventKey);
 
             if (noEndEventIdProvided) {
-                throw new ArgumentNullException (nameof (endEventKey));
+                throw new ArgumentNullException(nameof(endEventKey));
             }
 
             var url = Paths.StartProcessInstance
-                .Replace (Params.ProcessModelId, processModelId)
-                .Replace (Params.StartEventId, startEventKey);
+                .Replace(Params.ProcessModelId, processModelId)
+                .Replace(Params.StartEventId, startEventKey);
 
             url = $"{Endpoints.ConsumerAPI}/{url}?start_callback_type={(int)callbackType}";
 
@@ -62,28 +62,28 @@
 
             var jsonResult = "";
 
-            using (var client = ProcessEngineHttpClientFactory.CreateHttpClient(identity, this.Configuration.BaseUrl)) {
-                var jsonPayload = SerializeForProcessEngine (processStartRequestPayload);
-                var result = await client.PostAsync (url, new StringContent (jsonPayload, Encoding.UTF8, "application/json"));
+            using(var client = ProcessEngineHttpClientFactory.CreateHttpClient(identity, this.Configuration.BaseUrl)) {
+                var jsonPayload = SerializeForProcessEngine(processStartRequestPayload);
+                var result = await client.PostAsync(url, new StringContent(jsonPayload, Encoding.UTF8, "application/json"));
 
                 if (result.IsSuccessStatusCode) {
-                    jsonResult = await result.Content.ReadAsStringAsync ();
-                    var parsedResult = JsonConvert.DeserializeObject<ProcessStartResponsePayload> (jsonResult);
+                    jsonResult = await result.Content.ReadAsStringAsync();
+                    var parsedResult = JsonConvert.DeserializeObject<ProcessStartResponsePayload>(jsonResult);
                     return parsedResult;
                 }
 
-                throw new Exception ("Process could not be started.");
+                throw new Exception("Process could not be started.");
             }
         }
 
-        public async Task<IEnumerable<CorrelationResult<TPayload>>> GetProcessResultForCorrelation<TPayload> (
+        public async Task<IEnumerable<CorrelationResult<TPayload>>> GetProcessResultForCorrelation<TPayload>(
             IIdentity identity,
             string correlationId,
             string processModelId)
-        where TPayload : new () {
+        where TPayload : new() {
             var url = Paths.GetProcessResultForCorrelation
-                .Replace (Params.CorrelationId, correlationId)
-                .Replace (Params.ProcessModelId, processModelId);
+                .Replace(Params.CorrelationId, correlationId)
+                .Replace(Params.ProcessModelId, processModelId);
 
             url = $"{Endpoints.ConsumerAPI}/{url}";
 
@@ -91,27 +91,27 @@
 
             IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
 
-            using (var client = ProcessEngineHttpClientFactory.CreateHttpClient(identity, this.Configuration.BaseUrl)) {
-                var result = await client.GetAsync (url);
+            using(var client = ProcessEngineHttpClientFactory.CreateHttpClient(identity, this.Configuration.BaseUrl)) {
+                var result = await client.GetAsync(url);
 
                 if (result.IsSuccessStatusCode) {
-                    jsonResult = await result.Content.ReadAsStringAsync ();
-                    parsedResult = JsonConvert.DeserializeObject<IEnumerable<CorrelationResult<TPayload>>> (jsonResult);
+                    jsonResult = await result.Content.ReadAsStringAsync();
+                    parsedResult = JsonConvert.DeserializeObject<IEnumerable<CorrelationResult<TPayload>>>(jsonResult);
                 }
             }
 
             return parsedResult;
         }
 
-        private string SerializeForProcessEngine (object payload) {
+        private string SerializeForProcessEngine(object payload) {
             var contractResolver = new DefaultContractResolver {
-                NamingStrategy = new CamelCaseNamingStrategy ()
+                NamingStrategy = new CamelCaseNamingStrategy()
             };
             var serializerSettings = new JsonSerializerSettings {
                 ContractResolver = contractResolver,
                 Formatting = Formatting.None
             };
-            var jsonPayload = JsonConvert.SerializeObject (payload, serializerSettings);
+            var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
             return jsonPayload;
         }
     }

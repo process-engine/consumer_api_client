@@ -46,13 +46,14 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
                 BaseUrl = this.processEngineRestApiUrl
             };
 
-            this.ConsumerAPIClient = new ConsumerApiClientService (clientConfiguration);
+            this.ConsumerAPIClient = new ConsumerApiClientService(clientConfiguration);
         }
 
         private async Task DeployTestBpmnFilesAsync (FileInfo bpmnFile) {
             try {
                 var bpmnFileContent = File.ReadAllText (bpmnFile.FullName);
-                using (var client = ProcessEngineHttpClientFactory.CreateHttpClient(null, this.processEngineRestApiUrl)) {
+                var identity = IdentityFactory.GetDummyIdentity();
+                using (var client = ProcessEngineHttpClientFactory.CreateHttpClient(identity, this.processEngineRestApiUrl)) {
                     var importPayload = new {
                     name = bpmnFile.Name.Replace (bpmnFile.Extension, ""),
                     xml = bpmnFileContent,
@@ -70,26 +71,6 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
             } catch (Exception unknownException) {
                 throw new Exception ($"Cannot deploy BPMN file for base URL '{this.processEngineRestApiUrl}'. See inner exception for details.", unknownException);
             }
-        }
-
-        private HttpClient _createHttpClient (IIdentity identity) {
-            var client = new HttpClient (new HttpClientHandler () {
-                UseDefaultCredentials = true
-            });
-            client.BaseAddress = new Uri (this.processEngineRestApiUrl);
-
-            client.DefaultRequestHeaders.Accept.Clear ();
-            client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/json"));
-
-            var identityIsValid = identity == null;
-
-            string token = identityIsValid ?
-                Convert.ToBase64String (Encoding.UTF8.GetBytes ("dummy_token")) :
-                identity.token;
-
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", token);
-
-            return client;
         }
     }
 }
