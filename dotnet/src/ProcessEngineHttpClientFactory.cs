@@ -17,12 +17,12 @@ namespace ProcessEngine.ConsumerAPI.Client
             client.DefaultRequestHeaders.Accept.Clear ();
             client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/json"));
 
-            var hasNoIdentity = identity == null || identity.token == null;
+            var hasNoIdentity = identity == null || identity.Token == null;
             if (hasNoIdentity) {
                 throw new UnauthorizedAccessException ();
             }
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", identity.token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue ("Bearer", identity.Token);
 
             return client;
         }
