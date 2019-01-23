@@ -1,4 +1,5 @@
 import * as EssentialProjectErrors from '@essential-projects/errors_ts';
+import {Subscription} from '@essential-projects/event_aggregator_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
 import {
@@ -17,62 +18,143 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   // Notifications
-  public onUserTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
-    this.consumerApiAccessor.onUserTaskWaiting(identity, callback);
+  public async onUserTaskWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onUserTaskWaiting(identity, callback, subscribeOnce);
   }
 
-  public onUserTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
-    this.consumerApiAccessor.onUserTaskFinished(identity, callback);
+  public async onUserTaskFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onUserTaskFinished(identity, callback, subscribeOnce);
   }
 
-  public onUserTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskWaitingCallback): void {
-    this.consumerApiAccessor.onUserTaskForIdentityWaiting(identity, callback);
+  public async onUserTaskForIdentityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onUserTaskForIdentityWaiting(identity, callback, subscribeOnce);
   }
 
-  public onUserTaskForIdentityFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnUserTaskFinishedCallback): void {
-    this.consumerApiAccessor.onUserTaskForIdentityFinished(identity, callback);
+  public async onUserTaskForIdentityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onUserTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
-  public onProcessTerminated(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessTerminatedCallback): void {
-    this.consumerApiAccessor.onProcessTerminated(identity, callback);
+  public async onProcessTerminated(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessTerminatedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onProcessTerminated(identity, callback, subscribeOnce);
   }
 
-  public onProcessStarted(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessStartedCallback): void {
-    this.consumerApiAccessor.onProcessStarted(identity, callback);
+  public async onProcessStarted(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessStartedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onProcessStarted(identity, callback, subscribeOnce);
   }
 
-  public onProcessWithProcessModelIdStarted(identity: IIdentity,
-                                            callback: Messages.CallbackTypes.OnProcessStartedCallback,
-                                            processModelId: string): void {
-    this.consumerApiAccessor.onProcessWithProcessModelIdStarted(identity, callback, processModelId);
+  public async onProcessWithProcessModelIdStarted(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessStartedCallback,
+    processModelId: string,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onProcessWithProcessModelIdStarted(identity, callback, processModelId, subscribeOnce);
   }
 
-  public onManualTaskWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
-    this.consumerApiAccessor.onManualTaskWaiting(identity, callback);
+  public async onManualTaskWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onManualTaskWaiting(identity, callback, subscribeOnce);
   }
 
-  public onManualTaskFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
-    this.consumerApiAccessor.onManualTaskFinished(identity, callback);
+  public async onManualTaskFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onManualTaskFinished(identity, callback, subscribeOnce);
   }
 
-  public onManualTaskForIdentityWaiting(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskWaitingCallback): void {
-    this.consumerApiAccessor.onManualTaskForIdentityWaiting(identity, callback);
+  public async onManualTaskForIdentityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onManualTaskForIdentityWaiting(identity, callback, subscribeOnce);
   }
 
-  public onManualTaskForIdentityFinished(identity: IIdentity, callback: Messages.CallbackTypes.OnManualTaskFinishedCallback): void {
-    this.consumerApiAccessor.onManualTaskForIdentityFinished(identity, callback);
+  public async onManualTaskForIdentityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onManualTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
-  public onProcessEnded(identity: IIdentity, callback: Messages.CallbackTypes.OnProcessEndedCallback): void {
-    this.consumerApiAccessor.onProcessEnded(identity, callback);
+  public async onProcessEnded(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessEndedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onProcessEnded(identity, callback, subscribeOnce);
+  }
+
+  public async removeSubscription(identity: IIdentity, subscription: Subscription): Promise<void> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.removeSubscription(identity, subscription);
   }
 
   // Process models and instances
   public async getProcessModels(identity: IIdentity): Promise<DataModels.ProcessModels.ProcessModelList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getProcessModels(identity);
   }
 
   public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<DataModels.ProcessModels.ProcessModel> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getProcessModelById(identity, processModelId);
   }
 
@@ -83,6 +165,7 @@ export class ConsumerApiClientService implements IConsumerApi {
                                     startCallbackType?: DataModels.ProcessModels.StartCallbackType,
                                     endEventId?: string,
                                   ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
+    this._ensureIsAuthorized(identity);
 
     const useDefaultStartCallbackType: boolean = !startCallbackType;
     if (useDefaultStartCallbackType) {
@@ -107,20 +190,27 @@ export class ConsumerApiClientService implements IConsumerApi {
     correlationId: string,
     processModelId: string,
   ): Promise<Array<DataModels.CorrelationResult>> {
+    this._ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
 
   public async getProcessInstancesByIdentity(identity: IIdentity): Promise<Array<DataModels.ProcessInstance>> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getProcessInstancesByIdentity(identity);
   }
 
   // Events
   public async getEventsForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.Events.EventList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getEventsForProcessModel(identity, processModelId);
   }
 
   public async getEventsForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.Events.EventList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getEventsForCorrelation(identity, correlationId);
   }
 
@@ -129,34 +219,49 @@ export class ConsumerApiClientService implements IConsumerApi {
     processModelId: string,
     correlationId: string,
   ): Promise<DataModels.Events.EventList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async triggerMessageEvent(identity: IIdentity, messageName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.triggerMessageEvent(identity, messageName, payload);
   }
 
   public async triggerSignalEvent(identity: IIdentity, signalName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.triggerSignalEvent(identity, signalName, payload);
   }
 
   // UserTasks
   public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.UserTasks.UserTaskList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getUserTasksForProcessModel(identity, processModelId);
   }
 
   public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getUserTasksForCorrelation(identity, correlationId);
   }
 
-  public async getUserTasksForProcessModelInCorrelation(identity: IIdentity,
-                                                        processModelId: string,
-                                                        correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
+  public async getUserTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
+    this._ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async getWaitingUserTasksByIdentity(identity: IIdentity): Promise<DataModels.UserTasks.UserTaskList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getWaitingUserTasksByIdentity(identity);
   }
 
@@ -167,35 +272,55 @@ export class ConsumerApiClientService implements IConsumerApi {
     userTaskInstanceId: string,
     userTaskResult: DataModels.UserTasks.UserTaskResult,
   ): Promise<void> {
+    this._ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
   }
 
   // ManualTasks
   public async getManualTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getManualTasksForProcessModel(identity, processModelId);
   }
 
   public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getManualTasksForCorrelation(identity, correlationId);
   }
 
-  public async getManualTasksForProcessModelInCorrelation(identity: IIdentity,
-                                                          processModelId: string,
-                                                          correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
+  public async getManualTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this._ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async getWaitingManualTasksByIdentity(identity: IIdentity): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getWaitingManualTasksByIdentity(identity);
   }
 
-  public async finishManualTask(identity: IIdentity,
-                                processInstanceId: string,
-                                correlationId: string,
-                                manualTaskInstanceId: string): Promise<void> {
+  public async finishManualTask(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    manualTaskInstanceId: string,
+  ): Promise<void> {
+    this._ensureIsAuthorized(identity);
 
-  return this.consumerApiAccessor.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
+    return this.consumerApiAccessor.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
+  }
+
+  private _ensureIsAuthorized(identity: IIdentity): void {
+    const noAuthTokenProvided: boolean = !identity || typeof identity.token !== 'string';
+    if (noAuthTokenProvided) {
+      throw new EssentialProjectErrors.UnauthorizedError('No auth token provided!');
+    }
   }
 }
