@@ -62,7 +62,7 @@
 
             var jsonResult = "";
 
-            using (var client = CreateHttpClient(identity)) {
+            using (var client = ProcessEngineHttpClientFactory.CreateHttpClient(identity, this.Configuration.BaseUrl)) {
                 var jsonPayload = SerializeForProcessEngine (processStartRequestPayload);
                 var result = await client.PostAsync (url, new StringContent (jsonPayload, Encoding.UTF8, "application/json"));
 
