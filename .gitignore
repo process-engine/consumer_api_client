@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+TestResults
 
 # lock-files
 package-lock.json
@@ -9,6 +10,8 @@ yarn.lock
 
 # build directories
 dist
+obj
+bin
 
 # auto-generated schemas and documentation
 doc

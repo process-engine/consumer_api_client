@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0dqfbid" name="Definitions_0dqfbid" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3">
+  <bpmn:collaboration id="Collaboration_183lmtm">
+    <bpmn:participant id="Participant_0ne38zi" name="test_start_process" processRef="test_start_process" />
+  </bpmn:collaboration>
+  <bpmn:process id="test_start_process" name="test_start_process" isExecutable="true">
+    <bpmn:sequenceFlow id="SequenceFlow_0g9pjim" sourceRef="StartEvent_1" targetRef="EndEvent_1" />
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_0g9pjim</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_1">
+      <bpmn:incoming>SequenceFlow_0g9pjim</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_183lmtm">
+      <bpmndi:BPMNShape id="Participant_0ne38zi_di" bpmnElement="Participant_0ne38zi">
+        <dc:Bounds x="123" y="82" width="600" height="250" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="261" y="181" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0g9pjim_di" bpmnElement="SequenceFlow_0g9pjim">
+        <di:waypoint xsi:type="dc:Point" x="297" y="199" />
+        <di:waypoint xsi:type="dc:Point" x="534" y="199" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1adk8wp_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="534" y="181" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+ 

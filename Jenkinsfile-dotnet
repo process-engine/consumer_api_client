@@ -1,0 +1,120 @@
+#!/usr/bin/env groovy
+
+@Library('jenkins_shared-libraries@v1.1.0') _
+
+def cleanup_workspace() {
+  cleanWs()
+  dir("${env.WORKSPACE}@tmp") {
+    deleteDir()
+  }
+  dir("${env.WORKSPACE}@script") {
+    deleteDir()
+  }
+  dir("${env.WORKSPACE}@script@tmp") {
+    deleteDir()
+  }
+}
+
+pipeline {
+  agent any
+  environment {
+    HOME = "$WORKSPACE"
+  }
+
+  stages {
+    stage('prepare') {
+      steps {
+        script {
+          docker.image('microsoft/dotnet:2.1-sdk').inside() {
+            dir('dotnet') {
+              sh('dotnet --version')
+              sh('dotnet restore src')
+            }
+          }
+        }
+      }
+    }
+    stage('build') {
+      steps {
+        script {
+          docker.image('microsoft/dotnet:2.1-sdk').inside() {
+            dir('dotnet') {
+              sh('dotnet --version')
+              sh('dotnet build --configuration Release src')
+            }
+          }
+        }
+      }
+    }
+    stage('test') {
+      steps {
+        script {
+          docker.image('5minds/process_engine_runtime:develop').withRun() { c ->
+            docker.image('microsoft/dotnet:2.1-sdk').inside("--link ${c.id}:process_engine_runtime") {
+              dir('dotnet') {
+                process_engine_rest_api_url = "http://process_engine_runtime:8000"
+                sh "while ! curl --silent ${process_engine_rest_api_url} > /dev/null; do sleep 1; done"
+                sh("PROCESS_ENGINE_REST_API_URL=${process_engine_rest_api_url} dotnet test --logger trx --configuration Release tests/ProcessEngine.ConsumerAPI.Client.Tests.csproj");
+
+                step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
+              }
+            }
+          }
+        }
+      }
+    }
+    stage('publish') {
+      when {
+        branch 'master'
+      }
+      steps {
+        withCredentials([string(credentialsId: 'myget_process_engine_public_feed_token', variable: 'PROCESS_ENGINE_PUBLIC')]) {
+          script {
+            docker.image('microsoft/dotnet:2.1-sdk').inside() {
+              dir('dotnet') {
+                sh('dotnet --version')
+                script {
+
+                  def packageVersion = nuGetTools.getPackageVersionFromCSProjFile(
+                    fileName: 'src/ProcessEngine.ConsumerAPI.Client.csproj',
+                  );
+
+                  echo "Package version is ${packageVersion}.";
+
+                  def packageWasAlreadyPublished = nuGetTools.isNuGetPackagePublished(
+                    nuGetFeedURL: "https://5minds.myget.org/F/process_engine_public/api/v3/index.json",
+                    package: "ProcessEngine.ConsumerAPI.Client",
+                    version: packageVersion,
+                    nuGetToken: PROCESS_ENGINE_PUBLIC,
+                  );
+
+                  if (packageWasAlreadyPublished) {
+                    echo "Package version was already published, skipping publish.";
+                  } else {
+                    sh("dotnet nuget push src/bin/Release/ProcessEngine.ConsumerAPI.Client.*.nupkg --api-key $PROCESS_ENGINE_PUBLIC --source https://5minds.myget.org/F/process_engine_public/api/v2");
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    stage('cleanup') {
+      steps {
+        script {
+          // this stage just exists, so the cleanup-work that happens in the post-script
+          // will show up in its own stage in Blue Ocean
+          sh(script: ':', returnStdout: true);
+        }
+      }
+    }
+  }
+  post {
+    always {
+      script {
+        cleanup_workspace();
+      }
+    }
+  }
+}
