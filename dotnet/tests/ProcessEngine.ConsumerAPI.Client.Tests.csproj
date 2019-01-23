@@ -6,14 +6,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
-    <!-- <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="7.0.0" /> -->
+    <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="8.1.0" />
+    <PackageReference Include="EssentialProjects.IAM.Contracts" Version="0.1.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\ProcessEngine.ConsumerAPI.Client.csproj" />
-    <ProjectReference Include="..\..\..\consumer_api_contracts\dotnet\src\ProcessEngine.ConsumerAPI.Contracts.csproj" />
-    <ProjectReference Include="..\..\..\..\iam_contracts\dotnet\src\EssentialProjects.IAM.Contracts.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="bpmn\test_consumer_api_correlation_result.bpmn">
