@@ -39,7 +39,10 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
 
   public initializeSocket(identity: IIdentity): void {
 
-    this._ensureIsAuthorized(identity);
+    const noAuthTokenProvided: boolean = !identity || typeof identity.token !== 'string';
+    if (noAuthTokenProvided) {
+      throw new UnauthorizedError('No auth token provided!');
+    }
 
     const socketUrl: string = `${this.config.socketUrl}/${socketSettings.namespace}`;
     const socketIoOptions: SocketIOClient.ConnectOpts = {
@@ -65,8 +68,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     return this._createSocketIoSubscription(socketSettings.paths.userTaskWaiting, callback, subscribeOnce);
   }
 
@@ -75,8 +76,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     return this._createSocketIoSubscription(socketSettings.paths.userTaskFinished, callback, subscribeOnce);
   }
 
@@ -85,8 +84,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     const socketEventName: string = socketSettings.paths.userTaskForIdentityWaiting
       .replace(socketSettings.pathParams.userId, identity.userId);
 
@@ -98,8 +95,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     const socketEventName: string = socketSettings.paths.userTaskForIdentityFinished
       .replace(socketSettings.pathParams.userId, identity.userId);
 
@@ -111,8 +106,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnProcessTerminatedCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     return this._createSocketIoSubscription(socketSettings.paths.processTerminated, callback, subscribeOnce);
   }
 
@@ -121,8 +114,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnProcessStartedCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     return this._createSocketIoSubscription(socketSettings.paths.processStarted, callback, subscribeOnce);
   }
 
@@ -132,7 +123,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     processModelId: string,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
     const eventName: string = socketSettings.paths.processInstanceStarted
       .replace(socketSettings.pathParams.processModelId, processModelId);
 
@@ -144,8 +134,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     return this._createSocketIoSubscription(socketSettings.paths.manualTaskWaiting, callback, subscribeOnce);
   }
 
@@ -154,8 +142,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     return this._createSocketIoSubscription(socketSettings.paths.manualTaskFinished, callback, subscribeOnce);
   }
 
@@ -164,8 +150,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     const socketEventName: string = socketSettings.paths.manualTaskForIdentityWaiting
       .replace(socketSettings.pathParams.userId, identity.userId);
 
@@ -177,8 +161,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     const socketEventName: string = socketSettings.paths.manualTaskForIdentityFinished
       .replace(socketSettings.pathParams.userId, identity.userId);
 
@@ -190,14 +172,10 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnProcessEndedCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    this._ensureIsAuthorized(identity);
-
     return this._createSocketIoSubscription(socketSettings.paths.processEnded, callback, subscribeOnce);
   }
 
   public async removeSubscription(identity: IIdentity, subscription: Subscription): Promise<void> {
-    this._ensureIsAuthorized(identity);
-
     const callbackToRemove: any = this._subscriptionCollection[subscription.id];
 
     if (!callbackToRemove) {
@@ -537,13 +515,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
 
   private _applyBaseUrl(url: string): string {
     return `${this.baseUrl}${url}`;
-  }
-
-  private _ensureIsAuthorized(identity: IIdentity): void {
-    const noAuthTokenProvided: boolean = !identity || typeof identity.token !== 'string';
-    if (noAuthTokenProvided) {
-      throw new UnauthorizedError('No auth token provided!');
-    }
   }
 
   private _createSocketIoSubscription(route: string, callback: any, subscribeOnce: boolean): Subscription {

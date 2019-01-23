@@ -8,8 +8,6 @@ import {
   Messages,
 } from '@process-engine/consumer_api_contracts';
 
-import {UnauthorizedError} from '@essential-projects/errors_ts';
-
 export class InternalAccessor implements IConsumerApiAccessor {
 
   private _consumerApiService: IConsumerApi = undefined;
@@ -24,8 +22,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onUserTaskWaiting(identity, callback, subscribeOnce);
   }
 
@@ -34,8 +30,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onUserTaskFinished(identity, callback, subscribeOnce);
   }
 
@@ -44,8 +38,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onUserTaskForIdentityWaiting(identity, callback, subscribeOnce);
   }
 
@@ -54,8 +46,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onUserTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
@@ -64,8 +54,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onManualTaskWaiting(identity, callback, subscribeOnce);
   }
 
@@ -74,8 +62,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onManualTaskFinished(identity, callback, subscribeOnce);
   }
 
@@ -84,8 +70,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onManualTaskForIdentityWaiting(identity, callback, subscribeOnce);
   }
 
@@ -94,8 +78,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onManualTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
@@ -104,8 +86,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnProcessStartedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onProcessStarted(identity, callback, subscribeOnce);
   }
 
@@ -115,8 +95,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     processModelId: string,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onProcessWithProcessModelIdStarted(identity, callback, processModelId, subscribeOnce);
   }
 
@@ -125,8 +103,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnProcessTerminatedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onProcessTerminated(identity, callback, subscribeOnce);
   }
 
@@ -135,28 +111,20 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnProcessEndedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.onProcessEnded(identity, callback, subscribeOnce);
   }
 
   public async removeSubscription(identity: IIdentity, subscription: Subscription): Promise<void> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.removeSubscription(identity, subscription);
   }
 
   // Process models and instances
   public async getProcessModels(identity: IIdentity): Promise<DataModels.ProcessModels.ProcessModelList> {
 
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getProcessModels(identity);
   }
 
   public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<DataModels.ProcessModels.ProcessModel> {
-
-    this._ensureIsAuthorized(identity);
 
     return this._consumerApiService.getProcessModelById(identity, processModelId);
   }
@@ -169,8 +137,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
                                     endEventId?: string,
                                   ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
 
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
   }
 
@@ -178,27 +144,19 @@ export class InternalAccessor implements IConsumerApiAccessor {
                                               correlationId: string,
                                               processModelId: string): Promise<Array<DataModels.CorrelationResult>> {
 
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
 
   public async getProcessInstancesByIdentity(identity: IIdentity): Promise<Array<DataModels.ProcessInstance>> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getProcessInstancesByIdentity(identity);
   }
 
   // Events
   public async getEventsForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.Events.EventList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getEventsForProcessModel(identity, processModelId);
   }
 
   public async getEventsForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.Events.EventList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getEventsForCorrelation(identity, correlationId);
   }
 
@@ -207,47 +165,33 @@ export class InternalAccessor implements IConsumerApiAccessor {
     processModelId: string,
     correlationId: string,
   ): Promise<DataModels.Events.EventList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async triggerMessageEvent(identity: IIdentity, messageName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.triggerMessageEvent(identity, messageName, payload);
   }
 
   public async triggerSignalEvent(identity: IIdentity, signalName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.triggerSignalEvent(identity, signalName, payload);
   }
 
   // UserTasks
   public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.UserTasks.UserTaskList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getUserTasksForProcessModel(identity, processModelId);
   }
 
   public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getUserTasksForCorrelation(identity, correlationId);
   }
 
   public async getUserTasksForProcessModelInCorrelation(identity: IIdentity,
                                                         processModelId: string,
                                                         correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async getWaitingUserTasksByIdentity(identity: IIdentity): Promise<DataModels.UserTasks.UserTaskList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getWaitingUserTasksByIdentity(identity);
   }
 
@@ -256,35 +200,25 @@ export class InternalAccessor implements IConsumerApiAccessor {
                               correlationId: string,
                               userTaskInstanceId: string,
                               userTaskResult: DataModels.UserTasks.UserTaskResult): Promise<void> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
   }
 
   // ManualTasks
   public async getManualTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getManualTasksForProcessModel(identity, processModelId);
   }
 
   public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getManualTasksForCorrelation(identity, correlationId);
   }
 
   public async getManualTasksForProcessModelInCorrelation(identity: IIdentity,
                                                           processModelId: string,
                                                           correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async getWaitingManualTasksByIdentity(identity: IIdentity): Promise<DataModels.ManualTasks.ManualTaskList> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.getWaitingManualTasksByIdentity(identity);
   }
 
@@ -292,18 +226,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
                                 processInstanceId: string,
                                 correlationId: string,
                                 manualTaskInstanceId: string): Promise<void> {
-    this._ensureIsAuthorized(identity);
-
     return this._consumerApiService.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
-  }
-
-  private _ensureIsAuthorized(identity: IIdentity): void {
-
-    // Note: When using an external accessor, this check is performed by the ConsumerApiHttp module.
-    // Since that component is bypassed by the internal accessor, we need to perform this check here.
-    const noAuthTokenProvided: boolean = !identity || typeof identity.token !== 'string';
-    if (noAuthTokenProvided) {
-      throw new UnauthorizedError('No auth token provided!');
-    }
   }
 }
