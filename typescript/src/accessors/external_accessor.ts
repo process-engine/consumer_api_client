@@ -182,7 +182,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
       return;
     }
 
-    this._socket.off(subscription.id, callbackToRemove);
+    this._socket.off(subscription.eventName, callbackToRemove);
 
     delete this._subscriptionCollection[subscription.id];
 
