@@ -1,6 +1,6 @@
 // tslint:disable:max-file-line-count
+import * as uuid from 'node-uuid';
 import * as io from 'socket.io-client';
-import * as uuid from 'uuid';
 
 import {UnauthorizedError} from '@essential-projects/errors_ts';
 import {Subscription} from '@essential-projects/event_aggregator_contracts';
