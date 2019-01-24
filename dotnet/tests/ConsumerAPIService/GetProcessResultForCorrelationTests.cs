@@ -1,4 +1,5 @@
-namespace ProcessEngine.ConsumerAPI.Client.Tests {
+namespace ProcessEngine.ConsumerAPI.Client.Tests
+{
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
@@ -14,18 +15,21 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests {
     using Xunit;
 
     [Collection("ConsumerAPI collection")]
-    public class GetProcessResultForCorrelationTests : ProcessEngineBaseTest {
+    public class GetProcessResultForCorrelationTests : ProcessEngineBaseTest
+    {
         private readonly ConsumerAPIFixture fixture;
 
-        public GetProcessResultForCorrelationTests(ConsumerAPIFixture fixture) {
+        public GetProcessResultForCorrelationTests(ConsumerAPIFixture fixture)
+        {
             this.fixture = fixture;
         }
 
         [Fact]
-        public async Task BPMN_GetProcessResultForCorrelation_ShouldGetResultOfStaticProcess() {
+        public async Task BPMN_GetProcessResultForCorrelation_ShouldGetResultOfStaticProcess()
+        {
             string processModelId = "test_consumer_api_correlation_result";
             string endEventId = "EndEvent_Success";
-            var identity = IdentityFactory.GetDummyIdentity();
+            var identity = DummyIdentity.Create();
 
             ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
                 identity,
@@ -40,9 +44,11 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests {
                 processInstance.CorrelationId,
                 processModelId);
 
-            var expectedCorrelationResult = new CorrelationResult<TestResult> {
-                TokenPayload = new TestResult() {
-                scriptOutput = "hello world"
+            var expectedCorrelationResult = new CorrelationResult<TestResult>
+            {
+                TokenPayload = new TestResult()
+                {
+                    scriptOutput = "hello world"
                 },
                 CorrelationId = processInstance.CorrelationId,
                 EndEventId = endEventId
@@ -58,7 +64,8 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests {
         }
     }
 
-    public class TestResult {
+    public class TestResult
+    {
         public string scriptOutput { get; set; }
     }
 }

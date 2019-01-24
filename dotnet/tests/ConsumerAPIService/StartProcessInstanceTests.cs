@@ -1,4 +1,5 @@
-namespace ProcessEngine.ConsumerAPI.Client.Tests {
+namespace ProcessEngine.ConsumerAPI.Client.Tests
+{
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
@@ -13,37 +14,42 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests {
     using Xunit;
 
     [Collection("ConsumerAPI collection")]
-    public class StartProcessInstanceTests : ProcessEngineBaseTest {
+    public class StartProcessInstanceTests : ProcessEngineBaseTest
+    {
         private readonly ConsumerAPIFixture fixture;
 
-        public StartProcessInstanceTests(ConsumerAPIFixture fixture) {
+        public StartProcessInstanceTests(ConsumerAPIFixture fixture)
+        {
             this.fixture = fixture;
         }
 
         [Fact]
-        public void StartProcessInstance_EmptyParameters_ShouldThrowException() {
-            var ex = Assert.ThrowsAsync<ArgumentNullException>(async() => await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                IdentityFactory.GetDummyIdentity(),
+        public void StartProcessInstance_EmptyParameters_ShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await this.fixture.ConsumerAPIClient.StartProcessInstance(
+                DummyIdentity.Create(),
                 "",
                 "Test",
                 new ProcessStartRequestPayload<object>()));
         }
 
         [Fact]
-        public void StartProcessInstance_ProcessModelNotFound_ShouldThrowException() {
-            var ex = Assert.ThrowsAsync<Exception>(async() => await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                IdentityFactory.GetDummyIdentity(),
+        public void StartProcessInstance_ProcessModelNotFound_ShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<Exception>(async () => await this.fixture.ConsumerAPIClient.StartProcessInstance(
+                DummyIdentity.Create(),
                 "Test",
                 "Test",
                 new ProcessStartRequestPayload<object>()));
         }
 
         [Fact]
-        public async Task BPMN_StartProcessInstance_ShouldCreateAndFinishProcess() {
+        public async Task BPMN_StartProcessInstance_ShouldCreateAndFinishProcess()
+        {
             string processModelId = "test_start_process";
 
             ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                IdentityFactory.GetDummyIdentity(),
+                DummyIdentity.Create(),
                 processModelId,
                 "StartEvent_1",
                 new ProcessStartRequestPayload<object>(),
@@ -52,16 +58,18 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests {
         }
 
         [Fact]
-        public async Task BPMN_StartProcessInstance_ShouldCreateProcessWithDistinctCorrelationId() {
+        public async Task BPMN_StartProcessInstance_ShouldCreateProcessWithDistinctCorrelationId()
+        {
             string processModelId = "test_start_process";
             string correlationId = "CorrelationId_1";
 
-            var requestPayload = new ProcessStartRequestPayload<object> {
+            var requestPayload = new ProcessStartRequestPayload<object>
+            {
                 CorrelationId = correlationId
             };
 
             ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                IdentityFactory.GetDummyIdentity(),
+                DummyIdentity.Create(),
                 processModelId,
                 "StartEvent_1",
                 requestPayload);
@@ -70,13 +78,14 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests {
         }
 
         [Fact]
-        public async Task BPMN_StartProcessInstance_ShouldCreateCorrelationIdIfNoneProvided() {
+        public async Task BPMN_StartProcessInstance_ShouldCreateCorrelationIdIfNoneProvided()
+        {
             string processModelId = "test_start_process";
 
             var requestPayload = new ProcessStartRequestPayload<object>();
 
             ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                IdentityFactory.GetDummyIdentity(),
+                DummyIdentity.Create(),
                 processModelId,
                 "StartEvent_1",
                 requestPayload);
