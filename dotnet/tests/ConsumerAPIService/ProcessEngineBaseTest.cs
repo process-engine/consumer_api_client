@@ -1,4 +1,5 @@
-namespace ProcessEngine.ConsumerAPI.Client.Tests {
+namespace ProcessEngine.ConsumerAPI.Client.Tests
+{
     using System.Collections.Generic;
     using System.Net.Http.Headers;
     using System.Net.Http;
@@ -12,14 +13,17 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests {
 
     using Newtonsoft.Json;
 
-    public class ProcessEngineBaseTest {
+    public class ProcessEngineBaseTest
+    {
         private string processEngineRestApiUrl;
 
-        public ProcessEngineBaseTest() {
+        public ProcessEngineBaseTest()
+        {
             SetProcessEngineRestApiUrl();
         }
 
-        private void SetProcessEngineRestApiUrl() {
+        private void SetProcessEngineRestApiUrl()
+        {
             string baseUrlFromEnv = Environment.GetEnvironmentVariable("PROCESS_ENGINE_REST_API_URL");
             string baseUrl = string.IsNullOrEmpty(baseUrlFromEnv) ? "http://localhost:8080" : baseUrlFromEnv;
 
