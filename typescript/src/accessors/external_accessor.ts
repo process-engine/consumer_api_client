@@ -475,8 +475,9 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const urlRestPart: string = restSettings.paths
-                                                  .processModelManualTasks
-                                                  .replace(restSettings.params.processInstanceId, processInstanceId);
+                                              .processInstanceManualTasks
+                                              .replace(restSettings.params.processInstanceId, processInstanceId);
+
     const url: string = this._applyBaseUrl(urlRestPart);
 
     const httpResponse: IResponse<DataModels.ManualTasks.ManualTaskList> =
