@@ -159,6 +159,8 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   public async getProcessModelByProcessInstanceId(identity: IIdentity, processInstanceId: string): Promise<DataModels.ProcessModels.ProcessModel> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getProcessModelByProcessInstanceId(identity, processInstanceId);
   }
 
@@ -248,6 +250,8 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   public async getUserTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.UserTasks.UserTaskList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getUserTasksForProcessInstance(identity, processInstanceId);
   }
 
@@ -293,6 +297,8 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   public async getManualTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this._ensureIsAuthorized(identity);
+
     return this.consumerApiAccessor.getManualTasksForProcessInstance(identity, processInstanceId);
   }
 
