@@ -385,7 +385,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
   public async getUserTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.UserTasks.UserTaskList> {
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
-    let url: string = restSettings.paths.processInstanceUserTasks.replace(restSettings.params.processModelId, processInstanceId);
+    let url: string = restSettings.paths.processInstanceUserTasks.replace(restSettings.params.processInstanceId, processInstanceId);
     url = this._applyBaseUrl(url);
 
     const httpResponse: IResponse<DataModels.UserTasks.UserTaskList> =
