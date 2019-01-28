@@ -225,14 +225,15 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return httpResponse.result;
   }
 
-  public async startProcessInstance(identity: IIdentity,
-                                    processModelId: string,
-                                    startEventId: string,
-                                    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
-                                    startCallbackType: DataModels.ProcessModels.StartCallbackType,
-                                    endEventId?: string,
-                                    processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
-                                  ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
+  public async startProcessInstance(
+    identity: IIdentity,
+    processModelId: string,
+    startEventId: string,
+    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
+    startCallbackType: DataModels.ProcessModels.StartCallbackType,
+    endEventId?: string,
+    processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
+  ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
 
     const url: string = this._buildStartProcessInstanceUrl(processModelId, startEventId, startCallbackType, endEventId);
 
