@@ -5,6 +5,6 @@ module.exports = {
   output: {
     filename: 'consumer_api_client_bundle.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'consumerApi'
+    library: 'consumerApiClient'
   },
 };
