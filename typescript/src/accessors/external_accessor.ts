@@ -17,25 +17,24 @@ import {
 } from '@process-engine/consumer_api_contracts';
 
 /**
+ * Associates a Socket with a userId taken from an IIdentity.
+ */
+type IdentitySocketCollection = {[userId: string]: SocketIOClient.Socket};
+
+/**
  * Connects a Subscription ID to a specific callback.
  * This allows us to remove that Subscription from SocketIO
  * when "ExternalAccessor.removeSubscription" is called.
  */
 type SubscriptionCallbackAssociation = {[subscriptionId: string]: any};
 
-/**
- * Associates a Socket with a userId taken from an IIdentity.
- */
-type IdentitySocketCollection = {[userId: string]: SocketIOClient.Socket};
-
 export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIoAccessor {
   private baseUrl: string = 'api/consumer/v1';
 
+  private _socketCollection: IdentitySocketCollection = {};
   private _subscriptionCollection: SubscriptionCallbackAssociation = {};
 
   private _httpClient: IHttpClient = undefined;
-
-  private _socketCollection: IdentitySocketCollection = {};
 
   public config: any;
 
