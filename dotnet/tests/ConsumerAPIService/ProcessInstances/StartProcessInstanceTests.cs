@@ -5,10 +5,12 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using System.Text;
     using System.Threading.Tasks;
     using System;
+    using System.Threading;
 
     using EssentialProjects.IAM.Contracts;
 
     using ProcessEngine.ConsumerAPI.Client.Tests.xUnit;
+    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
     using ProcessEngine.ConsumerAPI.Contracts;
 
     using Xunit;
@@ -58,6 +60,28 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 .ConsumerAPIClient
                 .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType, "EndEvent_1");
         }
+
+        // [Fact]
+        // public async Task BPMN_StartProcessInstance_ShouldExecuteCallbackOnFinish()
+        // {
+        //     string processModelId = "test_start_process";
+
+        //     var callbackExecuted = false;
+        //     this.fixture.ConsumerAPIClient.OnProcessEnded(() =>
+        //     {
+        //         callbackExecuted = true;
+        //     });
+
+        //     ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
+        //         DummyIdentity.Create(),
+        //         processModelId,
+        //         "StartEvent_1",
+        //         new ProcessStartRequestPayload<object>(),
+        //         StartCallbackType.CallbackOnEndEventReached,
+        //         "EndEvent_1");
+
+        //     Assert.Equal(callbackExecuted, true);
+        // }
 
         [Fact]
         public async Task BPMN_StartProcessInstance_ShouldCreateProcessWithDistinctCorrelationId()

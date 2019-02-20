@@ -10,6 +10,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using EssentialProjects.IAM.Contracts;
 
     using ProcessEngine.ConsumerAPI.Client.Tests.xUnit;
+    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
     using ProcessEngine.ConsumerAPI.Contracts;
 
     using Xunit;

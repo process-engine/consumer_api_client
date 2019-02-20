@@ -17,6 +17,7 @@
 
     using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
+    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
 
     public class ConsumerApiClientService : IConsumerAPI
     {
@@ -436,5 +437,24 @@
             var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
             return jsonPayload;
         }
-    }
+
+        public Subscription OnUserTaskWaiting(IIdentity identity, OnUserTaskWaitingCallback callback, bool? subscribeOnce)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Subscription OnUserTaskFinished(IIdentity identity, OnUserTaskFinishedCallback callback, bool? subscribeOnce)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Subscription OnUserTaskForIdentityWaiting(IIdentity identity, OnUserTaskWaitingCallback callback, bool? subscribeOnce)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Subscription OnUserTaskForIdentityFinished(IIdentity identity, OnUserTaskFinishedCallback callback, bool? subscribeOnce)
+        {
+            throw new NotImplementedException();
+        }
 }
