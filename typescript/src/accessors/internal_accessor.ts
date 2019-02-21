@@ -140,7 +140,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     endEventId?: string,
   ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
 
-    return this._consumerApiService.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
+    return this._consumerApiService.startProcessInstance(identity, processModelId, payload, startCallbackType, startEventId, endEventId);
   }
 
   public async getProcessResultForCorrelation(

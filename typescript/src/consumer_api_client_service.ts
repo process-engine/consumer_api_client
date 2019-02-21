@@ -188,7 +188,7 @@ export class ConsumerApiClientService implements IConsumerApi {
       throw new EssentialProjectErrors.BadRequestError(`Must provide an EndEventId, when using callback type 'CallbackOnEndEventReached'!`);
     }
 
-    return this.consumerApiAccessor.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
+    return this.consumerApiAccessor.startProcessInstance(identity, processModelId, payload, startCallbackType, startEventId, endEventId);
   }
 
   public async getProcessResultForCorrelation(
