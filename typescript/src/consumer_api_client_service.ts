@@ -166,9 +166,9 @@ export class ConsumerApiClientService implements IConsumerApi {
 
   public async startProcessInstance(identity: IIdentity,
                                     processModelId: string,
-                                    startEventId: string,
                                     payload: DataModels.ProcessModels.ProcessStartRequestPayload,
                                     startCallbackType?: DataModels.ProcessModels.StartCallbackType,
+                                    startEventId?: string,
                                     endEventId?: string,
                                   ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
     this._ensureIsAuthorized(identity);
