@@ -1,11 +1,11 @@
 ﻿namespace ProcessEngine.ConsumerAPI.Client
 {
+    using System;
     using System.Collections.Generic;
     using System.Net.Http.Headers;
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
-    using System;
 
     using EssentialProjects.IAM.Contracts;
 
@@ -14,18 +14,18 @@
     using ProcessEngine.ConsumerAPI.Contracts.DataModel;
 
     using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
+    using SocketSettings = ProcessEngine.ConsumerAPI.Contracts.SocketSettings;
 
-    using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
-    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
+    using Newtonsoft.Json.Serialization;
 
     public class ConsumerApiClientService : IConsumerAPI
     {
-        private readonly HttpClient httpClient;
+        private readonly HttpClient HttpClient;
 
         public ConsumerApiClientService(HttpClient httpClient)
         {
-            this.httpClient = httpClient;
+            this.HttpClient = httpClient;
         }
 
         public async Task<ProcessStartResponsePayload> StartProcessInstance<TInputValues>(
@@ -56,7 +56,7 @@
 
             var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
-            var urlWithParams = $"{RestSettings.Endpoints.ConsumerAPI}{endpoint}?start_callback_type={(int)callbackType}";
+            var urlWithParams = $"{urlWithEndpoint}?start_callback_type={(int)callbackType}";
 
             var startEventIdProvided = !String.IsNullOrEmpty(startEventId);
             if (startEventIdProvided)
@@ -75,7 +75,7 @@
             var jsonPayload = SerializeForProcessEngine(processStartRequestPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithParams, requestContent);
-            var result = await this.httpClient.SendAsync(request);
+            var result = await this.HttpClient.SendAsync(request);
 
             if (result.IsSuccessStatusCode)
             {
@@ -104,7 +104,7 @@
             IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
 
             var request = this.CreateRequestMessage(identity, HttpMethod.Get, urlWithEndpoint);
-            var result = await this.httpClient.SendAsync(request);
+            var result = await this.HttpClient.SendAsync(request);
 
             if (result.IsSuccessStatusCode)
             {
@@ -166,7 +166,7 @@
             var jsonPayload = SerializeForProcessEngine(triggerPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithEndpoint, requestContent);
-            var result = await this.httpClient.SendAsync(request);
+            var result = await this.HttpClient.SendAsync(request);
 
             if (!result.IsSuccessStatusCode)
             {
@@ -189,7 +189,7 @@
             var jsonPayload = SerializeForProcessEngine(triggerPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithEndpoint, requestContent);
-            var result = await this.httpClient.SendAsync(request);
+            var result = await this.HttpClient.SendAsync(request);
 
             if (!result.IsSuccessStatusCode)
             {
@@ -269,7 +269,7 @@
             var jsonPayload = SerializeForProcessEngine(userTaskResult);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithEndpoint, requestContent);
-            var result = await this.httpClient.SendAsync(request);
+            var result = await this.HttpClient.SendAsync(request);
 
             if (!result.IsSuccessStatusCode)
             {
@@ -347,7 +347,7 @@
             var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
             var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithEndpoint);
-            var result = await this.httpClient.SendAsync(request);
+            var result = await this.HttpClient.SendAsync(request);
 
             if (!result.IsSuccessStatusCode)
             {
@@ -386,7 +386,7 @@
             TResult parsedResult = default(TResult);
 
             var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
+            var result = await this.HttpClient.SendAsync(request);
 
             if (result.IsSuccessStatusCode)
             {
@@ -414,7 +414,7 @@
             message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", identity.Token);
 
-            message.RequestUri = new Uri(this.httpClient.BaseAddress, url);
+            message.RequestUri = new Uri(this.HttpClient.BaseAddress, url);
             message.Content = content;
             message.Method = method;
 
