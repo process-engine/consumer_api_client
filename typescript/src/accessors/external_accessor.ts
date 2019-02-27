@@ -221,14 +221,14 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
   public async startProcessInstance(
     identity: IIdentity,
     processModelId: string,
-    startEventId: string,
     payload: DataModels.ProcessModels.ProcessStartRequestPayload,
     startCallbackType: DataModels.ProcessModels.StartCallbackType,
+    startEventId?: string,
     endEventId?: string,
     processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
   ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
 
-    const url: string = this._buildStartProcessInstanceUrl(processModelId, startEventId, startCallbackType, endEventId);
+    const url: string = this._buildStartProcessInstanceUrl(processModelId, startCallbackType, endEventId, startEventId);
 
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
@@ -249,15 +249,19 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
 
   private _buildStartProcessInstanceUrl(
     processModelId: string,
-    startEventId: string,
     startCallbackType: DataModels.ProcessModels.StartCallbackType,
     endEventId: string,
+    startEventId?: string,
   ): string {
     let url: string = restSettings.paths.startProcessInstance
-      .replace(restSettings.params.processModelId, processModelId)
-      .replace(restSettings.params.startEventId, startEventId);
+      .replace(restSettings.params.processModelId, processModelId);
 
     url = `${url}?start_callback_type=${startCallbackType}`;
+
+    const startEventIdIsGiven: boolean = startEventId !== undefined;
+    if (startEventIdIsGiven) {
+      url = `${url}&start_event_id=${startEventId}`;
+    }
 
     const attachEndEventId: boolean = startCallbackType === DataModels.ProcessModels.StartCallbackType.CallbackOnEndEventReached;
     if (attachEndEventId) {

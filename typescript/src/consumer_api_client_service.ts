@@ -166,9 +166,9 @@ export class ConsumerApiClientService implements IConsumerApi {
 
   public async startProcessInstance(identity: IIdentity,
                                     processModelId: string,
-                                    startEventId: string,
                                     payload: DataModels.ProcessModels.ProcessStartRequestPayload,
                                     startCallbackType?: DataModels.ProcessModels.StartCallbackType,
+                                    startEventId?: string,
                                     endEventId?: string,
                                   ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
     this._ensureIsAuthorized(identity);
@@ -188,7 +188,7 @@ export class ConsumerApiClientService implements IConsumerApi {
       throw new EssentialProjectErrors.BadRequestError(`Must provide an EndEventId, when using callback type 'CallbackOnEndEventReached'!`);
     }
 
-    return this.consumerApiAccessor.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
+    return this.consumerApiAccessor.startProcessInstance(identity, processModelId, payload, startCallbackType, startEventId, endEventId);
   }
 
   public async getProcessResultForCorrelation(
