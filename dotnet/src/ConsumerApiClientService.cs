@@ -1,11 +1,11 @@
 ﻿namespace ProcessEngine.ConsumerAPI.Client
 {
-    using System;
     using System.Collections.Generic;
     using System.Net.Http.Headers;
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
+    using System;
 
     using EssentialProjects.IAM.Contracts;
 
@@ -16,8 +16,8 @@
     using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
     using SocketSettings = ProcessEngine.ConsumerAPI.Contracts.SocketSettings;
 
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Serialization;
+    using Newtonsoft.Json;
 
     public class ConsumerApiClientService : IConsumerAPI
     {
