@@ -18,6 +18,47 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   // Notifications
+
+  public async onEmptyActivityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onEmptyActivityWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onEmptyActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onEmptyActivityFinished(identity, callback, subscribeOnce);
+  }
+
+  public async onEmptyActivityForIdentityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onEmptyActivityForIdentityWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onEmptyActivityForIdentityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onEmptyActivityForIdentityFinished(identity, callback, subscribeOnce);
+  }
+
   public async onUserTaskWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
@@ -240,6 +281,55 @@ export class ConsumerApiClientService implements IConsumerApi {
     this._ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.triggerSignalEvent(identity, signalName, payload);
+  }
+
+  // Empty Activities
+  public async getEmptyActivitiesForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getEmptyActivitiesForProcessModel(identity, processModelId);
+  }
+
+  public async getEmptyActivitiesForProcessInstance(
+    identity: IIdentity,
+    processInstanceId: string,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getEmptyActivitiesForProcessInstance(identity, processInstanceId);
+  }
+
+  public async getEmptyActivitiesForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getEmptyActivitiesForCorrelation(identity, correlationId);
+  }
+
+  public async getEmptyActivitiesForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getEmptyActivitiesForProcessModelInCorrelation(identity, processModelId, correlationId);
+  }
+
+  public async getWaitingEmptyActivitiesByIdentity(identity: IIdentity): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getWaitingEmptyActivitiesByIdentity(identity);
+  }
+
+  public async finishEmptyActivity(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    emptyActivityInstanceId: string,
+  ): Promise<void> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.finishEmptyActivity(identity, processInstanceId, correlationId, emptyActivityInstanceId);
   }
 
   // UserTasks
