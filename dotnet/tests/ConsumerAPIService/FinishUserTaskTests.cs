@@ -48,7 +48,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         }
 
         [Fact]
-        public async Task BPMN_FinishUserTask_ShouldFetchUserTaskList()
+        public async Task BPMN_FinishUserTask_ShouldFinishUserTask()
         {
             string processModelId = "test_consumer_api_usertask";
             var identity = DummyIdentity.Create();
@@ -60,9 +60,14 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 new ProcessStartRequestPayload<object>(),
                 StartCallbackType.CallbackOnProcessInstanceCreated);
 
+            // Give the process engine time to reach the user task
+            await Task.Delay(1000);
+
             UserTaskList userTasks = await this.fixture.ConsumerAPIClient.GetUserTasksForCorrelation(
                 identity,
                 processInstance.CorrelationId);
+
+            Assert.NotEmpty(userTasks.UserTasks);
 
             var userTaskToBeFinished = userTasks.UserTasks.ElementAt(0);
             var userTaskResult = new UserTaskResult()

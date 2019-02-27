@@ -56,6 +56,8 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 new ProcessStartRequestPayload<object>(),
                 StartCallbackType.CallbackOnProcessInstanceCreated);
 
+            // Give the process engine time to reach the user task
+            await Task.Delay(1000);
 
             UserTaskList userTasks = await this.fixture.ConsumerAPIClient.GetUserTasksForProcessModelInCorrelation(
                 identity,
