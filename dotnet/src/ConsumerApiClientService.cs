@@ -27,10 +27,10 @@
         public async Task<ProcessStartResponsePayload> StartProcessInstance<TInputValues>(
             IIdentity identity,
             string processModelId,
-            string startEventKey,
+            string startEventId,
             ProcessStartRequestPayload<TInputValues> processStartRequestPayload,
             StartCallbackType callbackType = StartCallbackType.CallbackOnProcessInstanceCreated,
-            string endEventKey = "")
+            string endEventId = "")
         where TInputValues : new()
         {
 
@@ -39,32 +39,28 @@
                 throw new UnauthorizedAccessException(nameof(identity));
             }
 
-            var noStartEventIdProvided = String.IsNullOrEmpty(startEventKey);
-
-            if (noStartEventIdProvided)
-            {
-                throw new ArgumentNullException(nameof(startEventKey));
-            }
-
             var noEndEventIdProvided = callbackType == StartCallbackType.CallbackOnEndEventReached &&
-                String.IsNullOrEmpty(endEventKey);
+                String.IsNullOrEmpty(endEventId);
 
             if (noEndEventIdProvided)
             {
-                throw new ArgumentNullException(nameof(endEventKey));
+                throw new ArgumentNullException(nameof(endEventId));
             }
 
             var url = Paths.StartProcessInstance
-                .Replace(Params.ProcessModelId, processModelId)
-                .Replace(Params.StartEventId, startEventKey);
+                .Replace(Params.ProcessModelId, processModelId);
 
             url = $"{Endpoints.ConsumerAPI}/{url}?start_callback_type={(int)callbackType}";
 
-            var attachEndEventId = callbackType == StartCallbackType.CallbackOnEndEventReached;
+            var startEventIdIsGiven = startEventId != null;
+            if (startEventIdIsGiven) {
+                url = $"{url}&start_event_id={startEventId}";
+            }
 
+            var attachEndEventId = callbackType == StartCallbackType.CallbackOnEndEventReached;
             if (attachEndEventId)
             {
-                url = $"{url}&end_event_id={endEventKey}";
+                url = $"{url}&end_event_id={endEventId}";
             }
 
             var jsonResult = "";

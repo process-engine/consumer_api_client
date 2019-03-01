@@ -51,6 +51,44 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
   }
 
   // Notifications
+  public async onEmptyActivityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this._createSocketIoSubscription(identity, socketSettings.paths.emptyActivityWaiting, callback, subscribeOnce);
+  }
+
+  public async onEmptyActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this._createSocketIoSubscription(identity, socketSettings.paths.emptyActivityFinished, callback, subscribeOnce);
+  }
+
+  public async onEmptyActivityForIdentityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    const socketEventName: string = socketSettings.paths.emptyActivityForIdentityWaiting
+      .replace(socketSettings.pathParams.userId, identity.userId);
+
+    return this._createSocketIoSubscription(identity, socketEventName, callback, subscribeOnce);
+  }
+
+  public async onEmptyActivityForIdentityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    const socketEventName: string = socketSettings.paths.emptyActivityForIdentityFinished
+      .replace(socketSettings.pathParams.userId, identity.userId);
+
+    return this._createSocketIoSubscription(identity, socketEventName, callback, subscribeOnce);
+  }
+
   public async onUserTaskWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
@@ -365,6 +403,101 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     url = this._applyBaseUrl(url);
 
     await this._httpClient.post<DataModels.Events.EventTriggerPayload, any>(url, payload, requestAuthHeaders);
+  }
+
+  // Empty Activities
+  public async getEmptyActivitiesForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    const restPath: string = restSettings.paths.processModelEmptyActivities
+      .replace(restSettings.params.processModelId, processModelId);
+
+    const url: string = this._applyBaseUrl(restPath);
+
+    const httpResponse: IResponse<DataModels.EmptyActivities.EmptyActivityList> =
+      await this._httpClient.get<DataModels.EmptyActivities.EmptyActivityList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getEmptyActivitiesForProcessInstance(
+    identity: IIdentity,
+    processInstanceId: string,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    const restPath: string = restSettings.paths.processInstanceEmptyActivities
+      .replace(restSettings.params.processInstanceId, processInstanceId);
+
+    const url: string = this._applyBaseUrl(restPath);
+
+    const httpResponse: IResponse<DataModels.EmptyActivities.EmptyActivityList> =
+      await this._httpClient.get<DataModels.EmptyActivities.EmptyActivityList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getEmptyActivitiesForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    const restPath: string = restSettings.paths.correlationEmptyActivities
+      .replace(restSettings.params.correlationId, correlationId);
+
+    const url: string = this._applyBaseUrl(restPath);
+
+    const httpResponse: IResponse<DataModels.EmptyActivities.EmptyActivityList> =
+      await this._httpClient.get<DataModels.EmptyActivities.EmptyActivityList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getEmptyActivitiesForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    const restPath: string = restSettings.paths.processModelCorrelationEmptyActivities
+      .replace(restSettings.params.processModelId, processModelId)
+      .replace(restSettings.params.correlationId, correlationId);
+
+    const url: string = this._applyBaseUrl(restPath);
+
+    const httpResponse: IResponse<DataModels.EmptyActivities.EmptyActivityList> =
+      await this._httpClient.get<DataModels.EmptyActivities.EmptyActivityList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getWaitingEmptyActivitiesByIdentity(identity: IIdentity): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    const url: string = this._applyBaseUrl(restSettings.paths.getOwnEmptyActivities);
+
+    const httpResponse: IResponse<DataModels.EmptyActivities.EmptyActivityList> =
+      await this._httpClient.get<DataModels.EmptyActivities.EmptyActivityList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async finishEmptyActivity(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    emptyActivityInstanceId: string,
+  ): Promise<void> {
+    const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
+
+    let url: string = restSettings.paths.finishEmptyActivity
+      .replace(restSettings.params.processInstanceId, processInstanceId)
+      .replace(restSettings.params.correlationId, correlationId)
+      .replace(restSettings.params.emptyActivityInstanceId, emptyActivityInstanceId);
+
+    url = this._applyBaseUrl(url);
+
+    const body: {} = {};
+    await this._httpClient.post(url, body, requestAuthHeaders);
   }
 
   // UserTasks
