@@ -18,7 +18,6 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   // Notifications
-
   public async onEmptyActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
