@@ -11,6 +11,7 @@
 
     using ProcessEngine.ConsumerAPI.Contracts.RestSettings;
     using ProcessEngine.ConsumerAPI.Contracts;
+    using ProcessEngine.ConsumerAPI.DataModel;
 
     using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
@@ -106,6 +107,109 @@
             }
 
             return parsedResult;
+        }
+        public async Task<EventList> GetEventsForProcessModel(IIdentity identity, string processModelId)
+        {
+            var url = Paths.ProcessModelEvents
+                .Replace(Params.ProcessModelId, processModelId);
+
+            url = $"{Endpoints.ConsumerAPI}/{url}";
+
+            var jsonResult = "";
+
+            EventList parsedResult = null;
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<EventList>(jsonResult);
+            }
+
+            return parsedResult;
+        }
+
+        public async Task<EventList> GetEventsForCorrelation(IIdentity identity, string correlationId)
+        {
+            var url = Paths.CorrelationEvents
+                .Replace(Params.CorrelationId, correlationId);
+
+            url = $"{Endpoints.ConsumerAPI}/{url}";
+
+            var jsonResult = "";
+
+            EventList parsedResult = null;
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<EventList>(jsonResult);
+            }
+
+            return parsedResult;
+        }
+
+        public async Task<EventList> GetEventsForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        {
+            var url = Paths.CorrelationEvents
+                .Replace(Params.ProcessModelId, processModelId)
+                .Replace(Params.CorrelationId, correlationId);
+
+            url = $"{Endpoints.ConsumerAPI}/{url}";
+
+            var jsonResult = "";
+
+            EventList parsedResult = null;
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<EventList>(jsonResult);
+            }
+
+            return parsedResult;
+        }
+
+        public async Task TriggerMessageEvent(IIdentity identity, string messageName, object triggerPayload = null)
+        {
+            var url = Paths.TriggerMessageEvent
+                .Replace(Params.EventName, messageName);
+
+            var payload = triggerPayload == null ? new {} : triggerPayload;
+            var jsonPayload = SerializeForProcessEngine(payload);
+            var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception("Message event could not be triggered");
+            }
+        }
+
+        public async Task TriggerSignalEvent(IIdentity identity, string signalName, object triggerPayload = null)
+        {
+            var url = Paths.TriggerSignalEvent
+                .Replace(Params.EventName, signalName);
+
+            var payload = triggerPayload == null ? new {} : triggerPayload;
+            var jsonPayload = SerializeForProcessEngine(payload);
+            var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception("Signal event could not be triggered");
+            }
         }
 
         private string SerializeForProcessEngine(object payload)
