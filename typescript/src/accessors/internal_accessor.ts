@@ -17,6 +17,38 @@ export class InternalAccessor implements IConsumerApiAccessor {
   }
 
   // Notifications
+  public async onEmptyActivityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this._consumerApiService.onEmptyActivityWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onEmptyActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this._consumerApiService.onEmptyActivityFinished(identity, callback, subscribeOnce);
+  }
+
+  public async onEmptyActivityForIdentityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this._consumerApiService.onEmptyActivityForIdentityWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onEmptyActivityForIdentityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnEmptyActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this._consumerApiService.onEmptyActivityForIdentityFinished(identity, callback, subscribeOnce);
+  }
+
   public async onUserTaskWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
@@ -180,6 +212,43 @@ export class InternalAccessor implements IConsumerApiAccessor {
 
   public async triggerSignalEvent(identity: IIdentity, signalName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
     return this._consumerApiService.triggerSignalEvent(identity, signalName, payload);
+  }
+
+  // Empty Activities
+  public async getEmptyActivitiesForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    return this._consumerApiService.getEmptyActivitiesForProcessModel(identity, processModelId);
+  }
+
+  public async getEmptyActivitiesForProcessInstance(
+    identity: IIdentity,
+    processInstanceId: string,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    return this._consumerApiService.getEmptyActivitiesForProcessInstance(identity, processInstanceId);
+  }
+
+  public async getEmptyActivitiesForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    return this._consumerApiService.getEmptyActivitiesForCorrelation(identity, correlationId);
+  }
+
+  public async getEmptyActivitiesForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    return this._consumerApiService.getEmptyActivitiesForProcessModelInCorrelation(identity, processModelId, correlationId);
+  }
+
+  public async getWaitingEmptyActivitiesByIdentity(identity: IIdentity): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    return this._consumerApiService.getWaitingEmptyActivitiesByIdentity(identity);
+  }
+
+  public async finishEmptyActivity(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    emptyActivityInstanceId: string,
+  ): Promise<void> {
+    return this._consumerApiService.finishEmptyActivity(identity, processInstanceId, correlationId, emptyActivityInstanceId);
   }
 
   // UserTasks
