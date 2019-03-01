@@ -178,13 +178,17 @@
             return parsedResult;
         }
 
-        public async Task TriggerMessageEvent(IIdentity identity, string messageName, object triggerPayload = null)
+        public async Task TriggerMessageEvent(IIdentity identity, string messageName)
+        {
+            await this.TriggerMessageEvent(identity, messageName, new {});
+        }
+
+        public async Task TriggerMessageEvent(IIdentity identity, string messageName, object triggerPayload)
         {
             var url = RestSettings.Paths.TriggerMessageEvent
                 .Replace(RestSettings.Params.EventName, messageName);
 
-            var payload = triggerPayload == null ? new {} : triggerPayload;
-            var jsonPayload = SerializeForProcessEngine(payload);
+            var jsonPayload = SerializeForProcessEngine(triggerPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var request = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
             var result = await this.httpClient.SendAsync(request);
@@ -195,13 +199,17 @@
             }
         }
 
-        public async Task TriggerSignalEvent(IIdentity identity, string signalName, object triggerPayload = null)
+        public async Task TriggerSignalEvent(IIdentity identity, string signalName)
+        {
+            await this.TriggerSignalEvent(identity, signalName, new {});
+        }
+
+        public async Task TriggerSignalEvent(IIdentity identity, string signalName, object triggerPayload)
         {
             var url = RestSettings.Paths.TriggerSignalEvent
                 .Replace(RestSettings.Params.EventName, signalName);
 
-            var payload = triggerPayload == null ? new {} : triggerPayload;
-            var jsonPayload = SerializeForProcessEngine(payload);
+            var jsonPayload = SerializeForProcessEngine(triggerPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var request = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
             var result = await this.httpClient.SendAsync(request);
