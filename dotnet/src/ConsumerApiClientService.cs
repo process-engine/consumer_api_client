@@ -437,22 +437,22 @@
             return jsonPayload;
         }
 
-        public Subscription OnUserTaskWaiting(IIdentity identity, OnUserTaskWaitingCallback callback, bool? subscribeOnce)
+        public IDisposable OnUserTaskWaiting(IIdentity identity, Action<UserTaskReachedMessage> callback, bool? subscribeOnce)
         {
             throw new NotImplementedException();
         }
 
-        public Subscription OnUserTaskFinished(IIdentity identity, OnUserTaskFinishedCallback callback, bool? subscribeOnce)
+        public IDisposable OnUserTaskFinished(IIdentity identity, Action<UserTaskFinishedMessage> callback, bool? subscribeOnce)
         {
             throw new NotImplementedException();
         }
 
-        public Subscription OnUserTaskForIdentityWaiting(IIdentity identity, OnUserTaskWaitingCallback callback, bool? subscribeOnce)
+        public IDisposable OnUserTaskForIdentityWaiting(IIdentity identity, Action<UserTaskReachedMessage> callback, bool? subscribeOnce)
         {
             throw new NotImplementedException();
         }
 
-        public Subscription OnUserTaskForIdentityFinished(IIdentity identity, OnUserTaskFinishedCallback callback, bool? subscribeOnce)
+        public IDisposable OnUserTaskForIdentityFinished(IIdentity identity, Action<UserTaskFinishedMessage> callback, bool? subscribeOnce)
         {
             throw new NotImplementedException();
         }
