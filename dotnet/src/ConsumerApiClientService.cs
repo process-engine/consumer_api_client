@@ -14,7 +14,6 @@
     using ProcessEngine.ConsumerAPI.Contracts.DataModel;
 
     using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
-    using SocketSettings = ProcessEngine.ConsumerAPI.Contracts.SocketSettings;
 
     using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
