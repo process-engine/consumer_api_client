@@ -53,8 +53,10 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}?start_callback_type={(int)callbackType}";
 
-            var startEventIdIsGiven = startEventId != null;
-            if (startEventIdIsGiven) {
+            var startEventIdProvided = !String.IsNullOrEmpty(startEventId);
+
+            if (startEventIdProvided)
+            {
                 url = $"{url}&start_event_id={startEventId}";
             }
 
