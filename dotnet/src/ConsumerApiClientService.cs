@@ -12,7 +12,7 @@
     using ProcessEngine.ConsumerAPI.Contracts;
     using ProcessEngine.ConsumerAPI.Contracts.APIs;
     using ProcessEngine.ConsumerAPI.Contracts.DataModel;
-
+    using ProcessEngine.ConsumerAPI.Contracts.Messages.SystemEvent;
     using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
 
     using Newtonsoft.Json.Serialization;
