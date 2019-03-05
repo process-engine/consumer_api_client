@@ -47,7 +47,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 null));
         }
 
-        [Fact(Timeout = 20000)]
+        [Fact(Timeout = 200000)]
         public async Task BPMN_FinishUserTask_ShouldFinishUserTask()
         {
             string processModelId = "test_consumer_api_usertask";
