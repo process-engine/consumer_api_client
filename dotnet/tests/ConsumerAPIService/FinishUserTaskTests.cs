@@ -61,7 +61,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 StartCallbackType.CallbackOnProcessInstanceCreated);
 
             // Give the process engine time to reach the user task
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
             UserTaskList userTasks = await this.fixture.ConsumerAPIClient.GetUserTasksForCorrelation(
                 identity,
@@ -77,12 +77,16 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
 
             userTaskResult.FormFields.Add("my_test_key", "my_test_value");
 
+            await Task.Delay(1000);
+
             await this.fixture.ConsumerAPIClient.FinishUserTask(
                 identity,
                 processInstance.ProcessInstanceId,
                 processInstance.CorrelationId,
                 userTaskToBeFinished.FlowNodeInstanceId,
                 userTaskResult);
+
+            await Task.Delay(1000);
         }
 
     }
