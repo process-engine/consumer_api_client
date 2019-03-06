@@ -13,6 +13,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using ProcessEngine.ConsumerAPI.Contracts;
 
     using Xunit;
+    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
 
     [Collection("ConsumerAPI collection")]
     public class GetProcessResultForCorrelationTests : ProcessEngineBaseTest
