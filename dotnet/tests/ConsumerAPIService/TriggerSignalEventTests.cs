@@ -46,7 +46,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 signalName
             );
 
-            await Task.Delay(2000);
+            await Task.Delay(5000);
 
             var processResult = await this.fixture.ConsumerAPIClient.GetProcessResultForCorrelation<object>(
                 identity,
