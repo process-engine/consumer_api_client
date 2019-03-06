@@ -15,6 +15,7 @@
 
     using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
+    using ProcessEngine.ConsumerAPI.Contracts.Messages.SystemEvent;
 
     public class ConsumerApiClientService : IConsumerAPI
     {
@@ -51,7 +52,7 @@
             var url = RestSettings.Paths.StartProcessInstance
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}?start_callback_type={(int)callbackType}";
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}?start_callback_type={(int)callbackType}";
 
             var startEventIdProvided = !String.IsNullOrEmpty(startEventId);
 
@@ -93,7 +94,7 @@
                 .Replace(RestSettings.Params.CorrelationId, correlationId)
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
             var jsonResult = "";
 
@@ -115,7 +116,7 @@
             var url = RestSettings.Paths.ProcessModelEvents
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
             var jsonResult = "";
 
@@ -138,7 +139,7 @@
             var url = RestSettings.Paths.CorrelationEvents
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
             var jsonResult = "";
 
@@ -162,7 +163,7 @@
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
             var jsonResult = "";
 
@@ -190,6 +191,8 @@
             var url = RestSettings.Paths.TriggerMessageEvent
                 .Replace(RestSettings.Params.EventName, messageName);
 
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+
             var jsonPayload = SerializeForProcessEngine(triggerPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var request = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
@@ -210,6 +213,8 @@
         {
             var url = RestSettings.Paths.TriggerSignalEvent
                 .Replace(RestSettings.Params.EventName, signalName);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
             var jsonPayload = SerializeForProcessEngine(triggerPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
@@ -255,6 +260,56 @@
             message.Method = method;
 
             return message;
+        }
+
+        public Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserTaskList> GetUserTasksForCorrelation(IIdentity identity, string correlationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserTaskList> GetUserTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserTaskList> GetWaitingUserTasksByIdentity(IIdentity identity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task FinishUserTask(IIdentity identity, string processInstanceId, string correlationId, string userTaskInstanceId, UserTaskResult userTaskResult)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserTaskList> GetUserTasksForProcessInstance(IIdentity identity, string processInstanceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable OnUserTaskWaiting(IIdentity identity, Action<UserTaskReachedMessage> callback, bool? subscribeOnce)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable OnUserTaskFinished(IIdentity identity, Action<UserTaskFinishedMessage> callback, bool? subscribeOnce)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable OnUserTaskForIdentityWaiting(IIdentity identity, Action<UserTaskReachedMessage> callback, bool? subscribeOnce)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable OnUserTaskForIdentityFinished(IIdentity identity, Action<UserTaskFinishedMessage> callback, bool? subscribeOnce)
+        {
+            throw new NotImplementedException();
         }
     }
 }
