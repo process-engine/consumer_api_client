@@ -3,17 +3,22 @@
     using System.Collections.Generic;
     using System.Net.Http.Headers;
     using System.Net.Http;
+    using System.Net.WebSockets;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System;
 
     using EssentialProjects.IAM.Contracts;
+    using EssentialProjects.WebSocket.Contracts;
+    using EssentialProjects.WebSocket;
 
     using ProcessEngine.ConsumerAPI.Contracts;
     using ProcessEngine.ConsumerAPI.Contracts.APIs;
     using ProcessEngine.ConsumerAPI.Contracts.DataModel;
     using ProcessEngine.ConsumerAPI.Contracts.Messages.SystemEvent;
     using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
+    using SocketSettings = ProcessEngine.ConsumerAPI.Contracts.SocketSettings;
 
     using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
@@ -21,10 +26,34 @@
     public class ConsumerApiClientService : IConsumerAPI
     {
         private readonly HttpClient HttpClient;
+        private readonly Action<ClientWebSocket> WebSocketConfigurationCallback;
+        private SocketClient SocketClient;
 
-        public ConsumerApiClientService(HttpClient httpClient)
+        public ConsumerApiClientService(HttpClient httpClient, Action<ClientWebSocket> webSocketConfigurationCallback)
         {
             this.HttpClient = httpClient;
+            this.WebSocketConfigurationCallback = webSocketConfigurationCallback;
+
+            this.InitializeSocket();
+            this.InitializeSocketSubscriptions();
+        }
+
+        private void InitializeSocket()
+        {
+            var webSocket = new ClientWebSocket();
+            this.WebSocketConfigurationCallback(webSocket);
+            this.SocketClient = new SocketClient(webSocket, "consumer_api");
+        }
+
+        private void InitializeSocketSubscriptions() {
+            this.SocketClient.RegisterMessageType<UserTaskReachedMessage>(SocketSettings.Paths.UserTaskWaiting);
+            this.SocketClient.RegisterMessageType<UserTaskReachedMessage>(SocketSettings.Paths.UserTaskForIdentityWaiting);
+            this.SocketClient.RegisterMessageType<UserTaskFinishedMessage>(SocketSettings.Paths.UserTaskFinished);
+            this.SocketClient.RegisterMessageType<UserTaskFinishedMessage>(SocketSettings.Paths.UserTaskForIdentityFinished);
+        }
+
+        public async Task StartListening(CancellationToken cancellationToken) {
+            await this.SocketClient.StartListening(cancellationToken);
         }
 
         public async Task<ProcessStartResponsePayload> StartProcessInstance<TInputValues>(
@@ -69,7 +98,7 @@
                 urlWithParams = $"{urlWithParams}&end_event_id={endEventId}";
             }
 
-            var jsonResult = "";
+            string jsonResult;
 
             var jsonPayload = SerializeForProcessEngine(processStartRequestPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
@@ -98,7 +127,7 @@
 
             var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
-            var jsonResult = "";
+            string jsonResult;
 
             IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
 
@@ -387,7 +416,7 @@
             var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
             var result = await this.HttpClient.SendAsync(request);
 
-            if (result.IsSuccessStatusCode)
+            if (!result.IsSuccessStatusCode)
             {
                 var jsonResult = await result.Content.ReadAsStringAsync();
                 parsedResult = JsonConvert.DeserializeObject<TResult>(jsonResult);
@@ -439,21 +468,47 @@
 
         public IDisposable OnUserTaskWaiting(IIdentity identity, Action<UserTaskReachedMessage> callback, bool? subscribeOnce)
         {
-            throw new NotImplementedException();
+            var eventType = SocketSettings.Paths.UserTaskWaiting;
+
+            if (subscribeOnce == true) {
+                return this.SocketClient.Once(eventType, callback);
+            }
+
+            return this.SocketClient.On(eventType, callback);
         }
 
         public IDisposable OnUserTaskFinished(IIdentity identity, Action<UserTaskFinishedMessage> callback, bool? subscribeOnce)
         {
-            throw new NotImplementedException();
+            var eventType = SocketSettings.Paths.UserTaskFinished;
+
+            if (subscribeOnce == true) {
+                return this.SocketClient.Once(eventType, callback);
+            }
+
+            return this.SocketClient.On(eventType, callback);
         }
 
         public IDisposable OnUserTaskForIdentityWaiting(IIdentity identity, Action<UserTaskReachedMessage> callback, bool? subscribeOnce)
         {
-            throw new NotImplementedException();
+            var eventType = SocketSettings.Paths.UserTaskForIdentityWaiting
+                .Replace(SocketSettings.Params.UserId, identity.UserId);
+
+            if (subscribeOnce == true) {
+                return this.SocketClient.Once(eventType, callback);
+            }
+
+            return this.SocketClient.On(eventType, callback);
         }
 
         public IDisposable OnUserTaskForIdentityFinished(IIdentity identity, Action<UserTaskFinishedMessage> callback, bool? subscribeOnce)
         {
-            throw new NotImplementedException();
+            var eventType = SocketSettings.Paths.UserTaskForIdentityFinished
+                .Replace(SocketSettings.Params.UserId, identity.UserId);
+
+            if (subscribeOnce == true) {
+                return this.SocketClient.Once(eventType, callback);
+            }
+
+            return this.SocketClient.On(eventType, callback);
         }
 }
