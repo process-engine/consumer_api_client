@@ -1,9 +1,12 @@
-namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
+namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
+{
     using System.IO;
     using System.Net.Http.Headers;
     using System.Net.Http;
+    using System.Net.WebSockets;
     using System.Net;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System;
 
@@ -12,35 +15,51 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
     using ProcessEngine.ConsumerAPI.Client;
 
     using Newtonsoft.Json;
+    using Xunit;
 
-    public class ConsumerAPIFixture {
-
-        private HttpClient httpClient;
-
+    public class ConsumerAPIFixture : IAsyncLifetime
+    {
         private string processEngineRestApiUrl;
+        private HttpClient httpClient;
+        private ClientWebSocket webSocket;
+        public ConsumerApiClientService ConsumerAPIClient { get; private set; }
+        public CancellationTokenSource CancellationTokenSource { get; private set; }
+        public IIdentity DefaultIdentity { get; private set; }
 
-        public ConsumerAPIFixture()
+        public async Task InitializeAsync()
         {
-            SetProcessEngineRestApiUrl();
+            this.SetProcessEngineRestApiUrl();
+            this.CreateConsumerAPIClient();
+            await this.DeployBpmnProcesses();
+            await this.StartWebSocket(this.CancellationTokenSource.Token);
 
-            CreateConsumerAPIClient();
 
             this.DefaultIdentity = DummyIdentity.Create();
-
-            // Deploy test files from ./bpmn folder. The property "Copy to output directory" has to be true for these files.
-            foreach (var file in Directory.GetFiles("./bpmn")) {
-                FileInfo bpmnFile = new FileInfo(file);
-
-                var isBpmnFile = bpmnFile.Extension.ToLower().Equals(".bpmn");
-                if (isBpmnFile) {
-                    DeployTestBpmnFilesAsync(bpmnFile).GetAwaiter().GetResult();
-                }
-            }
         }
 
-        public ConsumerApiClientService ConsumerAPIClient { get; private set; }
+        public async Task DisposeAsync()
+        {
+            await this.CloseWebSocket(this.CancellationTokenSource.Token);
+            this.CancellationTokenSource.Dispose();
+        }
 
-        public IIdentity DefaultIdentity { get; private set; }
+        public async Task StartWebSocket(CancellationToken cancellationToken)
+        {
+            var socketUri = new Uri("ws://localhost:8000");
+            await this.webSocket.ConnectAsync(socketUri, cancellationToken);
+            // The following call is not awaited because the returned task will
+            // not be finished before listening stops.
+            // This call only starts the loop that receives messages.
+            // The loop is canceled using the cancellation token. This is done
+            // via the Dispose-method in CloseWebSocket.
+            this.ConsumerAPIClient.StartListening(this.CancellationTokenSource.Token);
+        }
+
+        public async Task CloseWebSocket(CancellationToken cancellationToken)
+        {
+            await this.webSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "test run completed", cancellationToken);
+            this.CancellationTokenSource.Dispose();
+        }
 
         private void SetProcessEngineRestApiUrl()
         {
@@ -52,8 +71,17 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
 
         private void CreateConsumerAPIClient()
         {
+            this.CancellationTokenSource = new CancellationTokenSource();
             this.httpClient = CreateHttpClient();
-            this.ConsumerAPIClient = new ConsumerApiClientService(this.httpClient);
+            var identity = DummyIdentity.Create();
+
+            Action<ClientWebSocket> webSocketConfiguration = (ClientWebSocket webSocket) =>
+            {
+                this.webSocket = webSocket;
+                webSocket.Options.SetRequestHeader("Authorization", $"Bearer {identity.Token}");
+            };
+
+            this.ConsumerAPIClient = new ConsumerApiClientService(this.httpClient, webSocketConfiguration);
         }
 
         private HttpClient CreateHttpClient()
@@ -69,13 +97,29 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
             return httpClient;
         }
 
-        private async Task DeployTestBpmnFilesAsync(FileInfo bpmnFile)
+        private async Task DeployBpmnProcesses() {
+            // Deploy test files from ./bpmn folder. The property "Copy to output directory" has to be true for these files.
+            foreach (var file in Directory.GetFiles("./bpmn"))
+            {
+                FileInfo bpmnFile = new FileInfo(file);
+
+                var isBpmnFile = bpmnFile.Extension.ToLower().Equals(".bpmn");
+                if (isBpmnFile)
+                {
+                    await DeployTestBpmnFileAsync(bpmnFile);
+                }
+            }
+        }
+
+        private async Task DeployTestBpmnFileAsync(FileInfo bpmnFile)
         {
-            try {
+            try
+            {
                 var bpmnFileContent = File.ReadAllText(bpmnFile.FullName);
                 var identity = DummyIdentity.Create();
 
-                var importPayload = new {
+                var importPayload = new
+                {
                     name = bpmnFile.Name.Replace(bpmnFile.Extension, ""),
                     xml = bpmnFileContent,
                     overwriteExisting = true
@@ -85,13 +129,17 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
 
                 var response = await this.httpClient.PostAsync("api/deployment/v1/import_process_model", new StringContent(jsonImportPayload, Encoding.UTF8, "application/json"));
 
-                if (response.StatusCode != HttpStatusCode.OK) {
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
                     throw new Exception($"ProcessEngine Rest API returned status {response.StatusCode}.");
                 }
 
-            } catch (Exception unknownException) {
+            }
+            catch (Exception unknownException)
+            {
                 throw new Exception($"Cannot deploy BPMN file for base URL '{this.processEngineRestApiUrl}'. See inner exception for details.", unknownException);
             }
         }
+
     }
 }

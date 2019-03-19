@@ -14,22 +14,29 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using ProcessEngine.ConsumerAPI.Contracts;
 
     using Xunit;
+    using ProcessEngine.ConsumerAPI.Contracts.Messages.SystemEvent;
 
     [Collection("ConsumerAPI collection")]
-    public class GetWaitingUserTasksByIdentityTests : ProcessEngineBaseTest
+    public class OnUserTaskForIdentityWaitingTests : ProcessEngineBaseTest
     {
         private readonly ConsumerAPIFixture fixture;
 
-        public GetWaitingUserTasksByIdentityTests(ConsumerAPIFixture fixture)
+        public OnUserTaskForIdentityWaitingTests(ConsumerAPIFixture fixture)
         {
             this.fixture = fixture;
         }
 
         [Fact]
-        public async Task BPMN_GetWaitingUserTasksByIdentity_ShouldFetchUserTaskList()
+        public async Task BPMN_OnUserTaskForIdentityWaiting_ShouldExecuteCallbackOnEvent()
         {
             string processModelId = "test_consumer_api_usertask";
             var identity = DummyIdentity.Create();
+            var callbackExecuted = false;
+
+            this.fixture.ConsumerAPIClient.OnUserTaskForIdentityWaiting(identity, (UserTaskReachedMessage userTaskWaitingMessage) =>
+            {
+                callbackExecuted = true;
+            }, true);
 
             ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
                 identity,
@@ -45,14 +52,21 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 identity);
 
             Assert.NotEmpty(userTasks.UserTasks);
+            Assert.Equal(callbackExecuted, true);
         }
 
         [Fact]
-        public async Task BPMN_GetWaitingUserTasksByIdentity_ShouldNotExecuteCallbackForOtherIdentity()
+        public async Task BPMN_OnUserTaskForIdentityWaiting_ShouldNotExecuteCallbackForOtherIdentity()
         {
             string processModelId = "test_consumer_api_usertask";
             var identity = DummyIdentity.Create();
             var wrongIdentity = DummyIdentity.CreateFake("wrong");
+            var callbackExecuted = false;
+
+            this.fixture.ConsumerAPIClient.OnUserTaskForIdentityWaiting(wrongIdentity, (UserTaskReachedMessage userTaskWaitingMessage) =>
+            {
+                callbackExecuted = true;
+            }, true);
 
             ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
                 identity,
@@ -65,9 +79,10 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
             await Task.Delay(1000);
 
             UserTaskList userTasks = await this.fixture.ConsumerAPIClient.GetWaitingUserTasksByIdentity(
-                wrongIdentity);
+                identity);
 
-            Assert.Empty(userTasks.UserTasks);
+            Assert.NotEmpty(userTasks.UserTasks);
+            Assert.Equal(callbackExecuted, false);
         }
 
     }
