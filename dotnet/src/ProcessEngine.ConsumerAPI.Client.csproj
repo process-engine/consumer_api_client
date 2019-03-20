@@ -19,11 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- <PackageReference Include="EssentialProjects.WebSocket"
-    Version="0.1.0-feature-add-basic-implementation" /> -->
-    <ProjectReference
-    Include="./../../../../SocketTest/__pub_repos/websocket/dotnet/src/EssentialProjects.WebSocket.csproj"
-    />
+    <PackageReference Include="EssentialProjects.WebSocket" Version="0.1.0-feature-add-basic-implementation" />
     <PackageReference Include="EssentialProjects.WebSocket.Contracts" Version="0.1.0-feature-add-basic-implementation" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="11.0.0-feature-enhance-user-task-api" />
