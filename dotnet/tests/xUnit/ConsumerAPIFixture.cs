@@ -45,7 +45,9 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
 
         public async Task StartWebSocket(CancellationToken cancellationToken)
         {
-            var socketUri = new Uri("ws://localhost:8000");
+            var restApiUrl = this.processEngineRestApiUrl;
+            var socketApiUrl = restApiUrl.Replace("http://", "ws://");
+            var socketUri = new Uri(socketApiUrl);
             await this.webSocket.ConnectAsync(socketUri, cancellationToken);
             // The following call is not awaited because the returned task will
             // not be finished before listening stops.
