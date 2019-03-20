@@ -409,6 +409,7 @@
             return result;
         }
 
+<<<<<<< HEAD
         private async Task<TResult> SendRequestAndExpectResult<TResult>(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
         {
             TResult parsedResult = default(TResult);
@@ -511,4 +512,7 @@
 
             return this.SocketClient.On(eventType, callback);
         }
+=======
+    }
+>>>>>>> remove duplicates introduced by merge
 }
