@@ -19,7 +19,8 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
 
         private string processEngineRestApiUrl;
 
-        public ConsumerAPIFixture() {
+        public ConsumerAPIFixture()
+        {
             SetProcessEngineRestApiUrl();
 
             CreateConsumerAPIClient();
@@ -36,18 +37,21 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
                 }
             }
         }
+
         public ConsumerApiClientService ConsumerAPIClient { get; private set; }
 
         public IIdentity DefaultIdentity { get; private set; }
 
-        private void SetProcessEngineRestApiUrl() {
+        private void SetProcessEngineRestApiUrl()
+        {
             string baseUrlFromEnv = Environment.GetEnvironmentVariable("PROCESS_ENGINE_REST_API_URL");
             string baseUrl = string.IsNullOrEmpty(baseUrlFromEnv) ? "http://localhost:8000" : baseUrlFromEnv;
 
             this.processEngineRestApiUrl = baseUrl;
         }
 
-        private void CreateConsumerAPIClient() {
+        private void CreateConsumerAPIClient()
+        {
             this.httpClient = CreateHttpClient();
             this.ConsumerAPIClient = new ConsumerApiClientService(this.httpClient);
         }
@@ -65,7 +69,8 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
             return httpClient;
         }
 
-        private async Task DeployTestBpmnFilesAsync(FileInfo bpmnFile) {
+        private async Task DeployTestBpmnFilesAsync(FileInfo bpmnFile)
+        {
             try {
                 var bpmnFileContent = File.ReadAllText(bpmnFile.FullName);
                 var identity = DummyIdentity.Create();
