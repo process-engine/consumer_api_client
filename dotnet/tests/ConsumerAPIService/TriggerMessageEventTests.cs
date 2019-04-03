@@ -27,31 +27,26 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public async Task BPMN_TriggerMessageEvent_ShouldContinueProcessWithMessageIntermediateCatchEvent()
         {
-            var identity = DummyIdentity.Create();
             string processModelId = "test_consumer_api_message_event";
             string messageName = "test_message_event";
 
             var requestPayload = new ProcessStartRequestPayload<object>();
 
-            ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                identity,
-                processModelId,
-                "StartEvent_1",
-                requestPayload);
-
-            await Task.Delay(1000);
-
-            await this.fixture.ConsumerAPIClient.TriggerMessageEvent(
-                DummyIdentity.Create(),
-                messageName
-            );
+            ProcessStartResponsePayload processStartResponsePayload = await this
+                .fixture
+                .ConsumerAPIClient
+                .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", requestPayload);
 
             await Task.Delay(5000);
 
-            var processResult = await this.fixture.ConsumerAPIClient.GetProcessResultForCorrelation<object>(
-                identity,
-                processStartResponsePayload.CorrelationId,
-                processModelId);
+            await this.fixture.ConsumerAPIClient.TriggerMessageEvent(this.fixture.DefaultIdentity, messageName);
+
+            await Task.Delay(5000);
+
+            var processResult = await this
+                .fixture
+                .ConsumerAPIClient
+                .GetProcessResultForCorrelation<object>(this.fixture.DefaultIdentity, processStartResponsePayload.CorrelationId, processModelId);
 
             Assert.NotEmpty(processResult);
         }

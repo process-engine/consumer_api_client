@@ -24,8 +24,8 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
 
         private void SetProcessEngineRestApiUrl()
         {
-            string baseUrlFromEnv = Environment.GetEnvironmentVariable("PROCESS_ENGINE_REST_API_URL");
-            string baseUrl = string.IsNullOrEmpty(baseUrlFromEnv) ? "http://localhost:8080" : baseUrlFromEnv;
+            var baseUrlFromEnv = Environment.GetEnvironmentVariable("PROCESS_ENGINE_REST_API_URL");
+            var baseUrl = string.IsNullOrEmpty(baseUrlFromEnv) ? "http://localhost:8080" : baseUrlFromEnv;
 
             this.processEngineRestApiUrl = $"{baseUrl}";
         }

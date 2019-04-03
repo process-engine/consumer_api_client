@@ -15,7 +15,8 @@
 
     using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
-    using ProcessEngine.ConsumerAPI.Contracts.Messages.SystemEvent;
+    using ProcessEngine.ConsumerAPI.Contracts.APIs;
+    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
 
     public class ConsumerApiClientService : IConsumerAPI
     {
@@ -262,6 +263,11 @@
             return message;
         }
 
+        Task<IEnumerable<CorrelationResult<TPayload>>> IProcessModelConsumerApi.GetProcessResultForCorrelation<TPayload>(IIdentity identity, string correlationId, string processModelId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
         {
             throw new NotImplementedException();
@@ -292,22 +298,122 @@
             throw new NotImplementedException();
         }
 
-        public IDisposable OnUserTaskWaiting(IIdentity identity, Action<UserTaskReachedMessage> callback, bool? subscribeOnce)
+        public async Task<ManualTaskList> GetManualTasksForProcessModel(IIdentity identity, string processModelId)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.ProcessModelManualTasks
+                .Replace(RestSettings.Params.ProcessModelId, processModelId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+
+            var jsonResult = "";
+
+            ManualTaskList parsedResult = null;
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
+            }
+
+            return parsedResult;
         }
 
-        public IDisposable OnUserTaskFinished(IIdentity identity, Action<UserTaskFinishedMessage> callback, bool? subscribeOnce)
+        public async Task<ManualTaskList> GetManualTasksForProcessInstance(IIdentity identity, string processInstanceId)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.ProcessInstanceManualTasks
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+
+            var jsonResult = "";
+
+            ManualTaskList parsedResult = null;
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
+            }
+
+            return parsedResult;
         }
 
-        public IDisposable OnUserTaskForIdentityWaiting(IIdentity identity, Action<UserTaskReachedMessage> callback, bool? subscribeOnce)
+        public async Task<ManualTaskList> GetManualTasksForCorrelation(IIdentity identity, string correlationId)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.CorrelationManualTasks
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+
+            var jsonResult = "";
+
+            ManualTaskList parsedResult = null;
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
+            }
+
+            return parsedResult;
         }
 
-        public IDisposable OnUserTaskForIdentityFinished(IIdentity identity, Action<UserTaskFinishedMessage> callback, bool? subscribeOnce)
+        public async Task<ManualTaskList> GetManualTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        {
+            var url = RestSettings.Paths.ProcessModelCorrelationManualTasks
+                .Replace(RestSettings.Params.ProcessModelId, processModelId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+
+            var jsonResult = "";
+
+            ManualTaskList parsedResult = null;
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
+            }
+
+            return parsedResult;
+        }
+
+        public async Task<ManualTaskList> GetWaitingManualTasksByIdentity(IIdentity identity)
+        {
+            var url = RestSettings.Paths.GetOwnManualTasks;
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+
+            var jsonResult = "";
+
+            ManualTaskList parsedResult = null;
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
+            }
+
+            return parsedResult;
+        }
+
+        public Task FinishManualTask(IIdentity identity, string processInstanceId, string correlationId, string manualTaskInstanceId)
         {
             throw new NotImplementedException();
         }

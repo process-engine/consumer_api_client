@@ -27,24 +27,22 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public async Task BPMN_GetEventsForCorrelationTests_ShouldFetchEventsOfRunningProcess()
         {
-            var identity = DummyIdentity.Create();
-            string processModelId = "test_consumer_api_message_event";
-            string messageName = "test_message_event";
+            var processModelId = "test_consumer_api_message_event";
+            var messageName = "test_message_event";
 
             var requestPayload = new ProcessStartRequestPayload<object>();
 
-            ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                identity,
-                processModelId,
-                "StartEvent_1",
-                requestPayload);
+            ProcessStartResponsePayload processStartResponsePayload = await this
+                .fixture
+                .ConsumerAPIClient
+                .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", requestPayload);
 
             await Task.Delay(1000);
 
-            var events = await this.fixture.ConsumerAPIClient.GetEventsForCorrelation(
-                identity,
-                processStartResponsePayload.CorrelationId
-            );
+            var events = await this
+                .fixture
+                .ConsumerAPIClient
+                .GetEventsForCorrelation(this.fixture.DefaultIdentity, processStartResponsePayload.CorrelationId);
 
             Assert.NotEmpty(events.Events);
 

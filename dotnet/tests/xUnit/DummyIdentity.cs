@@ -1,4 +1,4 @@
-namespace ProcessEngine.ConsumerAPI.Client
+namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit
 {
     using System;
     using System.Text;

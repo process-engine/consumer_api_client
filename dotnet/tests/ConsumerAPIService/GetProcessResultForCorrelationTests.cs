@@ -28,22 +28,20 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public async Task BPMN_GetProcessResultForCorrelation_ShouldGetResultOfStaticProcess()
         {
-            string processModelId = "test_consumer_api_correlation_result";
-            string endEventId = "EndEvent_Success";
-            var identity = DummyIdentity.Create();
+            var processModelId = "test_consumer_api_correlation_result";
+            var endEventId = "EndEvent_Success";
+            var payload = new ProcessStartRequestPayload<object>();
+            var callbackType = StartCallbackType.CallbackOnEndEventReached;
 
-            ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                identity,
-                processModelId,
-                "StartEvent_1",
-                new ProcessStartRequestPayload<object>(),
-                StartCallbackType.CallbackOnEndEventReached,
-                endEventId);
+            ProcessStartResponsePayload processInstance = await this
+                .fixture
+                .ConsumerAPIClient
+                .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType, endEventId);
 
-            var correlationResults = await this.fixture.ConsumerAPIClient.GetProcessResultForCorrelation<TestResult>(
-                identity,
-                processInstance.CorrelationId,
-                processModelId);
+            var correlationResults = await this
+                .fixture
+                .ConsumerAPIClient
+                .GetProcessResultForCorrelation<TestResult>(this.fixture.DefaultIdentity, processInstance.CorrelationId, processModelId);
 
             var expectedCorrelationResult = new CorrelationResult<TestResult>
             {

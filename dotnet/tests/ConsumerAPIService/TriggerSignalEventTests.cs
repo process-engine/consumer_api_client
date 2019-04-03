@@ -27,31 +27,26 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public async Task BPMN_TriggerSignalEvent_ShouldContinueProcessWithSignalIntermediateCatchEvent()
         {
-            var identity = DummyIdentity.Create();
             string processModelId = "test_consumer_api_signal_event";
             string signalName = "test_signal_event";
 
             var requestPayload = new ProcessStartRequestPayload<object>();
 
-            ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                identity,
-                processModelId,
-                "StartEvent_1",
-                requestPayload);
-
-            await Task.Delay(1000);
-
-            await this.fixture.ConsumerAPIClient.TriggerSignalEvent(
-                DummyIdentity.Create(),
-                signalName
-            );
+            ProcessStartResponsePayload processStartResponsePayload = await this
+                .fixture
+                .ConsumerAPIClient
+                .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", requestPayload);
 
             await Task.Delay(5000);
 
-            var processResult = await this.fixture.ConsumerAPIClient.GetProcessResultForCorrelation<object>(
-                identity,
-                processStartResponsePayload.CorrelationId,
-                processModelId);
+            await this.fixture.ConsumerAPIClient.TriggerSignalEvent(this.fixture.DefaultIdentity, signalName);
+
+            await Task.Delay(5000);
+
+            var processResult = await this
+                .fixture
+                .ConsumerAPIClient
+                .GetProcessResultForCorrelation<object>(this.fixture.DefaultIdentity, processStartResponsePayload.CorrelationId, processModelId);
 
             Assert.NotEmpty(processResult);
         }
