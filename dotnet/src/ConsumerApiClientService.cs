@@ -9,14 +9,14 @@
 
     using EssentialProjects.IAM.Contracts;
 
-    using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
-    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
     using ProcessEngine.ConsumerAPI.Contracts;
+    using ProcessEngine.ConsumerAPI.Contracts.APIs;
+    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
+
+    using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
 
     using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
-    using ProcessEngine.ConsumerAPI.Contracts.APIs;
-    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
 
     public class ConsumerApiClientService : IConsumerAPI
     {
@@ -50,29 +50,30 @@
                 throw new ArgumentNullException(nameof(endEventId));
             }
 
-            var url = RestSettings.Paths.StartProcessInstance
+            var endpoint = RestSettings.Paths.StartProcessInstance
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}?start_callback_type={(int)callbackType}";
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var urlWithParams = $"{RestSettings.Endpoints.ConsumerAPI}{endpoint}?start_callback_type={(int)callbackType}";
 
             var startEventIdProvided = !String.IsNullOrEmpty(startEventId);
-
             if (startEventIdProvided)
             {
-                url = $"{url}&start_event_id={startEventId}";
+                urlWithParams = $"{urlWithParams}&start_event_id={startEventId}";
             }
 
             var attachEndEventId = callbackType == StartCallbackType.CallbackOnEndEventReached;
             if (attachEndEventId)
             {
-                url = $"{url}&end_event_id={endEventId}";
+                urlWithParams = $"{urlWithParams}&end_event_id={endEventId}";
             }
 
             var jsonResult = "";
 
             var jsonPayload = SerializeForProcessEngine(processStartRequestPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-            var request = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithParams, requestContent);
             var result = await this.httpClient.SendAsync(request);
 
             if (result.IsSuccessStatusCode)
@@ -91,17 +92,17 @@
             string processModelId)
         where TPayload : new()
         {
-            var url = RestSettings.Paths.GetProcessResultForCorrelation
+            var endpoint = RestSettings.Paths.GetProcessResultForCorrelation
                 .Replace(RestSettings.Params.CorrelationId, correlationId)
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
             var jsonResult = "";
 
             IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
 
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, urlWithEndpoint);
             var result = await this.httpClient.SendAsync(request);
 
             if (result.IsSuccessStatusCode)
@@ -114,70 +115,37 @@
         }
         public async Task<EventList> GetEventsForProcessModel(IIdentity identity, string processModelId)
         {
-            var url = RestSettings.Paths.ProcessModelEvents
+            var endpoint = RestSettings.Paths.ProcessModelEvents
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
-            var jsonResult = "";
-
-            EventList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<EventList>(jsonResult);
-            }
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, urlWithEndpoint);
 
             return parsedResult;
         }
 
         public async Task<EventList> GetEventsForCorrelation(IIdentity identity, string correlationId)
         {
-            var url = RestSettings.Paths.CorrelationEvents
+            var endpoint = RestSettings.Paths.CorrelationEvents
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
-            var jsonResult = "";
-
-            EventList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<EventList>(jsonResult);
-            }
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, urlWithEndpoint);
 
             return parsedResult;
         }
 
         public async Task<EventList> GetEventsForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
         {
-            var url = RestSettings.Paths.CorrelationEvents
+            var endpoint = RestSettings.Paths.CorrelationEvents
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
-            var jsonResult = "";
-
-            EventList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<EventList>(jsonResult);
-            }
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, urlWithEndpoint);
 
             return parsedResult;
         }
@@ -189,14 +157,14 @@
 
         public async Task TriggerMessageEvent(IIdentity identity, string messageName, object triggerPayload)
         {
-            var url = RestSettings.Paths.TriggerMessageEvent
+            var endpoint = RestSettings.Paths.TriggerMessageEvent
                 .Replace(RestSettings.Params.EventName, messageName);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
             var jsonPayload = SerializeForProcessEngine(triggerPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-            var request = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithEndpoint, requestContent);
             var result = await this.httpClient.SendAsync(request);
 
             if (!result.IsSuccessStatusCode)
@@ -212,14 +180,14 @@
 
         public async Task TriggerSignalEvent(IIdentity identity, string signalName, object triggerPayload)
         {
-            var url = RestSettings.Paths.TriggerSignalEvent
+            var endpoint = RestSettings.Paths.TriggerSignalEvent
                 .Replace(RestSettings.Params.EventName, signalName);
 
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
             var jsonPayload = SerializeForProcessEngine(triggerPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-            var request = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithEndpoint, requestContent);
             var result = await this.httpClient.SendAsync(request);
 
             if (!result.IsSuccessStatusCode)
@@ -228,19 +196,208 @@
             }
         }
 
-        private string SerializeForProcessEngine(object payload)
+        public async Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
         {
-            var contractResolver = new DefaultContractResolver
+            var endpoint = RestSettings.Paths.ProcessModelUserTasks
+                .Replace(RestSettings.Params.ProcessModelId, processModelId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<UserTaskList> GetUserTasksForProcessInstance(IIdentity identity, string processInstanceId)
+        {
+            var endpoint = RestSettings.Paths.ProcessInstanceUserTasks
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<UserTaskList> GetUserTasksForCorrelation(IIdentity identity, string correlationId)
+        {
+            var endpoint = RestSettings.Paths.CorrelationUserTasks
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<UserTaskList> GetUserTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        {
+            var endpoint = RestSettings.Paths.ProcessModelCorrelationUserTasks
+                .Replace(RestSettings.Params.ProcessModelId, processModelId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<UserTaskList> GetWaitingUserTasksByIdentity(IIdentity identity)
+        {
+            var endpoint = RestSettings.Paths.GetOwnUserTasks;
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task FinishUserTask(IIdentity identity, string processInstanceId, string correlationId, string userTaskInstanceId, UserTaskResult userTaskResult)
+        {
+            var endpoint = RestSettings.Paths.FinishUserTask
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId)
+                .Replace(RestSettings.Params.UserTaskInstanceId, userTaskInstanceId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var jsonPayload = SerializeForProcessEngine(userTaskResult);
+            var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithEndpoint, requestContent);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
             {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            };
-            var serializerSettings = new JsonSerializerSettings
+                throw new Exception($"Failed to finish UserTask: {result.ReasonPhrase}");
+            }
+        }
+
+        public async Task<ManualTaskList> GetManualTasksForProcessModel(IIdentity identity, string processModelId)
+        {
+            var endpoint = RestSettings.Paths.ProcessModelManualTasks
+                .Replace(RestSettings.Params.ProcessModelId, processModelId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<ManualTaskList> GetManualTasksForProcessInstance(IIdentity identity, string processInstanceId)
+        {
+            var endpoint = RestSettings.Paths.ProcessInstanceManualTasks
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<ManualTaskList> GetManualTasksForCorrelation(IIdentity identity, string correlationId)
+        {
+            var endpoint = RestSettings.Paths.CorrelationManualTasks
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<ManualTaskList> GetManualTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        {
+            var endpoint = RestSettings.Paths.ProcessModelCorrelationManualTasks
+                .Replace(RestSettings.Params.ProcessModelId, processModelId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<ManualTaskList> GetWaitingManualTasksByIdentity(IIdentity identity)
+        {
+            var endpoint = RestSettings.Paths.GetOwnManualTasks;
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+
+            return parsedResult;
+        }
+
+        public async Task FinishManualTask(IIdentity identity, string processInstanceId, string correlationId, string manualTaskInstanceId)
+        {
+            var endpoint = RestSettings.Paths.FinishManualTask
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId)
+                .Replace(RestSettings.Params.ManualTaskInstanceId, manualTaskInstanceId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithEndpoint);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
             {
-                ContractResolver = contractResolver,
-                Formatting = Formatting.None
-            };
-            var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
-            return jsonPayload;
+                throw new Exception($"Failed to finish ManualTask: {result.ReasonPhrase}");
+            }
+        }
+
+        private string ApplyBaseUrl(string endpoint)
+        {
+            return $"{RestSettings.Endpoints.ConsumerAPI}{endpoint}";
+        }
+
+        private async Task<EventList> GetTriggerableEventsFromUrl(IIdentity identity, string url, HttpContent content = null)
+        {
+            var result = await this.SendRequestAndExpectResult<EventList>(identity, HttpMethod.Get, url, content);
+
+            return result;
+        }
+
+        private async Task<ManualTaskList> GetManualTasksFromUrl(IIdentity identity, string url, HttpContent content = null)
+        {
+            var result = await this.SendRequestAndExpectResult<ManualTaskList>(identity, HttpMethod.Get, url, content);
+
+            return result;
+        }
+
+        private async Task<UserTaskList> GetUserTasksFromUrl(IIdentity identity, string url, HttpContent content = null)
+        {
+            var result = await this.SendRequestAndExpectResult<UserTaskList>(identity, HttpMethod.Get, url, content);
+
+            return result;
+        }
+
+        private async Task<TResult> SendRequestAndExpectResult<TResult>(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
+        {
+            TResult parsedResult = default(TResult);
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
+            {
+                var jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<TResult>(jsonResult);
+            }
+            else
+            {
+                throw new Exception($"Request failed: {result.ReasonPhrase}");
+            }
+
+            return parsedResult;
         }
 
         private HttpRequestMessage CreateRequestMessage(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
@@ -263,159 +420,21 @@
             return message;
         }
 
-        Task<IEnumerable<CorrelationResult<TPayload>>> IProcessModelConsumerApi.GetProcessResultForCorrelation<TPayload>(IIdentity identity, string correlationId, string processModelId)
+        private string SerializeForProcessEngine(object payload)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UserTaskList> GetUserTasksForCorrelation(IIdentity identity, string correlationId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UserTaskList> GetUserTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UserTaskList> GetWaitingUserTasksByIdentity(IIdentity identity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task FinishUserTask(IIdentity identity, string processInstanceId, string correlationId, string userTaskInstanceId, UserTaskResult userTaskResult)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<UserTaskList> GetUserTasksForProcessInstance(IIdentity identity, string processInstanceId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ManualTaskList> GetManualTasksForProcessModel(IIdentity identity, string processModelId)
-        {
-            var url = RestSettings.Paths.ProcessModelManualTasks
-                .Replace(RestSettings.Params.ProcessModelId, processModelId);
-
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
-
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
+            var contractResolver = new DefaultContractResolver
             {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
 
-            return parsedResult;
-        }
-
-        public async Task<ManualTaskList> GetManualTasksForProcessInstance(IIdentity identity, string processInstanceId)
-        {
-            var url = RestSettings.Paths.ProcessInstanceManualTasks
-                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
-
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
-
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
+            var serializerSettings = new JsonSerializerSettings
             {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
+                ContractResolver = contractResolver,
+                Formatting = Formatting.None
+            };
 
-            return parsedResult;
-        }
-
-        public async Task<ManualTaskList> GetManualTasksForCorrelation(IIdentity identity, string correlationId)
-        {
-            var url = RestSettings.Paths.CorrelationManualTasks
-                .Replace(RestSettings.Params.CorrelationId, correlationId);
-
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
-
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
-
-            return parsedResult;
-        }
-
-        public async Task<ManualTaskList> GetManualTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
-        {
-            var url = RestSettings.Paths.ProcessModelCorrelationManualTasks
-                .Replace(RestSettings.Params.ProcessModelId, processModelId)
-                .Replace(RestSettings.Params.CorrelationId, correlationId);
-
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
-
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
-
-            return parsedResult;
-        }
-
-        public async Task<ManualTaskList> GetWaitingManualTasksByIdentity(IIdentity identity)
-        {
-            var url = RestSettings.Paths.GetOwnManualTasks;
-
-            url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
-
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
-
-            return parsedResult;
-        }
-
-        public Task FinishManualTask(IIdentity identity, string processInstanceId, string correlationId, string manualTaskInstanceId)
-        {
-            throw new NotImplementedException();
+            var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
+            return jsonPayload;
         }
     }
 }

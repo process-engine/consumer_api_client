@@ -29,7 +29,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         {
             var payload = new ProcessStartRequestPayload<object>();
 
-            var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await this
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await this
                 .fixture
                 .ConsumerAPIClient
                 .StartProcessInstance(this.fixture.DefaultIdentity, "", "Test", payload));
@@ -40,7 +40,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         {
             var payload = new ProcessStartRequestPayload<object>();
 
-            var ex = Assert.ThrowsAsync<Exception>(async () => await this
+            Assert.ThrowsAsync<Exception>(async () => await this
                 .fixture
                 .ConsumerAPIClient
                 .StartProcessInstance(this.fixture.DefaultIdentity, "Test", "Test", payload));
