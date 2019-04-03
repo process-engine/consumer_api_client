@@ -59,7 +59,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType);
 
             // Give the ProcessEngine time to reach the UserTask
-            await Task.Delay(2500);
+            await Task.Delay(5000);
 
             UserTaskList userTasks = await this
                 .fixture
