@@ -1,0 +1,6 @@
+{
+  "parallelizeTestCollections": false,
+  "parallelizeAssembly": false,
+  "methodDisplay": "classAndMethod",
+  "diagnosticMessages": true
+}
