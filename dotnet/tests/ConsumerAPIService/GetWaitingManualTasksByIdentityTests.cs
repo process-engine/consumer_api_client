@@ -28,20 +28,19 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public async Task BPMN_GetWaitingManualTasksByIdentity_ShouldFetchManualTaskList()
         {
-            string processModelId = "test_consumer_api_manualtask";
-            var identity = DummyIdentity.Create();
+            var processModelId = "test_consumer_api_manualtask";
+            var payload = new ProcessStartRequestPayload<object>();
+            var callbackType = StartCallbackType.CallbackOnProcessInstanceCreated;
 
-            ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                identity,
-                processModelId,
-                "StartEvent_1",
-                new ProcessStartRequestPayload<object>(),
-                StartCallbackType.CallbackOnProcessInstanceCreated);
+            ProcessStartResponsePayload processInstance = await this
+                .fixture
+                .ConsumerAPIClient
+                .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType);
 
             // Give the process engine time to reach the user task
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
-            ManualTaskList manualTasks = await this.fixture.ConsumerAPIClient.GetWaitingManualTasksByIdentity(identity);
+            ManualTaskList manualTasks = await this.fixture.ConsumerAPIClient.GetWaitingManualTasksByIdentity(this.fixture.DefaultIdentity);
 
             Assert.NotEmpty(manualTasks.ManualTasks);
         }

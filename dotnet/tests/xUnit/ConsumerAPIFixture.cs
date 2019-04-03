@@ -14,16 +14,17 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
     using Newtonsoft.Json;
 
     public class ConsumerAPIFixture {
-        public ConsumerApiClientService ConsumerAPIClient { get; private set; }
 
         private HttpClient httpClient;
 
         private string processEngineRestApiUrl;
 
         public ConsumerAPIFixture () {
-            SetProcessEngineRestApiUrl ();
+            SetProcessEngineRestApiUrl();
 
-            CreateConsumerAPIClient ();
+            CreateConsumerAPIClient();
+
+            this.DefaultIdentity = DummyIdentity.Create();
 
             // Deploy test files from ./bpmn folder. The property "Copy to output directory" has to be true for these files.
             foreach (var file in Directory.GetFiles ("./bpmn")) {
@@ -35,6 +36,9 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests.xUnit {
                 }
             }
         }
+        public ConsumerApiClientService ConsumerAPIClient { get; private set; }
+
+        public IIdentity DefaultIdentity { get; private set; }
 
         private void SetProcessEngineRestApiUrl () {
             string baseUrlFromEnv = Environment.GetEnvironmentVariable ("PROCESS_ENGINE_REST_API_URL");
