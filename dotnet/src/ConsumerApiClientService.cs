@@ -420,11 +420,13 @@
             {
                 NamingStrategy = new CamelCaseNamingStrategy()
             };
+
             var serializerSettings = new JsonSerializerSettings
             {
                 ContractResolver = contractResolver,
                 Formatting = Formatting.None
             };
+
             var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
             return jsonPayload;
         }
