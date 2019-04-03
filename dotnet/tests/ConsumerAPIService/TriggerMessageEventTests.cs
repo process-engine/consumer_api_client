@@ -33,25 +33,21 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
 
             var requestPayload = new ProcessStartRequestPayload<object>();
 
-            ProcessStartResponsePayload processStartResponsePayload = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                identity,
-                processModelId,
-                "StartEvent_1",
-                requestPayload);
+            ProcessStartResponsePayload processStartResponsePayload = await this
+                .fixture
+                .ConsumerAPIClient
+                .StartProcessInstance(identity, processModelId, "StartEvent_1", requestPayload);
 
             await Task.Delay(5000);
 
-            await this.fixture.ConsumerAPIClient.TriggerMessageEvent(
-                DummyIdentity.Create(),
-                messageName
-            );
+            await this.fixture.ConsumerAPIClient.TriggerMessageEvent(identity,messageName);
 
             await Task.Delay(5000);
 
-            var processResult = await this.fixture.ConsumerAPIClient.GetProcessResultForCorrelation<object>(
-                identity,
-                processStartResponsePayload.CorrelationId,
-                processModelId);
+            var processResult = await this
+                .fixture
+                .ConsumerAPIClient
+                .GetProcessResultForCorrelation<object>(identity, processStartResponsePayload.CorrelationId, processModelId);
 
             Assert.NotEmpty(processResult);
         }
