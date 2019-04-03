@@ -468,9 +468,22 @@
             return parsedResult;
         }
 
-        public Task FinishManualTask(IIdentity identity, string processInstanceId, string correlationId, string manualTaskInstanceId)
+        public async Task FinishManualTask(IIdentity identity, string processInstanceId, string correlationId, string manualTaskInstanceId)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.FinishManualTask
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId)
+                .Replace(RestSettings.Params.ManualTaskInstanceId, manualTaskInstanceId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to finish ManualTask: {result.ReasonPhrase}");
+            }
         }
 
         private string SerializeForProcessEngine(object payload)
