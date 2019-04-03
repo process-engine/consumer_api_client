@@ -119,18 +119,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
-            var jsonResult = "";
-
-            EventList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<EventList>(jsonResult);
-            }
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -142,18 +131,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
-            var jsonResult = "";
-
-            EventList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<EventList>(jsonResult);
-            }
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -166,18 +144,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
-            var jsonResult = "";
-
-            EventList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<EventList>(jsonResult);
-            }
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -235,16 +202,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
 
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
-            }
-
-            string jsonResult = await result.Content.ReadAsStringAsync();
-            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -256,16 +214,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
 
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
-            }
-
-            string jsonResult = await result.Content.ReadAsStringAsync();
-            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -277,16 +226,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
 
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
-            }
-
-            string jsonResult = await result.Content.ReadAsStringAsync();
-            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -299,16 +239,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
 
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
-            }
-
-            string jsonResult = await result.Content.ReadAsStringAsync();
-            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -319,16 +250,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
 
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (!result.IsSuccessStatusCode)
-            {
-                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
-            }
-
-            string jsonResult = await result.Content.ReadAsStringAsync();
-            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -360,18 +282,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
+            var parsedResult = await this.GetManualTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -383,18 +294,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
+            var parsedResult = await this.GetManualTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -406,18 +306,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
+            var parsedResult = await this.GetManualTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -430,18 +319,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
+            var parsedResult = await this.GetManualTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -452,18 +330,7 @@
 
             url = $"{RestSettings.Endpoints.ConsumerAPI}{url}";
 
-            var jsonResult = "";
-
-            ManualTaskList parsedResult = null;
-
-            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
-            var result = await this.httpClient.SendAsync(request);
-
-            if (result.IsSuccessStatusCode)
-            {
-                jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<ManualTaskList>(jsonResult);
-            }
+            var parsedResult = await this.GetManualTasksFromUrl(identity, url);
 
             return parsedResult;
         }
@@ -486,19 +353,45 @@
             }
         }
 
-        private string SerializeForProcessEngine(object payload)
+        private async Task<EventList> GetTriggerableEventsFromUrl(IIdentity identity, string url, HttpContent content = null)
         {
-            var contractResolver = new DefaultContractResolver
+            var result = await this.SendRequestAndExpectResult<EventList>(identity, HttpMethod.Get, url, content);
+
+            return result;
+        }
+
+        private async Task<ManualTaskList> GetManualTasksFromUrl(IIdentity identity, string url, HttpContent content = null)
+        {
+            var result = await this.SendRequestAndExpectResult<ManualTaskList>(identity, HttpMethod.Get, url, content);
+
+            return result;
+        }
+
+        private async Task<UserTaskList> GetUserTasksFromUrl(IIdentity identity, string url, HttpContent content = null)
+        {
+            var result = await this.SendRequestAndExpectResult<UserTaskList>(identity, HttpMethod.Get, url, content);
+
+            return result;
+        }
+
+        private async Task<TResult> SendRequestAndExpectResult<TResult>(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
+        {
+            TResult parsedResult = default(TResult);
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (result.IsSuccessStatusCode)
             {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            };
-            var serializerSettings = new JsonSerializerSettings
+                var jsonResult = await result.Content.ReadAsStringAsync();
+                parsedResult = JsonConvert.DeserializeObject<TResult>(jsonResult);
+            }
+            else
             {
-                ContractResolver = contractResolver,
-                Formatting = Formatting.None
-            };
-            var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
-            return jsonPayload;
+                throw new Exception($"Request failed: {result.ReasonPhrase}");
+            }
+
+            return parsedResult;
         }
 
         private HttpRequestMessage CreateRequestMessage(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
@@ -519,6 +412,21 @@
             message.Method = method;
 
             return message;
+        }
+
+        private string SerializeForProcessEngine(object payload)
+        {
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+            var serializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.None
+            };
+            var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
+            return jsonPayload;
         }
     }
 }
