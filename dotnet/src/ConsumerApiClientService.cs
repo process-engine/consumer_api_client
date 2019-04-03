@@ -228,41 +228,6 @@
             }
         }
 
-        private string SerializeForProcessEngine(object payload)
-        {
-            var contractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy()
-            };
-            var serializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = contractResolver,
-                Formatting = Formatting.None
-            };
-            var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
-            return jsonPayload;
-        }
-
-        private HttpRequestMessage CreateRequestMessage(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
-        {
-            var hasNoIdentity = identity == null || identity.Token == null;
-            if (hasNoIdentity)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            var message = new HttpRequestMessage();
-
-            message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", identity.Token);
-
-            message.RequestUri = new Uri(this.httpClient.BaseAddress, url);
-            message.Content = content;
-            message.Method = method;
-
-            return message;
-        }
-
         public Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
         {
             throw new NotImplementedException();
@@ -411,6 +376,41 @@
         public Task FinishManualTask(IIdentity identity, string processInstanceId, string correlationId, string manualTaskInstanceId)
         {
             throw new NotImplementedException();
+        }
+
+        private string SerializeForProcessEngine(object payload)
+        {
+            var contractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+            var serializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = contractResolver,
+                Formatting = Formatting.None
+            };
+            var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
+            return jsonPayload;
+        }
+
+        private HttpRequestMessage CreateRequestMessage(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
+        {
+            var hasNoIdentity = identity == null || identity.Token == null;
+            if (hasNoIdentity)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            var message = new HttpRequestMessage();
+
+            message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", identity.Token);
+
+            message.RequestUri = new Uri(this.httpClient.BaseAddress, url);
+            message.Content = content;
+            message.Method = method;
+
+            return message;
         }
     }
 }
