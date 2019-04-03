@@ -16,19 +16,19 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using Xunit;
 
     [Collection("ConsumerAPI collection")]
-    public class GetWaitingManualTasksByIdentityTests : ProcessEngineBaseTest
+    public class GetUserTasksForProcessModelTests : ProcessEngineBaseTest
     {
         private readonly ConsumerAPIFixture fixture;
 
-        public GetWaitingManualTasksByIdentityTests(ConsumerAPIFixture fixture)
+        public GetUserTasksForProcessModelTests(ConsumerAPIFixture fixture)
         {
             this.fixture = fixture;
         }
 
         [Fact]
-        public async Task BPMN_GetWaitingManualTasksByIdentity_ShouldFetchManualTaskList()
+        public async Task BPMN_GetUserTasksForProcessModel_ShouldFetchUserTaskList()
         {
-            var processModelId = "test_consumer_api_manualtask";
+            var processModelId = "test_consumer_api_usertask";
             var payload = new ProcessStartRequestPayload<object>();
             var callbackType = StartCallbackType.CallbackOnProcessInstanceCreated;
 
@@ -37,12 +37,15 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 .ConsumerAPIClient
                 .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType);
 
-            // Give the process engine time to reach the user task
-            await Task.Delay(2000);
+            // Give the ProcessEngine time to reach the UserTask
+            await Task.Delay(1000);
 
-            ManualTaskList manualTasks = await this.fixture.ConsumerAPIClient.GetWaitingManualTasksByIdentity(this.fixture.DefaultIdentity);
+            UserTaskList userTasks = await this
+                .fixture
+                .ConsumerAPIClient
+                .GetUserTasksForProcessModel(this.fixture.DefaultIdentity, processModelId);
 
-            Assert.NotEmpty(manualTasks.ManualTasks);
+            Assert.NotEmpty(userTasks.UserTasks);
         }
 
     }

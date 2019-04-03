@@ -37,7 +37,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 .ConsumerAPIClient
                 .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType);
 
-            // Give the process engine time to reach the user task
+            // Give the ProcessEngine time to reach the ManualTask
             await Task.Delay(1000);
 
             ManualTaskList manualTasks = await this

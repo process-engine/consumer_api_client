@@ -30,5 +30,8 @@
     <None Update="bpmn\test_consumer_api_manualtask.bpmn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="bpmn\test_consumer_api_usertask.bpmn">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

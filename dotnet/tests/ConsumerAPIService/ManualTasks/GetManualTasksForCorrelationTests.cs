@@ -16,17 +16,36 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
     using Xunit;
 
     [Collection("ConsumerAPI collection")]
-    public class GetManualTasksForProcessModelTests : ProcessEngineBaseTest
+    public class GetManualTasksForCorrelationTests : ProcessEngineBaseTest
     {
         private readonly ConsumerAPIFixture fixture;
 
-        public GetManualTasksForProcessModelTests(ConsumerAPIFixture fixture)
+        public GetManualTasksForCorrelationTests(ConsumerAPIFixture fixture)
         {
             this.fixture = fixture;
         }
 
         [Fact]
-        public async Task BPMN_GetManualTasksForProcessModel_ShouldFetchManualTaskList()
+        public void GetManualTasksForCorrelation_EmptyParameters_ShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await this
+                .fixture
+                .ConsumerAPIClient
+                .GetManualTasksForCorrelation(this.fixture.DefaultIdentity, "")
+            );
+        }
+
+        [Fact]
+        public void GetManualTasksForCorrelation_ProcessModelNotFound_ShouldThrowException()
+        {
+            var ex = Assert.ThrowsAsync<Exception>(async () => await this
+                .fixture
+                .ConsumerAPIClient
+                .GetManualTasksForCorrelation(this.fixture.DefaultIdentity, "Test"));
+        }
+
+        [Fact]
+        public async Task BPMN_GetManualTasksForCorrelation_ShouldFetchManualTaskList()
         {
             var processModelId = "test_consumer_api_manualtask";
             var payload = new ProcessStartRequestPayload<object>();
@@ -43,10 +62,9 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
             ManualTaskList manualTasks = await this
                 .fixture
                 .ConsumerAPIClient
-                .GetManualTasksForProcessModel(this.fixture.DefaultIdentity, processModelId);
+                .GetManualTasksForCorrelation(this.fixture.DefaultIdentity, processInstance.CorrelationId);
 
             Assert.NotEmpty(manualTasks.ManualTasks);
         }
-
     }
 }
