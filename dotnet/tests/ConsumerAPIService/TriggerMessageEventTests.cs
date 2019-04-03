@@ -39,7 +39,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 "StartEvent_1",
                 requestPayload);
 
-            await Task.Delay(1000);
+            await Task.Delay(5000);
 
             await this.fixture.ConsumerAPIClient.TriggerMessageEvent(
                 DummyIdentity.Create(),
