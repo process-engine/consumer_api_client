@@ -228,34 +228,129 @@
             }
         }
 
-        public Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
+        public async Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.ProcessModelUserTasks
+                .Replace(RestSettings.Params.ProcessModelId, processModelId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
+            }
+
+            string jsonResult = await result.Content.ReadAsStringAsync();
+            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+
+            return parsedResult;
         }
 
-        public Task<UserTaskList> GetUserTasksForCorrelation(IIdentity identity, string correlationId)
+        public async Task<UserTaskList> GetUserTasksForProcessInstance(IIdentity identity, string processInstanceId)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.ProcessInstanceUserTasks
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
+            }
+
+            string jsonResult = await result.Content.ReadAsStringAsync();
+            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+
+            return parsedResult;
         }
 
-        public Task<UserTaskList> GetUserTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        public async Task<UserTaskList> GetUserTasksForCorrelation(IIdentity identity, string correlationId)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.CorrelationUserTasks
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
+            }
+
+            string jsonResult = await result.Content.ReadAsStringAsync();
+            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+
+            return parsedResult;
         }
 
-        public Task<UserTaskList> GetWaitingUserTasksByIdentity(IIdentity identity)
+        public async Task<UserTaskList> GetUserTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.ProcessModelCorrelationUserTasks
+                .Replace(RestSettings.Params.ProcessModelId, processModelId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
+            }
+
+            string jsonResult = await result.Content.ReadAsStringAsync();
+            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+
+            return parsedResult;
         }
 
-        public Task FinishUserTask(IIdentity identity, string processInstanceId, string correlationId, string userTaskInstanceId, UserTaskResult userTaskResult)
+        public async Task<UserTaskList> GetWaitingUserTasksByIdentity(IIdentity identity)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.GetOwnUserTasks;
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch UserTasks: {result.ReasonPhrase}");
+            }
+
+            string jsonResult = await result.Content.ReadAsStringAsync();
+            UserTaskList parsedResult = JsonConvert.DeserializeObject<UserTaskList>(jsonResult);
+
+            return parsedResult;
         }
 
-        public Task<UserTaskList> GetUserTasksForProcessInstance(IIdentity identity, string processInstanceId)
+        public async Task FinishUserTask(IIdentity identity, string processInstanceId, string correlationId, string userTaskInstanceId, UserTaskResult userTaskResult)
         {
-            throw new NotImplementedException();
+            var url = RestSettings.Paths.FinishUserTask
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId)
+                .Replace(RestSettings.Params.UserTaskInstanceId, userTaskInstanceId);
+
+            url = $"{RestSettings.Endpoints.ConsumerAPI}/{url}";
+
+            var jsonPayload = SerializeForProcessEngine(userTaskResult);
+            var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to finish UserTask: {result.ReasonPhrase}");
+            }
         }
 
         public async Task<ManualTaskList> GetManualTasksForProcessModel(IIdentity identity, string processModelId)
