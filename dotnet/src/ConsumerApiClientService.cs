@@ -263,11 +263,6 @@
             return message;
         }
 
-        Task<IEnumerable<CorrelationResult<TPayload>>> IProcessModelConsumerApi.GetProcessResultForCorrelation<TPayload>(IIdentity identity, string correlationId, string processModelId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
         {
             throw new NotImplementedException();
