@@ -28,18 +28,17 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public void FinishUserTask_EmptyParameters_ShouldThrowException()
         {
-            var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await this
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await this
                 .fixture
                 .ConsumerAPIClient
-                .FinishUserTask(this.fixture.DefaultIdentity,
-                    "", "", "", null)
+                .FinishUserTask(this.fixture.DefaultIdentity, "", "", "", null)
             );
         }
 
         [Fact]
         public void FinishUserTask_ProcessInstanceNotFound_ShouldThrowException()
         {
-            var ex = Assert.ThrowsAsync<Exception>(async () => await this
+            Assert.ThrowsAsync<Exception>(async () => await this
                 .fixture
                 .ConsumerAPIClient
                 .FinishUserTask( this.fixture.DefaultIdentity, "abc", "", "", null)

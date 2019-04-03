@@ -28,7 +28,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public void GetManualTasksForCorrelation_EmptyParameters_ShouldThrowException()
         {
-            var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await this
+            Assert.ThrowsAsync<ArgumentNullException>(async () => await this
                 .fixture
                 .ConsumerAPIClient
                 .GetManualTasksForCorrelation(this.fixture.DefaultIdentity, "")
@@ -38,7 +38,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public void GetManualTasksForCorrelation_ProcessModelNotFound_ShouldThrowException()
         {
-            var ex = Assert.ThrowsAsync<Exception>(async () => await this
+            Assert.ThrowsAsync<Exception>(async () => await this
                 .fixture
                 .ConsumerAPIClient
                 .GetManualTasksForCorrelation(this.fixture.DefaultIdentity, "Test"));
