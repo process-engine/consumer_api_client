@@ -1,30 +1,30 @@
 ﻿namespace ProcessEngine.ConsumerAPI.Client
 {
-  using System.Collections.Generic;
-  using System.Net.Http.Headers;
-  using System.Net.Http;
-  using System.Net.WebSockets;
-  using System.Text;
-  using System.Threading;
-  using System.Threading.Tasks;
-  using System;
+    using System.Collections.Generic;
+    using System.Net.Http.Headers;
+    using System.Net.Http;
+    using System.Net.WebSockets;
+    using System.Text;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System;
 
-  using EssentialProjects.IAM.Contracts;
-  using EssentialProjects.WebSocket.Contracts;
-  using EssentialProjects.WebSocket;
+    using EssentialProjects.IAM.Contracts;
+    using EssentialProjects.WebSocket.Contracts;
+    using EssentialProjects.WebSocket;
 
-  using ProcessEngine.ConsumerAPI.Contracts;
-  using ProcessEngine.ConsumerAPI.Contracts.APIs;
-  using ProcessEngine.ConsumerAPI.Contracts.DataModel;
-  using ProcessEngine.ConsumerAPI.Contracts.Messages.SystemEvent;
-  using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
-  using SocketSettings = ProcessEngine.ConsumerAPI.Contracts.SocketSettings;
+    using ProcessEngine.ConsumerAPI.Contracts;
+    using ProcessEngine.ConsumerAPI.Contracts.APIs;
+    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
+    using ProcessEngine.ConsumerAPI.Contracts.Messages.SystemEvent;
+    using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
+    using SocketSettings = ProcessEngine.ConsumerAPI.Contracts.SocketSettings;
 
-  using Newtonsoft.Json.Serialization;
-  using Newtonsoft.Json;
-  using ProcessEngine.ConsumerAPI.Contracts.Messages.BpmnEvent;
+    using Newtonsoft.Json.Serialization;
+    using Newtonsoft.Json;
+    using ProcessEngine.ConsumerAPI.Contracts.Messages.BpmnEvent;
 
-  public class ConsumerApiClientService : IConsumerAPI
+    public class ConsumerApiClientService : IConsumerAPI
     {
         private readonly HttpClient HttpClient;
         private readonly Action<ClientWebSocket> WebSocketConfigurationCallback;
