@@ -416,7 +416,7 @@
             var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
             var result = await this.HttpClient.SendAsync(request);
 
-            if (!result.IsSuccessStatusCode)
+            if (result.IsSuccessStatusCode)
             {
                 var jsonResult = await result.Content.ReadAsStringAsync();
                 parsedResult = JsonConvert.DeserializeObject<TResult>(jsonResult);
