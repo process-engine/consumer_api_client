@@ -29,43 +29,46 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public async Task BPMN_OnUserTaskFinished_ShouldExecuteCallbackOnEvent()
         {
-            string processModelId = "test_consumer_api_usertask";
-            var identity = DummyIdentity.Create();
-            var callbackExecuted = false;
+            var processModelId = "test_consumer_api_usertask";
+            var payload = new ProcessStartRequestPayload<object>();
+            var callbackType = StartCallbackType.CallbackOnProcessInstanceCreated;
 
-            this.fixture.ConsumerAPIClient.OnUserTaskFinished(identity, (UserTaskFinishedMessage userTaskFinishedMessage) =>
+            var notificationReceived = false;
+
+            var notificationHandler = (UserTaskReachedMessage userTaskWaitingMessage) =>
             {
-                callbackExecuted = true;
-            }, true);
+                notificationReceived = true;
+            };
 
-            ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                identity,
-                processModelId,
-                "StartEvent_1",
-                new ProcessStartRequestPayload<object>(),
-                StartCallbackType.CallbackOnProcessInstanceCreated);
+            this.fixture.ConsumerAPIClient.OnUserTaskFinished(this.fixture.DefaultIdentity, notificationHandler, true);
+
+            var processInstance = await this
+                .fixture
+                .ConsumerAPIClient
+                .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType);
 
             // Give the process engine time to reach the user task
             await Task.Delay(1000);
 
-            UserTaskList userTasks = await this.fixture.ConsumerAPIClient.GetUserTasksForCorrelation(
-                identity,
-                processInstance.CorrelationId);
+            var userTasks = await this
+                .fixture
+                .ConsumerAPIClient
+                .GetWaitingUserTasksByIdentity(this.fixture.DefaultIdentity);
 
             var userTask = userTasks.UserTasks.ToArray()[0];
             var userTaskResult = new UserTaskResult();
             userTaskResult.FormFields.Add("test", "value");
 
-            await this.fixture.ConsumerAPIClient.FinishUserTask(identity,
+            await this.fixture.ConsumerAPIClient.FinishUserTask(this.fixture.DefaultIdentity,
                                                                 processInstance.ProcessInstanceId,
                                                                 processInstance.CorrelationId,
                                                                 userTask.FlowNodeInstanceId,
                                                                 userTaskResult);
 
-            await Task.Delay(1000);
+            await Task.Delay(2000);
 
             Assert.NotEmpty(userTasks.UserTasks);
-            Assert.Equal(callbackExecuted, true);
+            Assert.Equal(notificationReceived, true);
         }
     }
 }

@@ -29,60 +29,68 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
         [Fact]
         public async Task BPMN_OnUserTaskForIdentityWaiting_ShouldExecuteCallbackOnEvent()
         {
-            string processModelId = "test_consumer_api_usertask";
-            var identity = DummyIdentity.Create();
-            var callbackExecuted = false;
+            var processModelId = "test_consumer_api_usertask";
+            var payload = new ProcessStartRequestPayload<object>();
+            var callbackType = StartCallbackType.CallbackOnProcessInstanceCreated;
 
-            this.fixture.ConsumerAPIClient.OnUserTaskForIdentityWaiting(identity, (UserTaskReachedMessage userTaskWaitingMessage) =>
+            var notificationReceived = false;
+
+            var notificationHandler = (UserTaskReachedMessage userTaskWaitingMessage) =>
             {
-                callbackExecuted = true;
-            }, true);
+                notificationReceived = true;
+            };
 
-            ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                identity,
-                processModelId,
-                "StartEvent_1",
-                new ProcessStartRequestPayload<object>(),
-                StartCallbackType.CallbackOnProcessInstanceCreated);
+            this.fixture.ConsumerAPIClient.OnUserTaskForIdentityWaiting(this.fixture.DefaultIdentity, notificationHandler, true);
+
+
+            var processInstance = await this
+                .fixture
+                .ConsumerAPIClient
+                .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType);
 
             // Give the process engine time to reach the user task
             await Task.Delay(1000);
 
-            UserTaskList userTasks = await this.fixture.ConsumerAPIClient.GetWaitingUserTasksByIdentity(
-                identity);
+            var userTasks = await this
+                .fixture
+                .ConsumerAPIClient
+                .GetWaitingUserTasksByIdentity(this.fixture.DefaultIdentity);
 
             Assert.NotEmpty(userTasks.UserTasks);
-            Assert.Equal(callbackExecuted, true);
+            Assert.Equal(notificationReceived, true);
         }
 
         [Fact]
         public async Task BPMN_OnUserTaskForIdentityWaiting_ShouldNotExecuteCallbackForOtherIdentity()
         {
-            string processModelId = "test_consumer_api_usertask";
-            var identity = DummyIdentity.Create();
-            var wrongIdentity = DummyIdentity.CreateFake("wrong");
-            var callbackExecuted = false;
+            var processModelId = "test_consumer_api_usertask";
+            var payload = new ProcessStartRequestPayload<object>();
+            var callbackType = StartCallbackType.CallbackOnProcessInstanceCreated;
 
-            this.fixture.ConsumerAPIClient.OnUserTaskForIdentityWaiting(wrongIdentity, (UserTaskReachedMessage userTaskWaitingMessage) =>
+            var notificationReceived = false;
+
+            var notificationHandler = (UserTaskReachedMessage userTaskWaitingMessage) =>
             {
-                callbackExecuted = true;
-            }, true);
+                notificationReceived = true;
+            };
 
-            ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-                identity,
-                processModelId,
-                "StartEvent_1",
-                new ProcessStartRequestPayload<object>(),
-                StartCallbackType.CallbackOnProcessInstanceCreated);
+            this.fixture.ConsumerAPIClient.OnUserTaskForIdentityWaiting(this.fixture.DefaultIdentity, notificationHandler, true);
+
+            var processInstance = await this
+                .fixture
+                .ConsumerAPIClient
+                .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType);
 
             // Give the process engine time to reach the user task
             await Task.Delay(1000);
 
-            UserTaskList userTasks = await this.fixture.ConsumerAPIClient.GetWaitingUserTasksByIdentity(
-                identity);
+            var userTasks = await this
+                .fixture
+                .ConsumerAPIClient
+                .GetWaitingUserTasksByIdentity(this.fixture.DefaultIdentity);
 
             Assert.NotEmpty(userTasks.UserTasks);
-            Assert.Equal(callbackExecuted, false);
+            Assert.Equal(notificationReceived, false);
         }
 
     }
