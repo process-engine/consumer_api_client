@@ -114,8 +114,6 @@
                 urlWithParams = $"{urlWithParams}&end_event_id={endEventId}";
             }
 
-            string jsonResult;
-
             var jsonPayload = SerializeForProcessEngine(processStartRequestPayload);
             var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
             var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithParams, requestContent);
@@ -123,7 +121,7 @@
 
             if (result.IsSuccessStatusCode)
             {
-                jsonResult = await result.Content.ReadAsStringAsync();
+                var jsonResult = await result.Content.ReadAsStringAsync();
                 var parsedResult = JsonConvert.DeserializeObject<ProcessStartResponsePayload>(jsonResult);
                 return parsedResult;
             }
@@ -143,8 +141,6 @@
 
             var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
 
-            string jsonResult;
-
             IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
 
             var request = this.CreateRequestMessage(identity, HttpMethod.Get, urlWithEndpoint);
@@ -152,7 +148,7 @@
 
             if (result.IsSuccessStatusCode)
             {
-                jsonResult = await result.Content.ReadAsStringAsync();
+                var jsonResult = await result.Content.ReadAsStringAsync();
                 parsedResult = JsonConvert.DeserializeObject<IEnumerable<CorrelationResult<TPayload>>>(jsonResult);
             }
 

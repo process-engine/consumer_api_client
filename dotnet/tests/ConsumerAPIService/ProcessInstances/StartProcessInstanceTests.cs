@@ -61,28 +61,6 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 .StartProcessInstance(this.fixture.DefaultIdentity, processModelId, "StartEvent_1", payload, callbackType, "EndEvent_1");
         }
 
-        // [Fact]
-        // public async Task BPMN_StartProcessInstance_ShouldExecuteCallbackOnFinish()
-        // {
-        //     string processModelId = "test_start_process";
-
-        //     var callbackExecuted = false;
-        //     this.fixture.ConsumerAPIClient.OnProcessEnded(() =>
-        //     {
-        //         callbackExecuted = true;
-        //     });
-
-        //     ProcessStartResponsePayload processInstance = await this.fixture.ConsumerAPIClient.StartProcessInstance(
-        //         DummyIdentity.Create(),
-        //         processModelId,
-        //         "StartEvent_1",
-        //         new ProcessStartRequestPayload<object>(),
-        //         StartCallbackType.CallbackOnEndEventReached,
-        //         "EndEvent_1");
-
-        //     Assert.Equal(callbackExecuted, true);
-        // }
-
         [Fact]
         public async Task BPMN_StartProcessInstance_ShouldCreateProcessWithDistinctCorrelationId()
         {
