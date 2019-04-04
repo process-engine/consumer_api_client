@@ -511,4 +511,5 @@
 
             return this.SocketClient.On(eventType, callback);
         }
+    }
 }
