@@ -592,8 +592,9 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const urlRestPart: string = restSettings.paths
-                                                  .processModelManualTasks
-                                                  .replace(restSettings.params.processModelId, processModelId);
+      .processModelManualTasks
+      .replace(restSettings.params.processModelId, processModelId);
+
     const url: string = this._applyBaseUrl(urlRestPart);
 
     const httpResponse: IResponse<DataModels.ManualTasks.ManualTaskList> =
@@ -606,8 +607,8 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const urlRestPart: string = restSettings.paths
-                                              .processInstanceManualTasks
-                                              .replace(restSettings.params.processInstanceId, processInstanceId);
+      .processInstanceManualTasks
+      .replace(restSettings.params.processInstanceId, processInstanceId);
 
     const url: string = this._applyBaseUrl(urlRestPart);
 
@@ -621,8 +622,9 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const requestAuthHeaders: IRequestOptions = this._createRequestAuthHeaders(identity);
 
     const urlRestPart: string = restSettings.paths
-                                            .correlationManualTasks
-                                            .replace(restSettings.params.correlationId, correlationId);
+      .correlationManualTasks
+      .replace(restSettings.params.correlationId, correlationId);
+
     const url: string = this._applyBaseUrl(urlRestPart);
 
     const httpResponse: IResponse<DataModels.ManualTasks.ManualTaskList> =
