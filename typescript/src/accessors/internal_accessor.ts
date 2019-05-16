@@ -10,10 +10,10 @@ import {
 
 export class InternalAccessor implements IConsumerApiAccessor {
 
-  private _consumerApiService: IConsumerApi = undefined;
+  private consumerApiService: IConsumerApi = undefined;
 
   constructor(consumerApiService: IConsumerApi) {
-    this._consumerApiService = consumerApiService;
+    this.consumerApiService = consumerApiService;
   }
 
   // Notifications
@@ -22,7 +22,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onEmptyActivityWaiting(identity, callback, subscribeOnce);
+    return this.consumerApiService.onEmptyActivityWaiting(identity, callback, subscribeOnce);
   }
 
   public async onEmptyActivityFinished(
@@ -30,7 +30,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnEmptyActivityFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onEmptyActivityFinished(identity, callback, subscribeOnce);
+    return this.consumerApiService.onEmptyActivityFinished(identity, callback, subscribeOnce);
   }
 
   public async onEmptyActivityForIdentityWaiting(
@@ -38,7 +38,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onEmptyActivityForIdentityWaiting(identity, callback, subscribeOnce);
+    return this.consumerApiService.onEmptyActivityForIdentityWaiting(identity, callback, subscribeOnce);
   }
 
   public async onEmptyActivityForIdentityFinished(
@@ -46,7 +46,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnEmptyActivityFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onEmptyActivityForIdentityFinished(identity, callback, subscribeOnce);
+    return this.consumerApiService.onEmptyActivityForIdentityFinished(identity, callback, subscribeOnce);
   }
 
   public async onUserTaskWaiting(
@@ -54,7 +54,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onUserTaskWaiting(identity, callback, subscribeOnce);
+    return this.consumerApiService.onUserTaskWaiting(identity, callback, subscribeOnce);
   }
 
   public async onUserTaskFinished(
@@ -62,7 +62,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onUserTaskFinished(identity, callback, subscribeOnce);
+    return this.consumerApiService.onUserTaskFinished(identity, callback, subscribeOnce);
   }
 
   public async onUserTaskForIdentityWaiting(
@@ -70,7 +70,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onUserTaskForIdentityWaiting(identity, callback, subscribeOnce);
+    return this.consumerApiService.onUserTaskForIdentityWaiting(identity, callback, subscribeOnce);
   }
 
   public async onUserTaskForIdentityFinished(
@@ -78,7 +78,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onUserTaskForIdentityFinished(identity, callback, subscribeOnce);
+    return this.consumerApiService.onUserTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
   public async onManualTaskWaiting(
@@ -86,7 +86,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onManualTaskWaiting(identity, callback, subscribeOnce);
+    return this.consumerApiService.onManualTaskWaiting(identity, callback, subscribeOnce);
   }
 
   public async onManualTaskFinished(
@@ -94,7 +94,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onManualTaskFinished(identity, callback, subscribeOnce);
+    return this.consumerApiService.onManualTaskFinished(identity, callback, subscribeOnce);
   }
 
   public async onManualTaskForIdentityWaiting(
@@ -102,7 +102,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onManualTaskForIdentityWaiting(identity, callback, subscribeOnce);
+    return this.consumerApiService.onManualTaskForIdentityWaiting(identity, callback, subscribeOnce);
   }
 
   public async onManualTaskForIdentityFinished(
@@ -110,7 +110,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onManualTaskForIdentityFinished(identity, callback, subscribeOnce);
+    return this.consumerApiService.onManualTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
   public async onProcessStarted(
@@ -118,7 +118,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnProcessStartedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onProcessStarted(identity, callback, subscribeOnce);
+    return this.consumerApiService.onProcessStarted(identity, callback, subscribeOnce);
   }
 
   public async onProcessWithProcessModelIdStarted(
@@ -127,7 +127,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     processModelId: string,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onProcessWithProcessModelIdStarted(identity, callback, processModelId, subscribeOnce);
+    return this.consumerApiService.onProcessWithProcessModelIdStarted(identity, callback, processModelId, subscribeOnce);
   }
 
   public async onProcessTerminated(
@@ -135,7 +135,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnProcessTerminatedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onProcessTerminated(identity, callback, subscribeOnce);
+    return this.consumerApiService.onProcessTerminated(identity, callback, subscribeOnce);
   }
 
   public async onProcessEnded(
@@ -143,24 +143,24 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnProcessEndedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onProcessEnded(identity, callback, subscribeOnce);
+    return this.consumerApiService.onProcessEnded(identity, callback, subscribeOnce);
   }
 
   public async removeSubscription(identity: IIdentity, subscription: Subscription): Promise<void> {
-    return this._consumerApiService.removeSubscription(identity, subscription);
+    return this.consumerApiService.removeSubscription(identity, subscription);
   }
 
   // Process models and instances
   public async getProcessModels(identity: IIdentity): Promise<DataModels.ProcessModels.ProcessModelList> {
-    return this._consumerApiService.getProcessModels(identity);
+    return this.consumerApiService.getProcessModels(identity);
   }
 
   public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<DataModels.ProcessModels.ProcessModel> {
-    return this._consumerApiService.getProcessModelById(identity, processModelId);
+    return this.consumerApiService.getProcessModelById(identity, processModelId);
   }
 
   public async getProcessModelByProcessInstanceId(identity: IIdentity, processInstanceId: string): Promise<DataModels.ProcessModels.ProcessModel> {
-    return this._consumerApiService.getProcessModelByProcessInstanceId(identity, processInstanceId);
+    return this.consumerApiService.getProcessModelByProcessInstanceId(identity, processInstanceId);
   }
 
   public async startProcessInstance(
@@ -172,7 +172,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     endEventId?: string,
   ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
 
-    return this._consumerApiService.startProcessInstance(identity, processModelId, payload, startCallbackType, startEventId, endEventId);
+    return this.consumerApiService.startProcessInstance(identity, processModelId, payload, startCallbackType, startEventId, endEventId);
   }
 
   public async getProcessResultForCorrelation(
@@ -181,20 +181,20 @@ export class InternalAccessor implements IConsumerApiAccessor {
     processModelId: string,
   ): Promise<Array<DataModels.CorrelationResult>> {
 
-    return this._consumerApiService.getProcessResultForCorrelation(identity, correlationId, processModelId);
+    return this.consumerApiService.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
 
   public async getProcessInstancesByIdentity(identity: IIdentity): Promise<Array<DataModels.ProcessInstance>> {
-    return this._consumerApiService.getProcessInstancesByIdentity(identity);
+    return this.consumerApiService.getProcessInstancesByIdentity(identity);
   }
 
   // Events
   public async getEventsForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.Events.EventList> {
-    return this._consumerApiService.getEventsForProcessModel(identity, processModelId);
+    return this.consumerApiService.getEventsForProcessModel(identity, processModelId);
   }
 
   public async getEventsForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.Events.EventList> {
-    return this._consumerApiService.getEventsForCorrelation(identity, correlationId);
+    return this.consumerApiService.getEventsForCorrelation(identity, correlationId);
   }
 
   public async getEventsForProcessModelInCorrelation(
@@ -203,31 +203,31 @@ export class InternalAccessor implements IConsumerApiAccessor {
     correlationId: string,
   ): Promise<DataModels.Events.EventList> {
 
-    return this._consumerApiService.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.consumerApiService.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async triggerMessageEvent(identity: IIdentity, messageName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
-    return this._consumerApiService.triggerMessageEvent(identity, messageName, payload);
+    return this.consumerApiService.triggerMessageEvent(identity, messageName, payload);
   }
 
   public async triggerSignalEvent(identity: IIdentity, signalName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
-    return this._consumerApiService.triggerSignalEvent(identity, signalName, payload);
+    return this.consumerApiService.triggerSignalEvent(identity, signalName, payload);
   }
 
   // Empty Activities
   public async getEmptyActivitiesForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this._consumerApiService.getEmptyActivitiesForProcessModel(identity, processModelId);
+    return this.consumerApiService.getEmptyActivitiesForProcessModel(identity, processModelId);
   }
 
   public async getEmptyActivitiesForProcessInstance(
     identity: IIdentity,
     processInstanceId: string,
   ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this._consumerApiService.getEmptyActivitiesForProcessInstance(identity, processInstanceId);
+    return this.consumerApiService.getEmptyActivitiesForProcessInstance(identity, processInstanceId);
   }
 
   public async getEmptyActivitiesForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this._consumerApiService.getEmptyActivitiesForCorrelation(identity, correlationId);
+    return this.consumerApiService.getEmptyActivitiesForCorrelation(identity, correlationId);
   }
 
   public async getEmptyActivitiesForProcessModelInCorrelation(
@@ -235,11 +235,11 @@ export class InternalAccessor implements IConsumerApiAccessor {
     processModelId: string,
     correlationId: string,
   ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this._consumerApiService.getEmptyActivitiesForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.consumerApiService.getEmptyActivitiesForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async getWaitingEmptyActivitiesByIdentity(identity: IIdentity): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this._consumerApiService.getWaitingEmptyActivitiesByIdentity(identity);
+    return this.consumerApiService.getWaitingEmptyActivitiesByIdentity(identity);
   }
 
   public async finishEmptyActivity(
@@ -248,20 +248,20 @@ export class InternalAccessor implements IConsumerApiAccessor {
     correlationId: string,
     emptyActivityInstanceId: string,
   ): Promise<void> {
-    return this._consumerApiService.finishEmptyActivity(identity, processInstanceId, correlationId, emptyActivityInstanceId);
+    return this.consumerApiService.finishEmptyActivity(identity, processInstanceId, correlationId, emptyActivityInstanceId);
   }
 
   // UserTasks
   public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.UserTasks.UserTaskList> {
-    return this._consumerApiService.getUserTasksForProcessModel(identity, processModelId);
+    return this.consumerApiService.getUserTasksForProcessModel(identity, processModelId);
   }
 
   public async getUserTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.UserTasks.UserTaskList> {
-    return this._consumerApiService.getUserTasksForProcessInstance(identity, processInstanceId);
+    return this.consumerApiService.getUserTasksForProcessInstance(identity, processInstanceId);
   }
 
   public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
-    return this._consumerApiService.getUserTasksForCorrelation(identity, correlationId);
+    return this.consumerApiService.getUserTasksForCorrelation(identity, correlationId);
   }
 
   public async getUserTasksForProcessModelInCorrelation(
@@ -270,11 +270,11 @@ export class InternalAccessor implements IConsumerApiAccessor {
     correlationId: string,
   ): Promise<DataModels.UserTasks.UserTaskList> {
 
-    return this._consumerApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.consumerApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async getWaitingUserTasksByIdentity(identity: IIdentity): Promise<DataModels.UserTasks.UserTaskList> {
-    return this._consumerApiService.getWaitingUserTasksByIdentity(identity);
+    return this.consumerApiService.getWaitingUserTasksByIdentity(identity);
   }
 
   public async finishUserTask(
@@ -285,20 +285,20 @@ export class InternalAccessor implements IConsumerApiAccessor {
     userTaskResult: DataModels.UserTasks.UserTaskResult,
   ): Promise<void> {
 
-    return this._consumerApiService.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
+    return this.consumerApiService.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
   }
 
   // ManualTasks
   public async getManualTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    return this._consumerApiService.getManualTasksForProcessModel(identity, processModelId);
+    return this.consumerApiService.getManualTasksForProcessModel(identity, processModelId);
   }
 
   public async getManualTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    return this._consumerApiService.getManualTasksForProcessInstance(identity, processInstanceId);
+    return this.consumerApiService.getManualTasksForProcessInstance(identity, processInstanceId);
   }
 
   public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    return this._consumerApiService.getManualTasksForCorrelation(identity, correlationId);
+    return this.consumerApiService.getManualTasksForCorrelation(identity, correlationId);
   }
 
   public async getManualTasksForProcessModelInCorrelation(
@@ -307,11 +307,11 @@ export class InternalAccessor implements IConsumerApiAccessor {
     correlationId: string,
   ): Promise<DataModels.ManualTasks.ManualTaskList> {
 
-    return this._consumerApiService.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.consumerApiService.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   public async getWaitingManualTasksByIdentity(identity: IIdentity): Promise<DataModels.ManualTasks.ManualTaskList> {
-    return this._consumerApiService.getWaitingManualTasksByIdentity(identity);
+    return this.consumerApiService.getWaitingManualTasksByIdentity(identity);
   }
 
   public async finishManualTask(
@@ -321,6 +321,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     manualTaskInstanceId: string,
   ): Promise<void> {
 
-    return this._consumerApiService.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
+    return this.consumerApiService.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
   }
+
 }
