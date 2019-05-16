@@ -98,6 +98,26 @@ export class ConsumerApiClientService implements IConsumerApi {
     return this.consumerApiAccessor.onUserTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
+  public async onBoundaryEventWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnBoundaryEventWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onBoundaryEventWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onBoundaryEventFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnBoundaryEventFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this._ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onBoundaryEventFinished(identity, callback, subscribeOnce);
+  }
+
   public async onCallActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
