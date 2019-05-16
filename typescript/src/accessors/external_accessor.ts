@@ -123,6 +123,22 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return this._createSocketIoSubscription(identity, socketSettings.paths.boundaryEventFinished, callback, subscribeOnce);
   }
 
+  public async onIntermediateEventWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateEventWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this._createSocketIoSubscription(identity, socketSettings.paths.intermediateEventWaiting, callback, subscribeOnce);
+  }
+
+  public async onIntermediateEventFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateEventFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this._createSocketIoSubscription(identity, socketSettings.paths.intermediateEventFinished, callback, subscribeOnce);
+  }
+
   public async onCallActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,

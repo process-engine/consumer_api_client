@@ -97,6 +97,22 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this._consumerApiService.onBoundaryEventFinished(identity, callback, subscribeOnce);
   }
 
+  public async onIntermediateEventWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateEventWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this._consumerApiService.onIntermediateEventWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onIntermediateEventFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateEventFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this._consumerApiService.onIntermediateEventFinished(identity, callback, subscribeOnce);
+  }
+
   public async onCallActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
