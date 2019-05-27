@@ -19,9 +19,9 @@
   },
   "homepage": "https://github.com/process-engine/consumer_api_client#readme",
   "dependencies": {
-    "@essential-projects/errors_ts": "^1.4.0",
-    "@essential-projects/http_contracts": "^2.3.0",
-    "@essential-projects/iam_contracts": "^3.4.0",
+    "@essential-projects/errors_ts": "^1.5.0",
+    "@essential-projects/http_contracts": "^2.4.0",
+    "@essential-projects/iam_contracts": "^3.5.0",
     "@process-engine/consumer_api_contracts": "feature~add_events_for_call-activities_and_intermediate-events",
     "async-middleware": "^1.2.1",
     "bluebird": "^3.5.3",
