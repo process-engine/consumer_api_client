@@ -107,36 +107,28 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return this.createSocketIoSubscription(identity, socketSettings.paths.userTaskFinished, callback, subscribeOnce);
   }
 
-  public async onBoundaryEventWaiting(
+  public async onBoundaryEventTriggered(
     identity: IIdentity,
-    callback: Messages.CallbackTypes.OnBoundaryEventWaitingCallback,
+    callback: Messages.CallbackTypes.OnBoundaryEventTriggeredCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    return this._createSocketIoSubscription(identity, socketSettings.paths.boundaryEventWaiting, callback, subscribeOnce);
+    return this._createSocketIoSubscription(identity, socketSettings.paths.boundaryEventTriggered, callback, subscribeOnce);
   }
 
-  public async onBoundaryEventFinished(
+  public async onIntermediateEventTriggered(
     identity: IIdentity,
-    callback: Messages.CallbackTypes.OnBoundaryEventFinishedCallback,
+    callback: Messages.CallbackTypes.OnIntermediateEventTriggeredCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    return this._createSocketIoSubscription(identity, socketSettings.paths.boundaryEventFinished, callback, subscribeOnce);
+    return this._createSocketIoSubscription(identity, socketSettings.paths.intermediateEventTriggered, callback, subscribeOnce);
   }
 
-  public async onIntermediateEventWaiting(
+  public async onIntermediateCatchEventFinished(
     identity: IIdentity,
-    callback: Messages.CallbackTypes.OnIntermediateEventWaitingCallback,
+    callback: Messages.CallbackTypes.OnIntermediateCatchEventFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<any> {
-    return this._createSocketIoSubscription(identity, socketSettings.paths.intermediateEventWaiting, callback, subscribeOnce);
-  }
-
-  public async onIntermediateEventFinished(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnIntermediateEventFinishedCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<any> {
-    return this._createSocketIoSubscription(identity, socketSettings.paths.intermediateEventFinished, callback, subscribeOnce);
+    return this._createSocketIoSubscription(identity, socketSettings.paths.intermediateCatchEventFinished, callback, subscribeOnce);
   }
 
   public async onCallActivityWaiting(

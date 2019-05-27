@@ -81,36 +81,28 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this.consumerApiService.onUserTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
-  public async onBoundaryEventWaiting(
+  public async onBoundaryEventTriggered(
     identity: IIdentity,
-    callback: Messages.CallbackTypes.OnBoundaryEventWaitingCallback,
+    callback: Messages.CallbackTypes.OnBoundaryEventTriggeredCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onBoundaryEventWaiting(identity, callback, subscribeOnce);
+    return this._consumerApiService.onBoundaryEventTriggered(identity, callback, subscribeOnce);
   }
 
-  public async onBoundaryEventFinished(
+  public async onIntermediateEventTriggered(
     identity: IIdentity,
-    callback: Messages.CallbackTypes.OnBoundaryEventFinishedCallback,
+    callback: Messages.CallbackTypes.OnIntermediateEventTriggeredCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onBoundaryEventFinished(identity, callback, subscribeOnce);
+    return this._consumerApiService.onIntermediateEventTriggered(identity, callback, subscribeOnce);
   }
 
-  public async onIntermediateEventWaiting(
+  public async onIntermediateCatchEventFinished(
     identity: IIdentity,
-    callback: Messages.CallbackTypes.OnIntermediateEventWaitingCallback,
+    callback: Messages.CallbackTypes.OnIntermediateCatchEventFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onIntermediateEventWaiting(identity, callback, subscribeOnce);
-  }
-
-  public async onIntermediateEventFinished(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnIntermediateEventFinishedCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    return this._consumerApiService.onIntermediateEventFinished(identity, callback, subscribeOnce);
+    return this._consumerApiService.onIntermediateCatchEventFinished(identity, callback, subscribeOnce);
   }
 
   public async onCallActivityWaiting(
