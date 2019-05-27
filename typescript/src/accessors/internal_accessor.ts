@@ -86,7 +86,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnBoundaryEventTriggeredCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onBoundaryEventTriggered(identity, callback, subscribeOnce);
+    return this.consumerApiService.onBoundaryEventTriggered(identity, callback, subscribeOnce);
   }
 
   public async onIntermediateEventTriggered(
@@ -94,7 +94,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnIntermediateEventTriggeredCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onIntermediateEventTriggered(identity, callback, subscribeOnce);
+    return this.consumerApiService.onIntermediateEventTriggered(identity, callback, subscribeOnce);
   }
 
   public async onIntermediateCatchEventFinished(
@@ -102,7 +102,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnIntermediateCatchEventFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onIntermediateCatchEventFinished(identity, callback, subscribeOnce);
+    return this.consumerApiService.onIntermediateCatchEventFinished(identity, callback, subscribeOnce);
   }
 
   public async onCallActivityWaiting(
@@ -110,7 +110,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onCallActivityWaiting(identity, callback, subscribeOnce);
+    return this.consumerApiService.onCallActivityWaiting(identity, callback, subscribeOnce);
   }
 
   public async onCallActivityFinished(
@@ -118,7 +118,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this._consumerApiService.onCallActivityFinished(identity, callback, subscribeOnce);
+    return this.consumerApiService.onCallActivityFinished(identity, callback, subscribeOnce);
   }
 
   public async onManualTaskWaiting(

@@ -103,7 +103,7 @@ export class ConsumerApiClientService implements IConsumerApi {
     callback: Messages.CallbackTypes.OnBoundaryEventTriggeredCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
+    this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.onBoundaryEventTriggered(identity, callback, subscribeOnce);
   }
@@ -113,7 +113,7 @@ export class ConsumerApiClientService implements IConsumerApi {
     callback: Messages.CallbackTypes.OnIntermediateEventTriggeredCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
+    this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.onIntermediateEventTriggered(identity, callback, subscribeOnce);
   }
@@ -123,7 +123,7 @@ export class ConsumerApiClientService implements IConsumerApi {
     callback: Messages.CallbackTypes.OnIntermediateCatchEventFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
+    this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.onIntermediateCatchEventFinished(identity, callback, subscribeOnce);
   }
@@ -133,7 +133,7 @@ export class ConsumerApiClientService implements IConsumerApi {
     callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
+    this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.onCallActivityWaiting(identity, callback, subscribeOnce);
   }
@@ -143,7 +143,7 @@ export class ConsumerApiClientService implements IConsumerApi {
     callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    this._ensureIsAuthorized(identity);
+    this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.onCallActivityFinished(identity, callback, subscribeOnce);
   }
