@@ -98,6 +98,66 @@ export class ConsumerApiClientService implements IConsumerApi {
     return this.consumerApiAccessor.onUserTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
+  public async onBoundaryEventTriggered(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnBoundaryEventTriggeredCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onBoundaryEventTriggered(identity, callback, subscribeOnce);
+  }
+
+  public async onIntermediateThrowEventTriggered(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateThrowEventTriggeredCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onIntermediateThrowEventTriggered(identity, callback, subscribeOnce);
+  }
+
+  public async onIntermediateCatchEventReached(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateCatchEventReachedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onIntermediateCatchEventReached(identity, callback, subscribeOnce);
+  }
+
+  public async onIntermediateCatchEventFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateCatchEventFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onIntermediateCatchEventFinished(identity, callback, subscribeOnce);
+  }
+
+  public async onCallActivityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onCallActivityWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onCallActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onCallActivityFinished(identity, callback, subscribeOnce);
+  }
+
   public async onProcessTerminated(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnProcessTerminatedCallback,

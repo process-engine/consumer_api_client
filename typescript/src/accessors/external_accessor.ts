@@ -107,6 +107,54 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return this.createSocketIoSubscription(identity, socketSettings.paths.userTaskFinished, callback, subscribeOnce);
   }
 
+  public async onBoundaryEventTriggered(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnBoundaryEventTriggeredCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this.createSocketIoSubscription(identity, socketSettings.paths.boundaryEventTriggered, callback, subscribeOnce);
+  }
+
+  public async onIntermediateThrowEventTriggered(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateThrowEventTriggeredCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this.createSocketIoSubscription(identity, socketSettings.paths.intermediateThrowEventTriggered, callback, subscribeOnce);
+  }
+
+  public async onIntermediateCatchEventReached(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateCatchEventReachedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this.createSocketIoSubscription(identity, socketSettings.paths.intermediateCatchEventReached, callback, subscribeOnce);
+  }
+
+  public async onIntermediateCatchEventFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateCatchEventFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this.createSocketIoSubscription(identity, socketSettings.paths.intermediateCatchEventFinished, callback, subscribeOnce);
+  }
+
+  public async onCallActivityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this.createSocketIoSubscription(identity, socketSettings.paths.callActivityWaiting, callback, subscribeOnce);
+  }
+
+  public async onCallActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this.createSocketIoSubscription(identity, socketSettings.paths.callActivityFinished, callback, subscribeOnce);
+  }
+
   public async onUserTaskForIdentityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,

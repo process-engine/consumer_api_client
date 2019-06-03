@@ -81,6 +81,54 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this.consumerApiService.onUserTaskForIdentityFinished(identity, callback, subscribeOnce);
   }
 
+  public async onBoundaryEventTriggered(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnBoundaryEventTriggeredCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onBoundaryEventTriggered(identity, callback, subscribeOnce);
+  }
+
+  public async onIntermediateThrowEventTriggered(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateThrowEventTriggeredCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onIntermediateThrowEventTriggered(identity, callback, subscribeOnce);
+  }
+
+  public async onIntermediateCatchEventReached(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateCatchEventReachedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onIntermediateCatchEventReached(identity, callback, subscribeOnce);
+  }
+
+  public async onIntermediateCatchEventFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnIntermediateCatchEventFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onIntermediateCatchEventFinished(identity, callback, subscribeOnce);
+  }
+
+  public async onCallActivityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onCallActivityWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onCallActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onCallActivityFinished(identity, callback, subscribeOnce);
+  }
+
   public async onManualTaskWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
