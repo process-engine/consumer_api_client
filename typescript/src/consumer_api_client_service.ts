@@ -18,6 +18,26 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   // Notifications
+  public async onActivityReached(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnActivityReachedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onActivityReached(identity, callback, subscribeOnce);
+  }
+
+  public async onActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onActivityFinished(identity, callback, subscribeOnce);
+  }
+
   public async onEmptyActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
@@ -136,26 +156,6 @@ export class ConsumerApiClientService implements IConsumerApi {
     this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.onIntermediateCatchEventFinished(identity, callback, subscribeOnce);
-  }
-
-  public async onCallActivityWaiting(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.onCallActivityWaiting(identity, callback, subscribeOnce);
-  }
-
-  public async onCallActivityFinished(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.onCallActivityFinished(identity, callback, subscribeOnce);
   }
 
   public async onProcessTerminated(

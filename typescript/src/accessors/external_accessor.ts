@@ -53,6 +53,23 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
   }
 
   // Notifications
+
+  public async onActivityReached(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnActivityReachedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this.createSocketIoSubscription(identity, socketSettings.paths.activityReached, callback, subscribeOnce);
+  }
+
+  public async onActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<any> {
+    return this.createSocketIoSubscription(identity, socketSettings.paths.activityFinished, callback, subscribeOnce);
+  }
+
   public async onEmptyActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
@@ -137,22 +154,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     subscribeOnce: boolean = false,
   ): Promise<any> {
     return this.createSocketIoSubscription(identity, socketSettings.paths.intermediateCatchEventFinished, callback, subscribeOnce);
-  }
-
-  public async onCallActivityWaiting(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<any> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.callActivityWaiting, callback, subscribeOnce);
-  }
-
-  public async onCallActivityFinished(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<any> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.callActivityFinished, callback, subscribeOnce);
   }
 
   public async onUserTaskForIdentityWaiting(
