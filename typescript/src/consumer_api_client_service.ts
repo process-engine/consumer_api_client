@@ -168,6 +168,16 @@ export class ConsumerApiClientService implements IConsumerApi {
     return this.consumerApiAccessor.onProcessTerminated(identity, callback, subscribeOnce);
   }
 
+  public async onProcessError(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessErrorCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onProcessError(identity, callback, subscribeOnce);
+  }
+
   public async onProcessStarted(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnProcessStartedCallback,
