@@ -185,6 +185,14 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return this.createSocketIoSubscription(identity, socketSettings.paths.processTerminated, callback, subscribeOnce);
   }
 
+  public async onProcessError(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessErrorCallback,
+    subscribeOnce = false,
+  ): Promise<Subscription> {
+    return this.createSocketIoSubscription(identity, socketSettings.paths.processError, callback, subscribeOnce);
+  }
+
   public async onProcessStarted(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnProcessStartedCallback,

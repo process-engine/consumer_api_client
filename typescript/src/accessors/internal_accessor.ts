@@ -186,6 +186,14 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this.consumerApiService.onProcessTerminated(identity, callback, subscribeOnce);
   }
 
+  public async onProcessError(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessErrorCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onProcessError(identity, callback, subscribeOnce);
+  }
+
   public async onProcessEnded(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnProcessEndedCallback,
