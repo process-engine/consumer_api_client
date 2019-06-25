@@ -77,7 +77,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.activityReached, callback, subscribeOnce);
+    return this.createSocketIoSubscription(identity, socketSettings.paths.callActivityWaiting, callback, subscribeOnce);
   }
 
   public async onCallActivityFinished(
@@ -85,7 +85,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.activityFinished, callback, subscribeOnce);
+    return this.createSocketIoSubscription(identity, socketSettings.paths.callActivityFinished, callback, subscribeOnce);
   }
 
   // ------------
