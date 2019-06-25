@@ -31,7 +31,7 @@
     "@essential-projects/errors_ts": "^1.5.0",
     "@essential-projects/http_contracts": "^2.4.0",
     "@essential-projects/iam_contracts": "^3.5.0",
-    "@process-engine/consumer_api_contracts": "feature~additional_notifications_for_activities",
+    "@process-engine/consumer_api_contracts": "7.0.0-8393af71-b15",
     "async-middleware": "^1.2.1",
     "bluebird": "^3.5.3",
     "loggerhythm": "^3.0.3",
