@@ -1,3 +1,5 @@
+import {Logger} from 'loggerhythm';
+
 import * as EssentialProjectErrors from '@essential-projects/errors_ts';
 import {Subscription} from '@essential-projects/event_aggregator_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
@@ -8,6 +10,8 @@ import {
   IConsumerApiAccessor,
   Messages,
 } from '@process-engine/consumer_api_contracts';
+
+const logger = Logger.createLogger('processengine:consumer_api:client');
 
 export class ConsumerApiClientService implements IConsumerApi {
 
@@ -37,6 +41,34 @@ export class ConsumerApiClientService implements IConsumerApi {
 
     return this.consumerApiAccessor.onActivityFinished(identity, callback, subscribeOnce);
   }
+
+  // ------------ For backwards compatibility only
+
+  public async onCallActivityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    logger.warn('"onCallActivityWaiting" is deprecated and will be removed with the next major release! Use "onActivityReached" instead!');
+
+    return this.consumerApiAccessor.onCallActivityWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onCallActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    logger.warn('"onCallActivityFinished" is deprecated and will be removed with the next major release! Use "onActivityFinished" instead!');
+
+    return this.consumerApiAccessor.onCallActivityFinished(identity, callback, subscribeOnce);
+  }
+
+  // ------------
 
   public async onEmptyActivityWaiting(
     identity: IIdentity,
