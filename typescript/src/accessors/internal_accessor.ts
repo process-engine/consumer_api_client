@@ -17,6 +17,42 @@ export class InternalAccessor implements IConsumerApiAccessor {
   }
 
   // Notifications
+  public async onActivityReached(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnActivityReachedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onActivityReached(identity, callback, subscribeOnce);
+  }
+
+  public async onActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onActivityFinished(identity, callback, subscribeOnce);
+  }
+
+  // ------------ For backwards compatibility only
+
+  public async onCallActivityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onCallActivityWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onCallActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onCallActivityFinished(identity, callback, subscribeOnce);
+  }
+
+  // ------------
+
   public async onEmptyActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
@@ -113,22 +149,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this.consumerApiService.onIntermediateCatchEventFinished(identity, callback, subscribeOnce);
   }
 
-  public async onCallActivityWaiting(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    return this.consumerApiService.onCallActivityWaiting(identity, callback, subscribeOnce);
-  }
-
-  public async onCallActivityFinished(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    return this.consumerApiService.onCallActivityFinished(identity, callback, subscribeOnce);
-  }
-
   public async onManualTaskWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
@@ -184,6 +204,14 @@ export class InternalAccessor implements IConsumerApiAccessor {
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
     return this.consumerApiService.onProcessTerminated(identity, callback, subscribeOnce);
+  }
+
+  public async onProcessError(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessErrorCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    return this.consumerApiService.onProcessError(identity, callback, subscribeOnce);
   }
 
   public async onProcessEnded(

@@ -1,3 +1,5 @@
+import {Logger} from 'loggerhythm';
+
 import * as EssentialProjectErrors from '@essential-projects/errors_ts';
 import {Subscription} from '@essential-projects/event_aggregator_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
@@ -9,6 +11,8 @@ import {
   Messages,
 } from '@process-engine/consumer_api_contracts';
 
+const logger = Logger.createLogger('processengine:consumer_api:client');
+
 export class ConsumerApiClientService implements IConsumerApi {
 
   private consumerApiAccessor: IConsumerApiAccessor = undefined;
@@ -18,6 +22,54 @@ export class ConsumerApiClientService implements IConsumerApi {
   }
 
   // Notifications
+  public async onActivityReached(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnActivityReachedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onActivityReached(identity, callback, subscribeOnce);
+  }
+
+  public async onActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onActivityFinished(identity, callback, subscribeOnce);
+  }
+
+  // ------------ For backwards compatibility only
+
+  public async onCallActivityWaiting(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    logger.warn('"onCallActivityWaiting" is deprecated and will be removed with the next major release! Use "onActivityReached" instead!');
+
+    return this.consumerApiAccessor.onCallActivityWaiting(identity, callback, subscribeOnce);
+  }
+
+  public async onCallActivityFinished(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    logger.warn('"onCallActivityFinished" is deprecated and will be removed with the next major release! Use "onActivityFinished" instead!');
+
+    return this.consumerApiAccessor.onCallActivityFinished(identity, callback, subscribeOnce);
+  }
+
+  // ------------
+
   public async onEmptyActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
@@ -138,26 +190,6 @@ export class ConsumerApiClientService implements IConsumerApi {
     return this.consumerApiAccessor.onIntermediateCatchEventFinished(identity, callback, subscribeOnce);
   }
 
-  public async onCallActivityWaiting(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.onCallActivityWaiting(identity, callback, subscribeOnce);
-  }
-
-  public async onCallActivityFinished(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.onCallActivityFinished(identity, callback, subscribeOnce);
-  }
-
   public async onProcessTerminated(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnProcessTerminatedCallback,
@@ -166,6 +198,16 @@ export class ConsumerApiClientService implements IConsumerApi {
     this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.onProcessTerminated(identity, callback, subscribeOnce);
+  }
+
+  public async onProcessError(
+    identity: IIdentity,
+    callback: Messages.CallbackTypes.OnProcessErrorCallback,
+    subscribeOnce: boolean = false,
+  ): Promise<Subscription> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.onProcessError(identity, callback, subscribeOnce);
   }
 
   public async onProcessStarted(
