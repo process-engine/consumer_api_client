@@ -10,7 +10,6 @@
     using EssentialProjects.IAM.Contracts;
 
     using ProcessEngine.ConsumerAPI.Contracts;
-    using ProcessEngine.ConsumerAPI.Contracts.APIs;
     using ProcessEngine.ConsumerAPI.Contracts.DataModel;
 
     using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
