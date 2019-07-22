@@ -191,7 +191,7 @@
 
         public async Task<EmptyActivityList> GetEmptyActivitiesForProcessModel(IIdentity identity, string processModelId)
         {
-            var endpoint = RestSettings.Paths.ProcessInstanceEmptyActivities
+            var endpoint = RestSettings.Paths.ProcessModelEmptyActivities
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
             var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
