@@ -1,19 +1,8 @@
 namespace ProcessEngine.ConsumerAPI.Client.Tests
 {
-    using System.Collections.Generic;
-    using System.Net.Http.Headers;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System;
+  using System;
 
-    using EssentialProjects.IAM.Contracts;
-
-    using ProcessEngine.ConsumerAPI.Contracts;
-
-    using Newtonsoft.Json;
-
-    public class ProcessEngineBaseTest
+  public class ProcessEngineBaseTest
     {
         private string processEngineRestApiUrl;
 
