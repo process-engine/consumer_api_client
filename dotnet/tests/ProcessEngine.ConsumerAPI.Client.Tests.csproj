@@ -18,6 +18,9 @@
     <None Update="bpmn\test_consumer_api_correlation_result.bpmn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="bpmn\test_consumer_api_emptyactivity.bpmn">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="bpmn\test_start_process.bpmn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
