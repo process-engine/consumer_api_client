@@ -6,7 +6,7 @@
     <RootNamespace>ProcessEngine.ConsumerAPI.Client</RootNamespace>
     <AssemblyName>ProcessEngine.ConsumerAPI.Client</AssemblyName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Authors>Sebastian Meier;</Authors>
+    <Authors>Christian Werner;Sebastian Meier;</Authors>
     <Company>5Minds IT-Solutions GmbH &amp; Co. KG</Company>
     <Description />
     <Copyright>Copyright © 5Minds IT-Solutions GmbH &amp; Co. KG 2018</Copyright>
