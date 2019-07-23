@@ -26,6 +26,44 @@
             this.httpClient = httpClient;
         }
 
+        public async Task<ProcessModel> GetProcessModelById(IIdentity identity, string processModelId)
+        {
+            var endpoint = RestSettings.Paths.ProcessModelById
+                .Replace(RestSettings.Params.ProcessModelId, processModelId);
+
+            var parsedResult = await this.GetProcessModelFromUrl(identity, endpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<ProcessModel> GetProcessModelByProcessInstanceId(IIdentity identity, string processInstanceId)
+        {
+            var endpoint = RestSettings.Paths.ProcessModelByProcessInstanceId
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
+
+            var parsedResult = await this.GetProcessModelFromUrl(identity, endpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<ProcessModelList> GetProcessModels(IIdentity identity)
+        {
+            var endpoint = RestSettings.Paths.ProcessModels;
+
+            var result = await this.SendRequestAndExpectResult<ProcessModelList>(identity, HttpMethod.Get, endpoint);
+
+            return result;
+        }
+
+        public async Task<IEnumerable<ProcessInstance>> GetProcessInstancesByIdentity(IIdentity identity)
+        {
+            var endpoint = RestSettings.Paths.GetOwnProcessInstances;
+
+            var result = await this.SendRequestAndExpectResult<IEnumerable<ProcessInstance>>(identity, HttpMethod.Get, endpoint);
+
+            return result;
+        }
+
         public async Task<ProcessStartResponsePayload> StartProcessInstance<TInputValues>(
             IIdentity identity,
             string processModelId,
@@ -395,35 +433,37 @@
             }
         }
 
-        private string ApplyBaseUrl(string endpoint)
+        private async Task<ProcessModel> GetProcessModelFromUrl(IIdentity identity, string url)
         {
-            return $"{RestSettings.Endpoints.ConsumerAPI}{endpoint}";
-        }
-
-        private async Task<EventList> GetTriggerableEventsFromUrl(IIdentity identity, string url, HttpContent content = null)
-        {
-            var result = await this.SendRequestAndExpectResult<EventList>(identity, HttpMethod.Get, url, content);
+            var result = await this.SendRequestAndExpectResult<ProcessModel>(identity, HttpMethod.Get, url);
 
             return result;
         }
 
-        private async Task<EmptyActivityList> GetEmptyActivitiesFromUrl(IIdentity identity, string url, HttpContent content = null)
+        private async Task<EventList> GetTriggerableEventsFromUrl(IIdentity identity, string url)
         {
-            var result = await this.SendRequestAndExpectResult<EmptyActivityList>(identity, HttpMethod.Get, url, content);
+            var result = await this.SendRequestAndExpectResult<EventList>(identity, HttpMethod.Get, url);
 
             return result;
         }
 
-        private async Task<ManualTaskList> GetManualTasksFromUrl(IIdentity identity, string url, HttpContent content = null)
+        private async Task<EmptyActivityList> GetEmptyActivitiesFromUrl(IIdentity identity, string url)
         {
-            var result = await this.SendRequestAndExpectResult<ManualTaskList>(identity, HttpMethod.Get, url, content);
+            var result = await this.SendRequestAndExpectResult<EmptyActivityList>(identity, HttpMethod.Get, url);
 
             return result;
         }
 
-        private async Task<UserTaskList> GetUserTasksFromUrl(IIdentity identity, string url, HttpContent content = null)
+        private async Task<ManualTaskList> GetManualTasksFromUrl(IIdentity identity, string url)
         {
-            var result = await this.SendRequestAndExpectResult<UserTaskList>(identity, HttpMethod.Get, url, content);
+            var result = await this.SendRequestAndExpectResult<ManualTaskList>(identity, HttpMethod.Get, url);
+
+            return result;
+        }
+
+        private async Task<UserTaskList> GetUserTasksFromUrl(IIdentity identity, string url)
+        {
+            var result = await this.SendRequestAndExpectResult<UserTaskList>(identity, HttpMethod.Get, url);
 
             return result;
         }
@@ -448,6 +488,11 @@
             }
 
             return parsedResult;
+        }
+
+        private string ApplyBaseUrl(string endpoint)
+        {
+            return $"{RestSettings.Endpoints.ConsumerAPI}{endpoint}";
         }
 
         private HttpRequestMessage CreateRequestMessage(IIdentity identity, HttpMethod method, string url, HttpContent content = null)

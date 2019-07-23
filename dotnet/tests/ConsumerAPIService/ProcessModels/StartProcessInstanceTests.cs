@@ -1,20 +1,14 @@
 namespace ProcessEngine.ConsumerAPI.Client.Tests
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System;
+  using System.Threading.Tasks;
+  using System;
 
-    using EssentialProjects.IAM.Contracts;
+  using ProcessEngine.ConsumerAPI.Client.Tests.xUnit;
 
-    using ProcessEngine.ConsumerAPI.Client.Tests.xUnit;
-    using ProcessEngine.ConsumerAPI.Contracts;
+  using Xunit;
+  using ProcessEngine.ConsumerAPI.Contracts.DataModel;
 
-    using Xunit;
-    using ProcessEngine.ConsumerAPI.Contracts.DataModel;
-
-    [Collection("ConsumerAPI collection")]
+  [Collection("ConsumerAPI collection")]
     public class StartProcessInstanceTests : ProcessEngineBaseTest
     {
         private readonly ConsumerAPIFixture fixture;
