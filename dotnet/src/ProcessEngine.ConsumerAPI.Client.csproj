@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <RootNamespace>ProcessEngine.ConsumerAPI.Client</RootNamespace>
     <AssemblyName>ProcessEngine.ConsumerAPI.Client</AssemblyName>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Authors>Sebastian Meier;</Authors>
+    <Authors>Christian Werner;Sebastian Meier;</Authors>
     <Company>5Minds IT-Solutions GmbH &amp; Co. KG</Company>
     <Description />
     <Copyright>Copyright © 5Minds IT-Solutions GmbH &amp; Co. KG 2018</Copyright>
@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="11.0.0" />
+    <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="12.0.0" />
     <PackageReference Include="EssentialProjects.IAM.Contracts" Version="0.1.3" />
   </ItemGroup>
 

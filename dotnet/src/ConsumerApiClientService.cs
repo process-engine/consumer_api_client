@@ -10,7 +10,6 @@
     using EssentialProjects.IAM.Contracts;
 
     using ProcessEngine.ConsumerAPI.Contracts;
-    using ProcessEngine.ConsumerAPI.Contracts.APIs;
     using ProcessEngine.ConsumerAPI.Contracts.DataModel;
 
     using RestSettings = ProcessEngine.ConsumerAPI.Contracts.RestSettings;
@@ -118,9 +117,7 @@
             var endpoint = RestSettings.Paths.ProcessModelEvents
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -130,9 +127,7 @@
             var endpoint = RestSettings.Paths.CorrelationEvents
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -143,9 +138,7 @@
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -196,14 +189,80 @@
             }
         }
 
+        public async Task<EmptyActivityList> GetEmptyActivitiesForProcessModel(IIdentity identity, string processModelId)
+        {
+            var endpoint = RestSettings.Paths.ProcessModelEmptyActivities
+                .Replace(RestSettings.Params.ProcessModelId, processModelId);
+
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<EmptyActivityList> GetEmptyActivitiesForProcessInstance(IIdentity identity, string processInstanceId)
+        {
+            var endpoint = RestSettings.Paths.ProcessInstanceEmptyActivities
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
+
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<EmptyActivityList> GetEmptyActivitiesForCorrelation(IIdentity identity, string correlationId)
+        {
+            var endpoint = RestSettings.Paths.CorrelationEmptyActivities
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<EmptyActivityList> GetEmptyActivitiesForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        {
+            var endpoint = RestSettings.Paths.ProcessModelCorrelationEmptyActivities
+                .Replace(RestSettings.Params.ProcessModelId, processModelId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId);
+
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+
+            return parsedResult;
+        }
+
+        public async Task<EmptyActivityList> GetWaitingEmptyActivitiesByIdentity(IIdentity identity)
+        {
+            var endpoint = RestSettings.Paths.GetOwnEmptyActivities;
+
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+
+            return parsedResult;
+        }
+
+        public async Task FinishEmptyActivity(IIdentity identity, string processInstanceId, string correlationId, string emptyActivityInstanceId)
+        {
+            var endpoint = RestSettings.Paths.FinishEmptyActivity
+                .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId)
+                .Replace(RestSettings.Params.CorrelationId, correlationId)
+                .Replace(RestSettings.Params.EmptyActivityInstanceId, emptyActivityInstanceId);
+
+            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
+
+            var request = this.CreateRequestMessage(identity, HttpMethod.Post, urlWithEndpoint);
+            var result = await this.httpClient.SendAsync(request);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to finish EmptyActivity: {result.ReasonPhrase}");
+            }
+        }
+
         public async Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
         {
             var endpoint = RestSettings.Paths.ProcessModelUserTasks
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -213,9 +272,7 @@
             var endpoint = RestSettings.Paths.ProcessInstanceUserTasks
                 .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -225,9 +282,7 @@
             var endpoint = RestSettings.Paths.CorrelationUserTasks
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -238,9 +293,7 @@
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -249,9 +302,7 @@
         {
             var endpoint = RestSettings.Paths.GetOwnUserTasks;
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetUserTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -281,9 +332,7 @@
             var endpoint = RestSettings.Paths.ProcessModelManualTasks
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -293,9 +342,7 @@
             var endpoint = RestSettings.Paths.ProcessInstanceManualTasks
                 .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -305,9 +352,7 @@
             var endpoint = RestSettings.Paths.CorrelationManualTasks
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -318,9 +363,7 @@
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -329,9 +372,7 @@
         {
             var endpoint = RestSettings.Paths.GetOwnManualTasks;
 
-            var urlWithEndpoint = this.ApplyBaseUrl(endpoint);
-
-            var parsedResult = await this.GetManualTasksFromUrl(identity, urlWithEndpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
 
             return parsedResult;
         }
@@ -366,6 +407,13 @@
             return result;
         }
 
+        private async Task<EmptyActivityList> GetEmptyActivitiesFromUrl(IIdentity identity, string url, HttpContent content = null)
+        {
+            var result = await this.SendRequestAndExpectResult<EmptyActivityList>(identity, HttpMethod.Get, url, content);
+
+            return result;
+        }
+
         private async Task<ManualTaskList> GetManualTasksFromUrl(IIdentity identity, string url, HttpContent content = null)
         {
             var result = await this.SendRequestAndExpectResult<ManualTaskList>(identity, HttpMethod.Get, url, content);
@@ -380,8 +428,10 @@
             return result;
         }
 
-        private async Task<TResult> SendRequestAndExpectResult<TResult>(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
+        private async Task<TResult> SendRequestAndExpectResult<TResult>(IIdentity identity, HttpMethod method, string endpoint, HttpContent content = null)
         {
+            var url = this.ApplyBaseUrl(endpoint);
+
             TResult parsedResult = default(TResult);
 
             var request = this.CreateRequestMessage(identity, HttpMethod.Get, url);
@@ -436,5 +486,5 @@
             var jsonPayload = JsonConvert.SerializeObject(payload, serializerSettings);
             return jsonPayload;
         }
-    }
+  }
 }
