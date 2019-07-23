@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="13.0.0-feature-add-missing-use-cases-to-dotnet-client" />
+    <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="13.0.0" />
     <PackageReference Include="EssentialProjects.IAM.Contracts" Version="0.1.3" />
   </ItemGroup>
 
