@@ -13,7 +13,7 @@ import {
 
 const logger = Logger.createLogger('processengine:consumer_api:client');
 
-export class ConsumerApiClientService implements IConsumerApiClient {
+export class ConsumerApiClient implements IConsumerApiClient {
 
   private consumerApiAccessor: IConsumerApiAccessor = undefined;
 
