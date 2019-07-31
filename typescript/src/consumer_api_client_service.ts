@@ -6,14 +6,14 @@ import {IIdentity} from '@essential-projects/iam_contracts';
 
 import {
   DataModels,
-  IConsumerApi,
   IConsumerApiAccessor,
+  IConsumerApiClient,
   Messages,
 } from '@process-engine/consumer_api_contracts';
 
 const logger = Logger.createLogger('processengine:consumer_api:client');
 
-export class ConsumerApiClientService implements IConsumerApi {
+export class ConsumerApiClientService implements IConsumerApiClient {
 
   private consumerApiAccessor: IConsumerApiAccessor = undefined;
 
