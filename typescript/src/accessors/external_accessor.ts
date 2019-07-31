@@ -29,6 +29,7 @@ type SubscriptionCallbackAssociation = {[subscriptionId: string]: Function};
 
 export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIoAccessor {
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public config: any;
 
   private baseUrl = 'api/consumer/v1';
