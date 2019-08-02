@@ -31,7 +31,7 @@
     "@essential-projects/errors_ts": "^1.5.0",
     "@essential-projects/http_contracts": "^2.4.0",
     "@essential-projects/iam_contracts": "^3.5.0",
-    "@process-engine/consumer_api_contracts": "feature~split_components_into_separate_services",
+    "@process-engine/consumer_api_contracts": "8.0.0-dad26234-b24",
     "async-middleware": "^1.2.1",
     "bluebird": "^3.5.3",
     "loggerhythm": "^3.0.3",
