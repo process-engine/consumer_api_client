@@ -188,7 +188,7 @@ namespace ProcessEngine.ConsumerAPI.Client
             }
             else
             {
-                await this.externalTaskApi.FinishExternalTask(identity, this.WorkerId, externalTaskId, result);
+                await this.externalTaskApi.FinishExternalTask(identity, this.WorkerId, externalTaskId, (result as ExternalTaskSuccessResult<object>).result);
             }
         }
     }
