@@ -436,6 +436,52 @@ export class ConsumerApiClient implements IConsumerApiClient {
     return this.consumerApiAccessor.finishEmptyActivity(identity, processInstanceId, correlationId, emptyActivityInstanceId);
   }
 
+  // ExternalTask
+  public async fetchAndLockExternalTasks<TPayloadType>(
+    identity: IIdentity,
+    workerId: string,
+    topicName: string,
+    maxTasks: number,
+    longPollingTimeout: number,
+    lockDuration: number,
+  ): Promise<Array<DataModels.ExternalTask.ExternalTask<TPayloadType>>> {
+    this.ensureIsAuthorized(identity);
+
+    return this
+      .consumerApiAccessor
+      .fetchAndLockExternalTasks<TPayloadType>(identity, workerId, topicName, maxTasks, longPollingTimeout, lockDuration);
+  }
+
+  public async extendLock(identity: IIdentity, workerId: string, externalTaskId: string, additionalDuration: number): Promise<void> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.extendLock(identity, workerId, externalTaskId, additionalDuration);
+  }
+
+  public async handleBpmnError(identity: IIdentity, workerId: string, externalTaskId: string, errorCode: string): Promise<void> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.handleBpmnError(identity, workerId, externalTaskId, errorCode);
+  }
+
+  public async handleServiceError(
+    identity: IIdentity,
+    workerId: string,
+    externalTaskId: string,
+    errorMessage: string,
+    errorDetails: string,
+  ): Promise<void> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.handleServiceError(identity, workerId, externalTaskId, errorMessage, errorDetails);
+  }
+
+  public async finishExternalTask<TResultType>(identity: IIdentity, workerId: string, externalTaskId: string, payload: TResultType): Promise<void> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.finishExternalTask<TResultType>(identity, workerId, externalTaskId, payload);
+  }
+
   // UserTasks
   public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.UserTasks.UserTaskList> {
     this.ensureIsAuthorized(identity);

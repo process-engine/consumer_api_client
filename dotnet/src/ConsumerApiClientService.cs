@@ -17,13 +17,18 @@
     using Newtonsoft.Json.Serialization;
     using Newtonsoft.Json;
 
-    public class ConsumerApiClientService : IConsumerAPI
+    public class ConsumerApiClientService : IConsumerApiClient
     {
         private readonly HttpClient httpClient;
 
         public ConsumerApiClientService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
+        }
+
+        public void Dispose()
+        {
+            this.httpClient.Dispose();
         }
 
         public async Task<ProcessModel> GetProcessModelById(IIdentity identity, string processModelId)
@@ -295,6 +300,82 @@
             }
         }
 
+        public async Task<IEnumerable<ExternalTask<TPayload>>> FetchAndLockExternalTasks<TPayload>(IIdentity identity, string workerId, string topicName, int maxTasks, int longPollingTimeout, int lockDuration) where TPayload : new()
+        {
+            var endpoint = RestSettings.Paths.FetchAndLockExternalTasks;
+            var url = this.ApplyBaseUrl(endpoint);
+
+            var fetchAndLockRequest = new FetchAndLockRequest
+            (
+                workerId,
+                topicName,
+                maxTasks,
+                longPollingTimeout,
+                lockDuration
+            );
+
+            var jsonPayload = SerializeForProcessEngine(fetchAndLockRequest);
+            var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+            var result = await this.SendRequestAndExpectResult<IEnumerable<ExternalTask<TPayload>>>(identity, HttpMethod.Post, url, requestContent);
+
+            return result;
+        }
+
+        public async Task ExtendLock(IIdentity identity, string workerId, string externalTaskId, int additionalDuration)
+        {
+            var endpoint = RestSettings.Paths.ExtendExternalTaskLock.Replace(RestSettings.Params.ExternalTaskId, externalTaskId);
+            var url = this.ApplyBaseUrl(endpoint);
+
+            var extendLockRequest = new ExtendLockRequest
+            (
+                workerId,
+                additionalDuration
+            );
+
+            await this.PostExternalTaskRequest<ExtendLockRequest>(identity, endpoint, extendLockRequest);
+        }
+
+        public async Task FinishExternalTask<TPayload>(IIdentity identity, string workerId, string externalTaskId, TPayload payload)
+        {
+            var endpoint = RestSettings.Paths.FinishExternalTask.Replace(RestSettings.Params.ExternalTaskId, externalTaskId);
+
+            var finishExternalTaskRequest = new FinishExternalTaskRequest<TPayload>
+            (
+                workerId,
+                payload
+            );
+
+            await this.PostExternalTaskRequest<FinishExternalTaskRequest<TPayload>>(identity, endpoint, finishExternalTaskRequest);
+        }
+
+        public async Task HandleBpmnError(IIdentity identity, string workerId, string externalTaskId, string errorCode)
+        {
+            var endpoint = RestSettings.Paths.FinishExternalTaskWithBpmnError.Replace(RestSettings.Params.ExternalTaskId, externalTaskId);
+
+            var handleBpmnErrorRequest = new HandleBpmnErrorRequest
+            (
+                workerId,
+                errorCode
+            );
+
+            await this.PostExternalTaskRequest<HandleBpmnErrorRequest>(identity, endpoint, handleBpmnErrorRequest);
+        }
+
+        public async Task HandleServiceError(IIdentity identity, string workerId, string externalTaskId, string errorMessage, string errorDetails)
+        {
+            var endpoint = RestSettings.Paths.FinishExternalTaskWithServiceError.Replace(RestSettings.Params.ExternalTaskId, externalTaskId);
+
+            var handleServiceErrorRequest = new HandleServiceErrorRequest
+            (
+                workerId,
+                errorMessage,
+                errorDetails
+            );
+
+            await this.PostExternalTaskRequest<HandleServiceErrorRequest>(identity, endpoint, handleServiceErrorRequest);
+        }
+
         public async Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
         {
             var endpoint = RestSettings.Paths.ProcessModelUserTasks
@@ -454,6 +535,23 @@
             return result;
         }
 
+        private async Task PostExternalTaskRequest<TRequest>(IIdentity identity, string endpoint, TRequest request)
+        {
+            var url = this.ApplyBaseUrl(endpoint);
+
+            var jsonPayload = SerializeForProcessEngine(request);
+            var requestContent = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+            var httpRequest = this.CreateRequestMessage(identity, HttpMethod.Post, url, requestContent);
+
+            var result = await this.httpClient.SendAsync(httpRequest);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to send ExternalTask request: {result.ReasonPhrase}");
+            }
+        }
+
         private async Task<ManualTaskList> GetManualTasksFromUrl(IIdentity identity, string url)
         {
             var result = await this.SendRequestAndExpectResult<ManualTaskList>(identity, HttpMethod.Get, url);
@@ -493,6 +591,18 @@
         private string ApplyBaseUrl(string endpoint)
         {
             return $"{RestSettings.Endpoints.ConsumerAPI}{endpoint}";
+        }
+
+        private StringContent SerializeRequest<TRequest>(TRequest request)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+
+            var serializedRequest = JsonConvert.SerializeObject(request, settings);
+            var content = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
+            return content;
         }
 
         private HttpRequestMessage CreateRequestMessage(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
