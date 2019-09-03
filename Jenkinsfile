@@ -33,8 +33,6 @@ pipeline {
 
             // does prepare the version, but not commit it
             sh('node ./node_modules/.bin/ci_tools prepare-version --allow-dirty-workdir')
-
-            // stash the package.json because it contains the prepared version number
           }
         }
       }
@@ -52,7 +50,6 @@ pipeline {
         dir('typescript') {
           sh('node --version')
           sh('npm run build')
-
         }
       }
     }
