@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// tslint:disable:max-file-line-count
 import * as uuid from 'node-uuid';
 import * as io from 'socket.io-client';
 
@@ -27,10 +25,11 @@ type IdentitySocketCollection = {[userId: string]: SocketIOClient.Socket};
  * This allows us to remove that Subscription from SocketIO
  * when "ExternalAccessor.removeSubscription" is called.
  */
-type SubscriptionCallbackAssociation = {[subscriptionId: string]: any};
+type SubscriptionCallbackAssociation = {[subscriptionId: string]: Function};
 
 export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIoAccessor {
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public config: any;
 
   private baseUrl = 'api/consumer/v1';
@@ -58,16 +57,16 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnActivityReachedCallback,
     subscribeOnce: boolean = false,
-  ): Promise<any> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.activityReached, callback, subscribeOnce);
+  ): Promise<Subscription> {
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.activityReached, callback, subscribeOnce);
   }
 
   public async onActivityFinished(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnActivityFinishedCallback,
     subscribeOnce: boolean = false,
-  ): Promise<any> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.activityFinished, callback, subscribeOnce);
+  ): Promise<Subscription> {
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.activityFinished, callback, subscribeOnce);
   }
 
   // ------------ For backwards compatibility only
@@ -77,7 +76,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.callActivityWaiting, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.callActivityWaiting, callback, subscribeOnce);
   }
 
   public async onCallActivityFinished(
@@ -85,7 +84,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
     subscribeOnce: boolean = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.callActivityFinished, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.callActivityFinished, callback, subscribeOnce);
   }
 
   // ------------
@@ -95,7 +94,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.emptyActivityWaiting, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.emptyActivityWaiting, callback, subscribeOnce);
   }
 
   public async onEmptyActivityFinished(
@@ -103,7 +102,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnEmptyActivityFinishedCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.emptyActivityFinished, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.emptyActivityFinished, callback, subscribeOnce);
   }
 
   public async onEmptyActivityForIdentityWaiting(
@@ -114,7 +113,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const socketEventName = socketSettings.paths.emptyActivityForIdentityWaiting
       .replace(socketSettings.pathParams.userId, identity.userId);
 
-    return this.createSocketIoSubscription(identity, socketEventName, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketEventName, callback, subscribeOnce);
   }
 
   public async onEmptyActivityForIdentityFinished(
@@ -125,7 +124,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const socketEventName = socketSettings.paths.emptyActivityForIdentityFinished
       .replace(socketSettings.pathParams.userId, identity.userId);
 
-    return this.createSocketIoSubscription(identity, socketEventName, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketEventName, callback, subscribeOnce);
   }
 
   public async onUserTaskWaiting(
@@ -133,7 +132,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnUserTaskWaitingCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.userTaskWaiting, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.userTaskWaiting, callback, subscribeOnce);
   }
 
   public async onUserTaskFinished(
@@ -141,39 +140,39 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnUserTaskFinishedCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.userTaskFinished, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.userTaskFinished, callback, subscribeOnce);
   }
 
   public async onBoundaryEventTriggered(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnBoundaryEventTriggeredCallback,
     subscribeOnce: boolean = false,
-  ): Promise<any> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.boundaryEventTriggered, callback, subscribeOnce);
+  ): Promise<Subscription> {
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.boundaryEventTriggered, callback, subscribeOnce);
   }
 
   public async onIntermediateThrowEventTriggered(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnIntermediateThrowEventTriggeredCallback,
     subscribeOnce: boolean = false,
-  ): Promise<any> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.intermediateThrowEventTriggered, callback, subscribeOnce);
+  ): Promise<Subscription> {
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.intermediateThrowEventTriggered, callback, subscribeOnce);
   }
 
   public async onIntermediateCatchEventReached(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnIntermediateCatchEventReachedCallback,
     subscribeOnce: boolean = false,
-  ): Promise<any> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.intermediateCatchEventReached, callback, subscribeOnce);
+  ): Promise<Subscription> {
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.intermediateCatchEventReached, callback, subscribeOnce);
   }
 
   public async onIntermediateCatchEventFinished(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnIntermediateCatchEventFinishedCallback,
     subscribeOnce: boolean = false,
-  ): Promise<any> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.intermediateCatchEventFinished, callback, subscribeOnce);
+  ): Promise<Subscription> {
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.intermediateCatchEventFinished, callback, subscribeOnce);
   }
 
   public async onUserTaskForIdentityWaiting(
@@ -184,7 +183,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const socketEventName = socketSettings.paths.userTaskForIdentityWaiting
       .replace(socketSettings.pathParams.userId, identity.userId);
 
-    return this.createSocketIoSubscription(identity, socketEventName, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketEventName, callback, subscribeOnce);
   }
 
   public async onUserTaskForIdentityFinished(
@@ -195,7 +194,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const socketEventName = socketSettings.paths.userTaskForIdentityFinished
       .replace(socketSettings.pathParams.userId, identity.userId);
 
-    return this.createSocketIoSubscription(identity, socketEventName, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketEventName, callback, subscribeOnce);
   }
 
   public async onProcessTerminated(
@@ -203,7 +202,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnProcessTerminatedCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.processTerminated, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.processTerminated, callback, subscribeOnce);
   }
 
   public async onProcessError(
@@ -211,7 +210,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnProcessErrorCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.processError, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.processError, callback, subscribeOnce);
   }
 
   public async onProcessStarted(
@@ -219,7 +218,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnProcessStartedCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.processStarted, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.processStarted, callback, subscribeOnce);
   }
 
   public async onProcessWithProcessModelIdStarted(
@@ -231,7 +230,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const eventName = socketSettings.paths.processInstanceStarted
       .replace(socketSettings.pathParams.processModelId, processModelId);
 
-    return this.createSocketIoSubscription(identity, eventName, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, eventName, callback, subscribeOnce);
   }
 
   public async onManualTaskWaiting(
@@ -239,7 +238,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnManualTaskWaitingCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.manualTaskWaiting, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.manualTaskWaiting, callback, subscribeOnce);
   }
 
   public async onManualTaskFinished(
@@ -247,7 +246,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnManualTaskFinishedCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.manualTaskFinished, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.manualTaskFinished, callback, subscribeOnce);
   }
 
   public async onManualTaskForIdentityWaiting(
@@ -258,7 +257,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const socketEventName = socketSettings.paths.manualTaskForIdentityWaiting
       .replace(socketSettings.pathParams.userId, identity.userId);
 
-    return this.createSocketIoSubscription(identity, socketEventName, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketEventName, callback, subscribeOnce);
   }
 
   public async onManualTaskForIdentityFinished(
@@ -269,7 +268,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     const socketEventName = socketSettings.paths.manualTaskForIdentityFinished
       .replace(socketSettings.pathParams.userId, identity.userId);
 
-    return this.createSocketIoSubscription(identity, socketEventName, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketEventName, callback, subscribeOnce);
   }
 
   public async onProcessEnded(
@@ -277,7 +276,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     callback: Messages.CallbackTypes.OnProcessEndedCallback,
     subscribeOnce = false,
   ): Promise<Subscription> {
-    return this.createSocketIoSubscription(identity, socketSettings.paths.processEnded, callback, subscribeOnce);
+    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.processEnded, callback, subscribeOnce);
   }
 
   public async removeSubscription(identity: IIdentity, subscription: Subscription): Promise<void> {
@@ -566,6 +565,93 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     await this.httpClient.post(url, body, requestAuthHeaders);
   }
 
+  // ExternalTasks
+  public async fetchAndLockExternalTasks<TPayloadType>(
+    identity: IIdentity,
+    workerId: string,
+    topicName: string,
+    maxTasks: number,
+    longPollingTimeout: number,
+    lockDuration: number,
+  ): Promise<Array<DataModels.ExternalTask.ExternalTask<TPayloadType>>> {
+
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    let url = restSettings.paths.fetchAndLockExternalTasks;
+    url = this.applyBaseUrl(url);
+
+    const payload = new DataModels.ExternalTask.FetchAndLockRequestPayload(workerId, topicName, maxTasks, longPollingTimeout, lockDuration);
+
+    const httpResponse = await this
+      .httpClient
+      // eslint-disable-next-line max-len
+      .post<DataModels.ExternalTask.FetchAndLockRequestPayload, Array<DataModels.ExternalTask.ExternalTask<TPayloadType>>>(url, payload, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async extendLock(identity: IIdentity, workerId: string, externalTaskId: string, additionalDuration: number): Promise<void> {
+
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    let url = restSettings.paths.extendExternalTaskLock
+      .replace(restSettings.params.externalTaskId, externalTaskId);
+
+    url = this.applyBaseUrl(url);
+
+    const payload = new DataModels.ExternalTask.ExtendLockRequestPayload(workerId, additionalDuration);
+
+    await this.httpClient.post<DataModels.ExternalTask.ExtendLockRequestPayload, void>(url, payload, requestAuthHeaders);
+  }
+
+  public async handleBpmnError(identity: IIdentity, workerId: string, externalTaskId: string, errorCode: string): Promise<void> {
+
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    let url = restSettings.paths.finishExternalTaskWithBpmnError
+      .replace(restSettings.params.externalTaskId, externalTaskId);
+
+    url = this.applyBaseUrl(url);
+
+    const payload = new DataModels.ExternalTask.HandleBpmnErrorRequestPayload(workerId, errorCode);
+
+    await this.httpClient.post<DataModels.ExternalTask.HandleBpmnErrorRequestPayload, void>(url, payload, requestAuthHeaders);
+  }
+
+  public async handleServiceError(
+    identity: IIdentity,
+    workerId: string,
+    externalTaskId: string,
+    errorMessage: string,
+    errorDetails: string,
+  ): Promise<void> {
+
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    let url = restSettings.paths.finishExternalTaskWithServiceError
+      .replace(restSettings.params.externalTaskId, externalTaskId);
+
+    url = this.applyBaseUrl(url);
+
+    const payload = new DataModels.ExternalTask.HandleServiceErrorRequestPayload(workerId, errorMessage, errorDetails);
+
+    await this.httpClient.post<DataModels.ExternalTask.HandleServiceErrorRequestPayload, void>(url, payload, requestAuthHeaders);
+  }
+
+  public async finishExternalTask<TResultType>(identity: IIdentity, workerId: string, externalTaskId: string, results: TResultType): Promise<void> {
+
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    let url = restSettings.paths.finishExternalTask
+      .replace(restSettings.params.externalTaskId, externalTaskId);
+
+    url = this.applyBaseUrl(url);
+
+    const payload = new DataModels.ExternalTask.FinishExternalTaskRequestPayload(workerId, results);
+
+    await this.httpClient.post<DataModels.ExternalTask.FinishExternalTaskRequestPayload<TResultType>, void>(url, payload, requestAuthHeaders);
+  }
+
   // UserTasks
   public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.UserTasks.UserTaskList> {
     const requestAuthHeaders = this.createRequestAuthHeaders(identity);
@@ -758,7 +844,12 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return `${this.baseUrl}${url}`;
   }
 
-  private createSocketIoSubscription(identity: IIdentity, route: string, callback: any, subscribeOnce: boolean): Subscription {
+  private createSocketIoSubscription<TCallback extends Function>(
+    identity: IIdentity,
+    route: string,
+    callback: TCallback,
+    subscribeOnce: boolean,
+  ): Subscription {
 
     const socketForIdentity = this.createSocketForIdentity(identity);
 

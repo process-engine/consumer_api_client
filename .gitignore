@@ -6,6 +6,7 @@ TestResults
 
 # lock-files
 yarn.lock
+package-lock.json
 
 # build directories
 dist
