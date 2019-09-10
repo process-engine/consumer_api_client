@@ -31,6 +31,15 @@
             this.httpClient.Dispose();
         }
 
+        public async Task<ProcessModelList> GetProcessModels(IIdentity identity, int offset = 0, int limit = 0)
+        {
+            var endpoint = RestSettings.Paths.ProcessModels;
+
+            var result = await this.SendRequestAndExpectResult<ProcessModelList>(identity, HttpMethod.Get, endpoint);
+
+            return result;
+        }
+
         public async Task<ProcessModel> GetProcessModelById(IIdentity identity, string processModelId)
         {
             var endpoint = RestSettings.Paths.ProcessModelById
@@ -49,24 +58,6 @@
             var parsedResult = await this.GetProcessModelFromUrl(identity, endpoint);
 
             return parsedResult;
-        }
-
-        public async Task<ProcessModelList> GetProcessModels(IIdentity identity)
-        {
-            var endpoint = RestSettings.Paths.ProcessModels;
-
-            var result = await this.SendRequestAndExpectResult<ProcessModelList>(identity, HttpMethod.Get, endpoint);
-
-            return result;
-        }
-
-        public async Task<IEnumerable<ProcessInstance>> GetProcessInstancesByIdentity(IIdentity identity)
-        {
-            var endpoint = RestSettings.Paths.GetOwnProcessInstances;
-
-            var result = await this.SendRequestAndExpectResult<IEnumerable<ProcessInstance>>(identity, HttpMethod.Get, endpoint);
-
-            return result;
         }
 
         public async Task<ProcessStartResponsePayload> StartProcessInstance<TInputValues>(
@@ -155,7 +146,17 @@
 
             return parsedResult;
         }
-        public async Task<EventList> GetEventsForProcessModel(IIdentity identity, string processModelId)
+
+        public async Task<IEnumerable<ProcessInstance>> GetProcessInstancesByIdentity(IIdentity identity, int offset = 0, int limit = 0)
+        {
+            var endpoint = RestSettings.Paths.GetOwnProcessInstances;
+
+            var result = await this.SendRequestAndExpectResult<IEnumerable<ProcessInstance>>(identity, HttpMethod.Get, endpoint);
+
+            return result;
+        }
+
+        public async Task<EventList> GetEventsForProcessModel(IIdentity identity, string processModelId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessModelEvents
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
@@ -165,7 +166,7 @@
             return parsedResult;
         }
 
-        public async Task<EventList> GetEventsForCorrelation(IIdentity identity, string correlationId)
+        public async Task<EventList> GetEventsForCorrelation(IIdentity identity, string correlationId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.CorrelationEvents
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
@@ -175,7 +176,7 @@
             return parsedResult;
         }
 
-        public async Task<EventList> GetEventsForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        public async Task<EventList> GetEventsForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.CorrelationEvents
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
@@ -232,7 +233,7 @@
             }
         }
 
-        public async Task<EmptyActivityList> GetEmptyActivitiesForProcessModel(IIdentity identity, string processModelId)
+        public async Task<EmptyActivityList> GetEmptyActivitiesForProcessModel(IIdentity identity, string processModelId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessModelEmptyActivities
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
@@ -242,7 +243,7 @@
             return parsedResult;
         }
 
-        public async Task<EmptyActivityList> GetEmptyActivitiesForProcessInstance(IIdentity identity, string processInstanceId)
+        public async Task<EmptyActivityList> GetEmptyActivitiesForProcessInstance(IIdentity identity, string processInstanceId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessInstanceEmptyActivities
                 .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
@@ -252,7 +253,7 @@
             return parsedResult;
         }
 
-        public async Task<EmptyActivityList> GetEmptyActivitiesForCorrelation(IIdentity identity, string correlationId)
+        public async Task<EmptyActivityList> GetEmptyActivitiesForCorrelation(IIdentity identity, string correlationId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.CorrelationEmptyActivities
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
@@ -262,7 +263,7 @@
             return parsedResult;
         }
 
-        public async Task<EmptyActivityList> GetEmptyActivitiesForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        public async Task<EmptyActivityList> GetEmptyActivitiesForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessModelCorrelationEmptyActivities
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
@@ -273,7 +274,7 @@
             return parsedResult;
         }
 
-        public async Task<EmptyActivityList> GetWaitingEmptyActivitiesByIdentity(IIdentity identity)
+        public async Task<EmptyActivityList> GetWaitingEmptyActivitiesByIdentity(IIdentity identity, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.GetOwnEmptyActivities;
 
@@ -376,7 +377,7 @@
             await this.PostExternalTaskRequest<HandleServiceErrorRequest>(identity, endpoint, handleServiceErrorRequest);
         }
 
-        public async Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId)
+        public async Task<UserTaskList> GetUserTasksForProcessModel(IIdentity identity, string processModelId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessModelUserTasks
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
@@ -386,7 +387,7 @@
             return parsedResult;
         }
 
-        public async Task<UserTaskList> GetUserTasksForProcessInstance(IIdentity identity, string processInstanceId)
+        public async Task<UserTaskList> GetUserTasksForProcessInstance(IIdentity identity, string processInstanceId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessInstanceUserTasks
                 .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
@@ -396,7 +397,7 @@
             return parsedResult;
         }
 
-        public async Task<UserTaskList> GetUserTasksForCorrelation(IIdentity identity, string correlationId)
+        public async Task<UserTaskList> GetUserTasksForCorrelation(IIdentity identity, string correlationId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.CorrelationUserTasks
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
@@ -406,7 +407,7 @@
             return parsedResult;
         }
 
-        public async Task<UserTaskList> GetUserTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        public async Task<UserTaskList> GetUserTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessModelCorrelationUserTasks
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
@@ -417,7 +418,7 @@
             return parsedResult;
         }
 
-        public async Task<UserTaskList> GetWaitingUserTasksByIdentity(IIdentity identity)
+        public async Task<UserTaskList> GetWaitingUserTasksByIdentity(IIdentity identity, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.GetOwnUserTasks;
 
@@ -446,7 +447,7 @@
             }
         }
 
-        public async Task<ManualTaskList> GetManualTasksForProcessModel(IIdentity identity, string processModelId)
+        public async Task<ManualTaskList> GetManualTasksForProcessModel(IIdentity identity, string processModelId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessModelManualTasks
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
@@ -456,7 +457,7 @@
             return parsedResult;
         }
 
-        public async Task<ManualTaskList> GetManualTasksForProcessInstance(IIdentity identity, string processInstanceId)
+        public async Task<ManualTaskList> GetManualTasksForProcessInstance(IIdentity identity, string processInstanceId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessInstanceManualTasks
                 .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
@@ -466,7 +467,7 @@
             return parsedResult;
         }
 
-        public async Task<ManualTaskList> GetManualTasksForCorrelation(IIdentity identity, string correlationId)
+        public async Task<ManualTaskList> GetManualTasksForCorrelation(IIdentity identity, string correlationId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.CorrelationManualTasks
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
@@ -476,7 +477,7 @@
             return parsedResult;
         }
 
-        public async Task<ManualTaskList> GetManualTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId)
+        public async Task<ManualTaskList> GetManualTasksForProcessModelInCorrelation(IIdentity identity, string processModelId, string correlationId, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessModelCorrelationManualTasks
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
@@ -487,7 +488,7 @@
             return parsedResult;
         }
 
-        public async Task<ManualTaskList> GetWaitingManualTasksByIdentity(IIdentity identity)
+        public async Task<ManualTaskList> GetWaitingManualTasksByIdentity(IIdentity identity, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.GetOwnManualTasks;
 
