@@ -35,7 +35,7 @@
         {
             var endpoint = RestSettings.Paths.ProcessModels;
 
-            var result = await this.SendRequestAndExpectResult<ProcessModelList>(identity, HttpMethod.Get, endpoint);
+            var result = await this.SendRequestAndExpectResult<ProcessModelList>(identity, HttpMethod.Get, endpoint, offset, limit);
 
             return result;
         }
@@ -151,7 +151,7 @@
         {
             var endpoint = RestSettings.Paths.GetOwnProcessInstances;
 
-            var result = await this.SendRequestAndExpectResult<IEnumerable<ProcessInstance>>(identity, HttpMethod.Get, endpoint);
+            var result = await this.SendRequestAndExpectResult<IEnumerable<ProcessInstance>>(identity, HttpMethod.Get, endpoint, offset, limit);
 
             return result;
         }
@@ -161,7 +161,7 @@
             var endpoint = RestSettings.Paths.ProcessModelEvents
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, endpoint);
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -171,7 +171,7 @@
             var endpoint = RestSettings.Paths.CorrelationEvents
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, endpoint);
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -182,7 +182,7 @@
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, endpoint);
+            var parsedResult = await this.GetTriggerableEventsFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -238,7 +238,7 @@
             var endpoint = RestSettings.Paths.ProcessModelEmptyActivities
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -248,7 +248,7 @@
             var endpoint = RestSettings.Paths.ProcessInstanceEmptyActivities
                 .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
 
-            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -258,7 +258,7 @@
             var endpoint = RestSettings.Paths.CorrelationEmptyActivities
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -269,7 +269,7 @@
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -278,7 +278,7 @@
         {
             var endpoint = RestSettings.Paths.GetOwnEmptyActivities;
 
-            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint);
+            var parsedResult = await this.GetEmptyActivitiesFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -382,7 +382,7 @@
             var endpoint = RestSettings.Paths.ProcessModelUserTasks
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -392,7 +392,7 @@
             var endpoint = RestSettings.Paths.ProcessInstanceUserTasks
                 .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
 
-            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -402,7 +402,7 @@
             var endpoint = RestSettings.Paths.CorrelationUserTasks
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -413,7 +413,7 @@
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -422,7 +422,7 @@
         {
             var endpoint = RestSettings.Paths.GetOwnUserTasks;
 
-            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetUserTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -452,7 +452,7 @@
             var endpoint = RestSettings.Paths.ProcessModelManualTasks
                 .Replace(RestSettings.Params.ProcessModelId, processModelId);
 
-            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -462,7 +462,7 @@
             var endpoint = RestSettings.Paths.ProcessInstanceManualTasks
                 .Replace(RestSettings.Params.ProcessInstanceId, processInstanceId);
 
-            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -472,7 +472,7 @@
             var endpoint = RestSettings.Paths.CorrelationManualTasks
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -483,7 +483,7 @@
                 .Replace(RestSettings.Params.ProcessModelId, processModelId)
                 .Replace(RestSettings.Params.CorrelationId, correlationId);
 
-            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -492,7 +492,7 @@
         {
             var endpoint = RestSettings.Paths.GetOwnManualTasks;
 
-            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint);
+            var parsedResult = await this.GetManualTasksFromUrl(identity, endpoint, offset, limit);
 
             return parsedResult;
         }
@@ -522,14 +522,14 @@
             return result;
         }
 
-        private async Task<EventList> GetTriggerableEventsFromUrl(IIdentity identity, string url)
+        private async Task<EventList> GetTriggerableEventsFromUrl(IIdentity identity, string url, int offset = 0, int limit = 0)
         {
             var result = await this.SendRequestAndExpectResult<EventList>(identity, HttpMethod.Get, url);
 
             return result;
         }
 
-        private async Task<EmptyActivityList> GetEmptyActivitiesFromUrl(IIdentity identity, string url)
+        private async Task<EmptyActivityList> GetEmptyActivitiesFromUrl(IIdentity identity, string url, int offset = 0, int limit = 0)
         {
             var result = await this.SendRequestAndExpectResult<EmptyActivityList>(identity, HttpMethod.Get, url);
 
@@ -553,23 +553,31 @@
             }
         }
 
-        private async Task<ManualTaskList> GetManualTasksFromUrl(IIdentity identity, string url)
+        private async Task<ManualTaskList> GetManualTasksFromUrl(IIdentity identity, string url, int offset = 0, int limit = 0)
         {
             var result = await this.SendRequestAndExpectResult<ManualTaskList>(identity, HttpMethod.Get, url);
 
             return result;
         }
 
-        private async Task<UserTaskList> GetUserTasksFromUrl(IIdentity identity, string url)
+        private async Task<UserTaskList> GetUserTasksFromUrl(IIdentity identity, string url, int offset = 0, int limit = 0)
         {
             var result = await this.SendRequestAndExpectResult<UserTaskList>(identity, HttpMethod.Get, url);
 
             return result;
         }
 
-        private async Task<TResult> SendRequestAndExpectResult<TResult>(IIdentity identity, HttpMethod method, string endpoint, HttpContent content = null)
+        private async Task<TResult> SendRequestAndExpectResult<TResult>(IIdentity identity, HttpMethod method, string endpoint, HttpContent content = null, int offset = 0, int limit = 0)
         {
             var url = this.ApplyBaseUrl(endpoint);
+
+            if(url.Contains("?")) {
+                url = $"{url}&offset={offset}&limit={limit}";
+            }
+            else
+            {
+                url = $"{url}?offset={offset}&limit={limit}";
+            }
 
             TResult parsedResult = default(TResult);
 
@@ -592,18 +600,6 @@
         private string ApplyBaseUrl(string endpoint)
         {
             return $"{RestSettings.Endpoints.ConsumerAPI}{endpoint}";
-        }
-
-        private StringContent SerializeRequest<TRequest>(TRequest request)
-        {
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            };
-
-            var serializedRequest = JsonConvert.SerializeObject(request, settings);
-            var content = new StringContent(serializedRequest, Encoding.UTF8, "application/json");
-            return content;
         }
 
         private HttpRequestMessage CreateRequestMessage(IIdentity identity, HttpMethod method, string url, HttpContent content = null)
