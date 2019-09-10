@@ -332,8 +332,8 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
   public async startProcessInstance(
     identity: IIdentity,
     processModelId: string,
-    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
-    startCallbackType: DataModels.ProcessModels.StartCallbackType,
+    payload?: DataModels.ProcessModels.ProcessStartRequestPayload,
+    startCallbackType?: DataModels.ProcessModels.StartCallbackType,
     startEventId?: string,
     endEventId?: string,
     processEndedCallback?: Messages.CallbackTypes.OnProcessEndedCallback,
