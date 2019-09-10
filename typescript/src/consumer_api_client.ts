@@ -309,7 +309,7 @@ export class ConsumerApiClient implements IConsumerApiClient {
   public async startProcessInstance(
     identity: IIdentity,
     processModelId: string,
-    payload: DataModels.ProcessModels.ProcessStartRequestPayload,
+    payload?: DataModels.ProcessModels.ProcessStartRequestPayload,
     startCallbackType?: DataModels.ProcessModels.StartCallbackType,
     startEventId?: string,
     endEventId?: string,
