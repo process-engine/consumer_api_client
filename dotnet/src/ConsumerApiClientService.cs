@@ -35,7 +35,7 @@
         {
             var endpoint = RestSettings.Paths.ProcessModels;
 
-            var result = await this.SendRequestAndExpectResult<ProcessModelList>(identity, HttpMethod.Get, endpoint, offset, limit);
+            var result = await this.SendRequestAndExpectResult<ProcessModelList>(identity, HttpMethod.Get, endpoint, null, offset, limit);
 
             return result;
         }
@@ -151,7 +151,7 @@
         {
             var endpoint = RestSettings.Paths.GetOwnProcessInstances;
 
-            var result = await this.SendRequestAndExpectResult<IEnumerable<ProcessInstance>>(identity, HttpMethod.Get, endpoint, offset, limit);
+            var result = await this.SendRequestAndExpectResult<IEnumerable<ProcessInstance>>(identity, HttpMethod.Get, endpoint, null, offset, limit);
 
             return result;
         }
