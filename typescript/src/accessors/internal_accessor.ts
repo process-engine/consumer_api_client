@@ -17,6 +17,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
   private notificationService: APIs.INotificationConsumerApi;
   private processModelService: APIs.IProcessModelConsumerApi;
   private userTaskService: APIs.IUserTaskConsumerApi;
+  private taskService: APIs.ITaskConsumerApi;
 
   constructor(
     emptyActivityService: APIs.IEmptyActivityConsumerApi,
@@ -26,6 +27,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     notificationService: APIs.INotificationConsumerApi,
     processModelService: APIs.IProcessModelConsumerApi,
     userTaskService: APIs.IUserTaskConsumerApi,
+    taskService: APIs.ITaskConsumerApi,
   ) {
     this.emptyActivityService = emptyActivityService;
     this.eventService = eventService;
@@ -34,6 +36,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     this.notificationService = notificationService;
     this.processModelService = processModelService;
     this.userTaskService = userTaskService;
+    this.taskService = taskService;
   }
 
   // Process models and instances
@@ -317,6 +320,32 @@ export class InternalAccessor implements IConsumerApiAccessor {
     userTaskResult: DataModels.UserTasks.UserTaskResult,
   ): Promise<void> {
     return this.userTaskService.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
+  }
+
+  // Tasks
+  public async getAllSuspendedTasks(identity: IIdentity): Promise<DataModels.Tasks.TaskList> {
+    return this.taskService.getAllSuspendedTasks(identity);
+  }
+
+  public async getTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.Tasks.TaskList> {
+    return this.taskService.getTasksForProcessModel(identity, processModelId);
+  }
+
+  public async getTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.Tasks.TaskList> {
+    return this.taskService.getTasksForProcessInstance(identity, processInstanceId);
+  }
+
+  public async getTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.Tasks.TaskList> {
+    return this.taskService.getTasksForCorrelation(identity, correlationId);
+  }
+
+  public async getTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.Tasks.TaskList> {
+
+    return this.taskService.getTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
   }
 
   // Notifications

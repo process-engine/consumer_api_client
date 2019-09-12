@@ -943,6 +943,68 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return finalUrl;
   }
 
+  // Tasks
+  public async getAllSuspendedTasks(identity: IIdentity): Promise<DataModels.Tasks.TaskList> {
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    const url = this.buildUrl(restSettings.paths.allSuspendedTasks);
+
+    const httpResponse = await this.httpClient.get<DataModels.Tasks.TaskList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.Tasks.TaskList> {
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    let url = restSettings.paths.processModelTasks.replace(restSettings.params.processModelId, processModelId);
+    url = this.buildUrl(url);
+
+    const httpResponse = await this.httpClient.get<DataModels.Tasks.TaskList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.Tasks.TaskList> {
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    let url = restSettings.paths.processInstanceTasks.replace(restSettings.params.processInstanceId, processInstanceId);
+    url = this.buildUrl(url);
+
+    const httpResponse = await this.httpClient.get<DataModels.Tasks.TaskList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.Tasks.TaskList> {
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    let url = restSettings.paths.correlationTasks.replace(restSettings.params.correlationId, correlationId);
+    url = this.buildUrl(url);
+
+    const httpResponse = await this.httpClient.get<DataModels.Tasks.TaskList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
+  public async getTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.Tasks.TaskList> {
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    let url = restSettings.paths.processModelCorrelationTasks
+      .replace(restSettings.params.processModelId, processModelId)
+      .replace(restSettings.params.correlationId, correlationId);
+
+    url = this.buildUrl(url);
+
+    const httpResponse = await this.httpClient.get<DataModels.Tasks.TaskList>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
   private createSocketIoSubscription<TCallback extends Function>(
     identity: IIdentity,
     route: string,

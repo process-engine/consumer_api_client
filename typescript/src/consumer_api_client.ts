@@ -655,6 +655,41 @@ export class ConsumerApiClient implements IConsumerApiClient {
     return this.consumerApiAccessor.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
   }
 
+  // Tasks
+  public async getAllSuspendedTasks(identity: IIdentity): Promise<DataModels.Tasks.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getAllSuspendedTasks(identity);
+  }
+
+  public async getTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.Tasks.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getTasksForProcessModel(identity, processModelId);
+  }
+
+  public async getTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.Tasks.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getTasksForProcessInstance(identity, processInstanceId);
+  }
+
+  public async getTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.Tasks.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getTasksForCorrelation(identity, correlationId);
+  }
+
+  public async getTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+  ): Promise<DataModels.Tasks.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+  }
+
   private ensureIsAuthorized(identity: IIdentity): void {
     const noAuthTokenProvided = !identity || typeof identity.token !== 'string';
     if (noAuthTokenProvided) {
