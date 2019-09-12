@@ -388,7 +388,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
       url = `${url}&end_event_id=${endEventId}`;
     }
 
-    url = this.buildUrl(urlRestPart);
+    url = this.buildUrl(url);
 
     return url;
   }
