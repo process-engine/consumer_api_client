@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
-    <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="14.1.0-feature-add-limit-and-offset-to-list-queries" />
+    <PackageReference Include="ProcessEngine.ConsumerAPI.Contracts" Version="14.1.0-develop" />
     <PackageReference Include="EssentialProjects.IAM.Contracts" Version="0.1.3" />
   </ItemGroup>
 
