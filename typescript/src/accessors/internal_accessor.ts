@@ -37,8 +37,12 @@ export class InternalAccessor implements IConsumerApiAccessor {
   }
 
   // Process models and instances
-  public async getProcessModels(identity: IIdentity): Promise<DataModels.ProcessModels.ProcessModelList> {
-    return this.processModelService.getProcessModels(identity);
+  public async getProcessModels(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ProcessModels.ProcessModelList> {
+    return this.processModelService.getProcessModels(identity, offset, limit);
   }
 
   public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<DataModels.ProcessModels.ProcessModel> {
@@ -57,7 +61,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     startEventId?: string,
     endEventId?: string,
   ): Promise<DataModels.ProcessModels.ProcessStartResponsePayload> {
-
     return this.processModelService.startProcessInstance(identity, processModelId, payload, startCallbackType, startEventId, endEventId);
   }
 
@@ -66,66 +69,61 @@ export class InternalAccessor implements IConsumerApiAccessor {
     correlationId: string,
     processModelId: string,
   ): Promise<Array<DataModels.CorrelationResult>> {
-
     return this.processModelService.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
 
-  public async getProcessInstancesByIdentity(identity: IIdentity): Promise<Array<DataModels.ProcessInstance>> {
-    return this.processModelService.getProcessInstancesByIdentity(identity);
-  }
-
-  // Events
-  public async getEventsForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.Events.EventList> {
-    return this.eventService.getEventsForProcessModel(identity, processModelId);
-  }
-
-  public async getEventsForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.Events.EventList> {
-    return this.eventService.getEventsForCorrelation(identity, correlationId);
-  }
-
-  public async getEventsForProcessModelInCorrelation(
+  public async getProcessInstancesByIdentity(
     identity: IIdentity,
-    processModelId: string,
-    correlationId: string,
-  ): Promise<DataModels.Events.EventList> {
-
-    return this.eventService.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
-  }
-
-  public async triggerMessageEvent(identity: IIdentity, messageName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
-    return this.eventService.triggerMessageEvent(identity, messageName, payload);
-  }
-
-  public async triggerSignalEvent(identity: IIdentity, signalName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
-    return this.eventService.triggerSignalEvent(identity, signalName, payload);
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<Array<DataModels.ProcessInstance>> {
+    return this.processModelService.getProcessInstancesByIdentity(identity, offset, limit);
   }
 
   // Empty Activities
-  public async getEmptyActivitiesForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this.emptyActivityService.getEmptyActivitiesForProcessModel(identity, processModelId);
+  public async getEmptyActivitiesForProcessModel(
+    identity: IIdentity,
+    processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    return this.emptyActivityService.getEmptyActivitiesForProcessModel(identity, processModelId, offset, limit);
   }
 
   public async getEmptyActivitiesForProcessInstance(
     identity: IIdentity,
     processInstanceId: string,
+    offset: number = 0,
+    limit: number = 0,
   ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this.emptyActivityService.getEmptyActivitiesForProcessInstance(identity, processInstanceId);
+    return this.emptyActivityService.getEmptyActivitiesForProcessInstance(identity, processInstanceId, offset, limit);
   }
 
-  public async getEmptyActivitiesForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this.emptyActivityService.getEmptyActivitiesForCorrelation(identity, correlationId);
+  public async getEmptyActivitiesForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    return this.emptyActivityService.getEmptyActivitiesForCorrelation(identity, correlationId, offset, limit);
   }
 
   public async getEmptyActivitiesForProcessModelInCorrelation(
     identity: IIdentity,
     processModelId: string,
     correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
   ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this.emptyActivityService.getEmptyActivitiesForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.emptyActivityService.getEmptyActivitiesForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
   }
 
-  public async getWaitingEmptyActivitiesByIdentity(identity: IIdentity): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    return this.emptyActivityService.getWaitingEmptyActivitiesByIdentity(identity);
+  public async getWaitingEmptyActivitiesByIdentity(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    return this.emptyActivityService.getWaitingEmptyActivitiesByIdentity(identity, offset, limit);
   }
 
   public async finishEmptyActivity(
@@ -137,7 +135,44 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this.emptyActivityService.finishEmptyActivity(identity, processInstanceId, correlationId, emptyActivityInstanceId);
   }
 
-  // ExternalTasks
+  // Events
+  public async getEventsForProcessModel(
+    identity: IIdentity,
+    processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.Events.EventList> {
+    return this.eventService.getEventsForProcessModel(identity, processModelId, offset, limit);
+  }
+
+  public async getEventsForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.Events.EventList> {
+    return this.eventService.getEventsForCorrelation(identity, correlationId, offset, limit);
+  }
+
+  public async getEventsForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.Events.EventList> {
+    return this.eventService.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
+  }
+
+  public async triggerMessageEvent(identity: IIdentity, messageName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
+    return this.eventService.triggerMessageEvent(identity, messageName, payload);
+  }
+
+  public async triggerSignalEvent(identity: IIdentity, signalName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
+    return this.eventService.triggerSignalEvent(identity, signalName, payload);
+  }
+
+  // ExternalTask
   public async fetchAndLockExternalTasks<TPayloadType>(
     identity: IIdentity,
     workerId: string,
@@ -169,39 +204,54 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this.externalTaskService.handleServiceError(identity, workerId, externalTaskId, errorMessage, errorDetails);
   }
 
-  public async finishExternalTask<TResultType>(
-    identity: IIdentity,
-    workerId: string,
-    externalTaskId: string,
-    payload: TResultType,
-  ): Promise<void> {
-    return this.externalTaskService.finishExternalTask(identity, workerId, externalTaskId, payload);
+  public async finishExternalTask<TResultType>(identity: IIdentity, workerId: string, externalTaskId: string, payload: TResultType): Promise<void> {
+    return this.externalTaskService.finishExternalTask<TResultType>(identity, workerId, externalTaskId, payload);
   }
 
   // ManualTasks
-  public async getManualTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    return this.manualTaskService.getManualTasksForProcessModel(identity, processModelId);
+  public async getManualTasksForProcessModel(
+    identity: IIdentity,
+    processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    return this.manualTaskService.getManualTasksForProcessModel(identity, processModelId, offset, limit);
   }
 
-  public async getManualTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    return this.manualTaskService.getManualTasksForProcessInstance(identity, processInstanceId);
+  public async getManualTasksForProcessInstance(
+    identity: IIdentity,
+    processInstanceId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    return this.manualTaskService.getManualTasksForProcessInstance(identity, processInstanceId, offset, limit);
   }
 
-  public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    return this.manualTaskService.getManualTasksForCorrelation(identity, correlationId);
+  public async getManualTasksForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    return this.manualTaskService.getManualTasksForCorrelation(identity, correlationId, offset, limit);
   }
 
   public async getManualTasksForProcessModelInCorrelation(
     identity: IIdentity,
     processModelId: string,
     correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
   ): Promise<DataModels.ManualTasks.ManualTaskList> {
-
-    return this.manualTaskService.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.manualTaskService.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
   }
 
-  public async getWaitingManualTasksByIdentity(identity: IIdentity): Promise<DataModels.ManualTasks.ManualTaskList> {
-    return this.manualTaskService.getWaitingManualTasksByIdentity(identity);
+  public async getWaitingManualTasksByIdentity(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    return this.manualTaskService.getWaitingManualTasksByIdentity(identity, offset, limit);
   }
 
   public async finishManualTask(
@@ -210,34 +260,53 @@ export class InternalAccessor implements IConsumerApiAccessor {
     correlationId: string,
     manualTaskInstanceId: string,
   ): Promise<void> {
-
     return this.manualTaskService.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
   }
 
   // UserTasks
-  public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.UserTasks.UserTaskList> {
-    return this.userTaskService.getUserTasksForProcessModel(identity, processModelId);
+  public async getUserTasksForProcessModel(
+    identity: IIdentity,
+    processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
+    return this.userTaskService.getUserTasksForProcessModel(identity, processModelId, offset, limit);
   }
 
-  public async getUserTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.UserTasks.UserTaskList> {
-    return this.userTaskService.getUserTasksForProcessInstance(identity, processInstanceId);
+  public async getUserTasksForProcessInstance(
+    identity: IIdentity,
+    processInstanceId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
+    return this.userTaskService.getUserTasksForProcessInstance(identity, processInstanceId, offset, limit);
   }
 
-  public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
-    return this.userTaskService.getUserTasksForCorrelation(identity, correlationId);
+  public async getUserTasksForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
+    return this.userTaskService.getUserTasksForCorrelation(identity, correlationId, offset, limit);
   }
 
   public async getUserTasksForProcessModelInCorrelation(
     identity: IIdentity,
     processModelId: string,
     correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
   ): Promise<DataModels.UserTasks.UserTaskList> {
-
-    return this.userTaskService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.userTaskService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
   }
 
-  public async getWaitingUserTasksByIdentity(identity: IIdentity): Promise<DataModels.UserTasks.UserTaskList> {
-    return this.userTaskService.getWaitingUserTasksByIdentity(identity);
+  public async getWaitingUserTasksByIdentity(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
+    return this.userTaskService.getWaitingUserTasksByIdentity(identity, offset, limit);
   }
 
   public async finishUserTask(
@@ -247,7 +316,6 @@ export class InternalAccessor implements IConsumerApiAccessor {
     userTaskInstanceId: string,
     userTaskResult: DataModels.UserTasks.UserTaskResult,
   ): Promise<void> {
-
     return this.userTaskService.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
   }
 

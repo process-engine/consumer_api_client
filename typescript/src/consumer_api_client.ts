@@ -288,10 +288,14 @@ export class ConsumerApiClient implements IConsumerApiClient {
   }
 
   // Process models and instances
-  public async getProcessModels(identity: IIdentity): Promise<DataModels.ProcessModels.ProcessModelList> {
+  public async getProcessModels(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ProcessModels.ProcessModelList> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getProcessModels(identity);
+    return this.consumerApiAccessor.getProcessModels(identity, offset, limit);
   }
 
   public async getProcessModelById(identity: IIdentity, processModelId: string): Promise<DataModels.ProcessModels.ProcessModel> {
@@ -346,33 +350,116 @@ export class ConsumerApiClient implements IConsumerApiClient {
     return this.consumerApiAccessor.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
 
-  public async getProcessInstancesByIdentity(identity: IIdentity): Promise<Array<DataModels.ProcessInstance>> {
+  public async getProcessInstancesByIdentity(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<Array<DataModels.ProcessInstance>> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getProcessInstancesByIdentity(identity);
+    return this.consumerApiAccessor.getProcessInstancesByIdentity(identity, offset, limit);
+  }
+
+  // Empty Activities
+  public async getEmptyActivitiesForProcessModel(
+    identity: IIdentity,
+    processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getEmptyActivitiesForProcessModel(identity, processModelId, offset, limit);
+  }
+
+  public async getEmptyActivitiesForProcessInstance(
+    identity: IIdentity,
+    processInstanceId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getEmptyActivitiesForProcessInstance(identity, processInstanceId, offset, limit);
+  }
+
+  public async getEmptyActivitiesForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getEmptyActivitiesForCorrelation(identity, correlationId, offset, limit);
+  }
+
+  public async getEmptyActivitiesForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getEmptyActivitiesForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
+  }
+
+  public async getWaitingEmptyActivitiesByIdentity(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getWaitingEmptyActivitiesByIdentity(identity, offset, limit);
+  }
+
+  public async finishEmptyActivity(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    emptyActivityInstanceId: string,
+  ): Promise<void> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.finishEmptyActivity(identity, processInstanceId, correlationId, emptyActivityInstanceId);
   }
 
   // Events
-  public async getEventsForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.Events.EventList> {
+  public async getEventsForProcessModel(
+    identity: IIdentity,
+    processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.Events.EventList> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getEventsForProcessModel(identity, processModelId);
+    return this.consumerApiAccessor.getEventsForProcessModel(identity, processModelId, offset, limit);
   }
 
-  public async getEventsForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.Events.EventList> {
+  public async getEventsForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.Events.EventList> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getEventsForCorrelation(identity, correlationId);
+    return this.consumerApiAccessor.getEventsForCorrelation(identity, correlationId, offset, limit);
   }
 
   public async getEventsForProcessModelInCorrelation(
     identity: IIdentity,
     processModelId: string,
     correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
   ): Promise<DataModels.Events.EventList> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.consumerApiAccessor.getEventsForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
   }
 
   public async triggerMessageEvent(identity: IIdentity, messageName: string, payload?: DataModels.Events.EventTriggerPayload): Promise<void> {
@@ -385,55 +472,6 @@ export class ConsumerApiClient implements IConsumerApiClient {
     this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.triggerSignalEvent(identity, signalName, payload);
-  }
-
-  // Empty Activities
-  public async getEmptyActivitiesForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getEmptyActivitiesForProcessModel(identity, processModelId);
-  }
-
-  public async getEmptyActivitiesForProcessInstance(
-    identity: IIdentity,
-    processInstanceId: string,
-  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getEmptyActivitiesForProcessInstance(identity, processInstanceId);
-  }
-
-  public async getEmptyActivitiesForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getEmptyActivitiesForCorrelation(identity, correlationId);
-  }
-
-  public async getEmptyActivitiesForProcessModelInCorrelation(
-    identity: IIdentity,
-    processModelId: string,
-    correlationId: string,
-  ): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getEmptyActivitiesForProcessModelInCorrelation(identity, processModelId, correlationId);
-  }
-
-  public async getWaitingEmptyActivitiesByIdentity(identity: IIdentity): Promise<DataModels.EmptyActivities.EmptyActivityList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getWaitingEmptyActivitiesByIdentity(identity);
-  }
-
-  public async finishEmptyActivity(
-    identity: IIdentity,
-    processInstanceId: string,
-    correlationId: string,
-    emptyActivityInstanceId: string,
-  ): Promise<void> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.finishEmptyActivity(identity, processInstanceId, correlationId, emptyActivityInstanceId);
   }
 
   // ExternalTask
@@ -482,39 +520,127 @@ export class ConsumerApiClient implements IConsumerApiClient {
     return this.consumerApiAccessor.finishExternalTask<TResultType>(identity, workerId, externalTaskId, payload);
   }
 
+  // ManualTasks
+  public async getManualTasksForProcessModel(
+    identity: IIdentity,
+    processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getManualTasksForProcessModel(identity, processModelId, offset, limit);
+  }
+
+  public async getManualTasksForProcessInstance(
+    identity: IIdentity,
+    processInstanceId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getManualTasksForProcessInstance(identity, processInstanceId, offset, limit);
+  }
+
+  public async getManualTasksForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getManualTasksForCorrelation(identity, correlationId, offset, limit);
+  }
+
+  public async getManualTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
+  }
+
+  public async getWaitingManualTasksByIdentity(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.ManualTasks.ManualTaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getWaitingManualTasksByIdentity(identity, offset, limit);
+  }
+
+  public async finishManualTask(
+    identity: IIdentity,
+    processInstanceId: string,
+    correlationId: string,
+    manualTaskInstanceId: string,
+  ): Promise<void> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
+  }
+
   // UserTasks
-  public async getUserTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.UserTasks.UserTaskList> {
+  public async getUserTasksForProcessModel(
+    identity: IIdentity,
+    processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getUserTasksForProcessModel(identity, processModelId);
+    return this.consumerApiAccessor.getUserTasksForProcessModel(identity, processModelId, offset, limit);
   }
 
-  public async getUserTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.UserTasks.UserTaskList> {
+  public async getUserTasksForProcessInstance(
+    identity: IIdentity,
+    processInstanceId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getUserTasksForProcessInstance(identity, processInstanceId);
+    return this.consumerApiAccessor.getUserTasksForProcessInstance(identity, processInstanceId, offset, limit);
   }
 
-  public async getUserTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.UserTasks.UserTaskList> {
+  public async getUserTasksForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getUserTasksForCorrelation(identity, correlationId);
+    return this.consumerApiAccessor.getUserTasksForCorrelation(identity, correlationId, offset, limit);
   }
 
   public async getUserTasksForProcessModelInCorrelation(
     identity: IIdentity,
     processModelId: string,
     correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
   ): Promise<DataModels.UserTasks.UserTaskList> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.consumerApiAccessor.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
   }
 
-  public async getWaitingUserTasksByIdentity(identity: IIdentity): Promise<DataModels.UserTasks.UserTaskList> {
+  public async getWaitingUserTasksByIdentity(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.UserTasks.UserTaskList> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.getWaitingUserTasksByIdentity(identity);
+    return this.consumerApiAccessor.getWaitingUserTasksByIdentity(identity, offset, limit);
   }
 
   public async finishUserTask(
@@ -527,52 +653,6 @@ export class ConsumerApiClient implements IConsumerApiClient {
     this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
-  }
-
-  // ManualTasks
-  public async getManualTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getManualTasksForProcessModel(identity, processModelId);
-  }
-
-  public async getManualTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getManualTasksForProcessInstance(identity, processInstanceId);
-  }
-
-  public async getManualTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.ManualTasks.ManualTaskList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getManualTasksForCorrelation(identity, correlationId);
-  }
-
-  public async getManualTasksForProcessModelInCorrelation(
-    identity: IIdentity,
-    processModelId: string,
-    correlationId: string,
-  ): Promise<DataModels.ManualTasks.ManualTaskList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
-  }
-
-  public async getWaitingManualTasksByIdentity(identity: IIdentity): Promise<DataModels.ManualTasks.ManualTaskList> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.getWaitingManualTasksByIdentity(identity);
-  }
-
-  public async finishManualTask(
-    identity: IIdentity,
-    processInstanceId: string,
-    correlationId: string,
-    manualTaskInstanceId: string,
-  ): Promise<void> {
-    this.ensureIsAuthorized(identity);
-
-    return this.consumerApiAccessor.finishManualTask(identity, processInstanceId, correlationId, manualTaskInstanceId);
   }
 
   private ensureIsAuthorized(identity: IIdentity): void {
