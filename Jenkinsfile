@@ -67,6 +67,12 @@ pipeline {
         dir('typescript') {
           sh('node --version')
           sh('node ./node_modules/.bin/ci_tools prepare-version --allow-dirty-workdir');
+
+          withCredentials([
+            usernamePassword(credentialsId: 'process-engine-ci_github-token', passwordVariable: 'GH_TOKEN', usernameVariable: 'GH_USER')
+          ]) {
+            sh('node ./node_modules/.bin/ci_tools commit-and-tag-version --only-on-primary-branches')
+          }
         }
       }
     }
@@ -94,7 +100,6 @@ pipeline {
               withCredentials([
                 usernamePassword(credentialsId: 'process-engine-ci_github-token', passwordVariable: 'GH_TOKEN', usernameVariable: 'GH_USER')
               ]) {
-                sh('node ./node_modules/.bin/ci_tools commit-and-tag-version --only-on-primary-branches')
                 sh('node ./node_modules/.bin/ci_tools update-github-release --only-on-primary-branches --use-title-and-text-from-git-tag');
               }
             }
