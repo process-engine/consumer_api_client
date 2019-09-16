@@ -17,7 +17,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
   private notificationService: APIs.INotificationConsumerApi;
   private processModelService: APIs.IProcessModelConsumerApi;
   private userTaskService: APIs.IUserTaskConsumerApi;
-  private taskService: APIs.ITaskConsumerApi;
+  private flowNodeInstanceService: APIs.IFlowNodeInstanceConsumerApi;
 
   constructor(
     emptyActivityService: APIs.IEmptyActivityConsumerApi,
@@ -27,7 +27,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     notificationService: APIs.INotificationConsumerApi,
     processModelService: APIs.IProcessModelConsumerApi,
     userTaskService: APIs.IUserTaskConsumerApi,
-    taskService: APIs.ITaskConsumerApi,
+    flowNodeInstanceService: APIs.IFlowNodeInstanceConsumerApi,
   ) {
     this.emptyActivityService = emptyActivityService;
     this.eventService = eventService;
@@ -36,7 +36,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     this.notificationService = notificationService;
     this.processModelService = processModelService;
     this.userTaskService = userTaskService;
-    this.taskService = taskService;
+    this.flowNodeInstanceService = flowNodeInstanceService;
   }
 
   // Process models and instances
@@ -323,29 +323,47 @@ export class InternalAccessor implements IConsumerApiAccessor {
   }
 
   // Tasks
-  public async getAllSuspendedTasks(identity: IIdentity): Promise<DataModels.Tasks.TaskList> {
-    return this.taskService.getAllSuspendedTasks(identity);
+  public async getAllSuspendedTasks(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
+    return this.flowNodeInstanceService.getAllSuspendedTasks(identity, offset, limit);
   }
 
-  public async getTasksForProcessModel(identity: IIdentity, processModelId: string): Promise<DataModels.Tasks.TaskList> {
-    return this.taskService.getTasksForProcessModel(identity, processModelId);
+  public async getSuspendedTasksForProcessModel(
+    identity: IIdentity, processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
+    return this.flowNodeInstanceService.getSuspendedTasksForProcessModel(identity, processModelId, offset, limit);
   }
 
-  public async getTasksForProcessInstance(identity: IIdentity, processInstanceId: string): Promise<DataModels.Tasks.TaskList> {
-    return this.taskService.getTasksForProcessInstance(identity, processInstanceId);
+  public async getSuspendedTasksForProcessInstance(
+    identity: IIdentity, processInstanceId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
+    return this.flowNodeInstanceService.getSuspendedTasksForProcessInstance(identity, processInstanceId, offset, limit);
   }
 
-  public async getTasksForCorrelation(identity: IIdentity, correlationId: string): Promise<DataModels.Tasks.TaskList> {
-    return this.taskService.getTasksForCorrelation(identity, correlationId);
+  public async getSuspendedTasksForCorrelation(
+    identity: IIdentity, correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
+    return this.flowNodeInstanceService.getSuspendedTasksForCorrelation(identity, correlationId, offset, limit);
   }
 
-  public async getTasksForProcessModelInCorrelation(
+  public async getSuspendedTasksForProcessModelInCorrelation(
     identity: IIdentity,
     processModelId: string,
     correlationId: string,
-  ): Promise<DataModels.Tasks.TaskList> {
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
 
-    return this.taskService.getTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    return this.flowNodeInstanceService.getSuspendedTasksForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
   }
 
   // Notifications
