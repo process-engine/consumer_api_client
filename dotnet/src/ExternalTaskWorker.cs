@@ -3,6 +3,7 @@ namespace ProcessEngine.ConsumerAPI.Client
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -10,66 +11,84 @@ namespace ProcessEngine.ConsumerAPI.Client
 
     using ProcessEngine.ConsumerAPI.Contracts;
     using ProcessEngine.ConsumerAPI.Contracts.DataModel;
-    using ProcessEngine.ConsumerAPI.Contracts.APIs;
 
     /// <summary>
     /// Periodically fetches, locks and processes ExternalTasks for a given topic.
     /// </summary>
-    public class ExternalTaskWorker : IExternalTaskWorker
+    public class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> : IExternalTaskWorker
+            where TExternalTaskPayload : new()
     {
-        private const int LockDurationInMilliseconds = 30000;
+        private const int LockDuration = 30000;
+        private readonly string ProcessEngineUrl;
+        private readonly IIdentity Identity;
+        private readonly string Topic;
+        private readonly int MaxTasks;
+        private readonly int LongpollingTimeout;
+        private readonly HandleExternalTaskAction<TExternalTaskPayload, TResultPayload> ProcessingFunction;
 
-        private readonly IExternalTaskConsumerApi externalTaskApi;
+        private ConsumerApiClientService ConsumerApiClient;
 
         /// <summary>
         /// Creates an new instance of ExternalTaskWorker
         /// </summary>
-        public ExternalTaskWorker(IExternalTaskConsumerApi externalTaskApi)
+        public ExternalTaskWorker(
+            string processEngineUrl,
+            IIdentity identity,
+            string topic,
+            int maxTasks,
+            int longpollingTimeout,
+            HandleExternalTaskAction<TExternalTaskPayload, TResultPayload> processingFunction
+        )
         {
-            this.externalTaskApi = externalTaskApi;
+            this.ProcessEngineUrl = processEngineUrl;
+            this.Identity = identity;
+            this.Topic = topic;
+            this.MaxTasks = maxTasks;
+            this.LongpollingTimeout = longpollingTimeout;
+            this.ProcessingFunction = processingFunction;
+
+            this.Initialize();
         }
+
+        /// <summary>
+        /// Indicates, if the worker is currently polling for ExternalTasks.
+        /// </summary>
+        public bool PollingActive { get; private set;} = false;
 
         /// <summary>
         /// The ID of the worker
         /// </summary>
         public string WorkerId { get; } = Guid.NewGuid().ToString();
 
+        public void Start() {
+            this.PollingActive = true;
+            this.ProcessExternalTasks();
+        }
+
+        public void Stop() {
+            this.PollingActive = false;
+        }
+
+        private void Initialize() {
+          var httpClient = new HttpClient();
+          httpClient.BaseAddress = new Uri(ProcessEngineUrl);
+
+          this.ConsumerApiClient = new ConsumerApiClientService(httpClient);
+        }
+
         /// <summary>
         /// Periodically fetches, locks and processes available ExternalTasks with a given topic,
         /// using the given callback as a processing function.
         /// </summary>
-        /// <param name="identity">
-        /// The identity to use for fetching and processing ExternalTasks.
-        /// </param>
-        /// <param name="topic">
-        /// The topic by which to look for and process ExternalTasks.
-        /// </param>
-        /// <param name="maxTasks">
-        /// max. ExternalTasks to fetch.
-        /// </param>
-        /// <param name="longpollingTimeout">
-        /// Longpolling Timeout in ms.
-        /// </param>
-        /// <param name="handleAction">
-        /// The function for processing the ExternalTasks.
-        /// </param>
-        public async Task WaitForHandle<TPayload>(
-            IIdentity identity,
-            string topic,
-            int maxTasks,
-            int longpollingTimeout,
-            HandleExternalTaskAction<TPayload> handleAction
-        )
-            where TPayload : new()
+        private async Task ProcessExternalTasks()
         {
-            const bool keepPolling = true;
-            while (keepPolling)
+            while (this.PollingActive)
             {
-                var externalTasks = await this.FetchAndLockExternalTasks<TPayload>(
-                    identity,
-                    topic,
-                    maxTasks,
-                    longpollingTimeout
+                var externalTasks = await this.FetchAndLockExternalTasks(
+                    this.Identity,
+                    this.Topic,
+                    this.MaxTasks,
+                    this.LongpollingTimeout
                 );
 
                 if (externalTasks.Count() == 0)
@@ -82,30 +101,29 @@ namespace ProcessEngine.ConsumerAPI.Client
 
                 foreach (var externalTask in externalTasks)
                 {
-                    tasks.Add(this.ExecuteExternalTask<TPayload>(identity, externalTask, handleAction));
+                    tasks.Add(this.ExecuteExternalTask(Identity, externalTask));
                 }
 
                 await Task.WhenAll(tasks);
             }
         }
 
-        private async Task<IEnumerable<ExternalTask<TPayload>>> FetchAndLockExternalTasks<TPayload>(
+        private async Task<IEnumerable<ExternalTask<TExternalTaskPayload>>> FetchAndLockExternalTasks(
             IIdentity identity,
             string topic,
             int maxTasks,
             int longpollingTimeout
         )
-        where TPayload : new()
         {
             try
             {
-                return await this.externalTaskApi.FetchAndLockExternalTasks<TPayload>(
-                  identity,
-                  WorkerId,
-                  topic,
-                  maxTasks,
-                  longpollingTimeout,
-                  LockDurationInMilliseconds
+                return await this.ConsumerApiClient.FetchAndLockExternalTasks<TExternalTaskPayload>(
+                  this.Identity,
+                  this.WorkerId,
+                  this.Topic,
+                  this.MaxTasks,
+                  this.LongpollingTimeout,
+                  LockDuration
                 );
             }
             catch (Exception exception)
@@ -114,25 +132,23 @@ namespace ProcessEngine.ConsumerAPI.Client
 
                 // Returning an empty Array here, since "waitForAndHandle" already implements a timeout, in case no tasks are available for processing.
                 // No need to do that twice.
-                return new List<ExternalTask<TPayload>>();
+                return new List<ExternalTask<TExternalTaskPayload>>();
             }
         }
 
-        private async Task ExecuteExternalTask<TPayload>(
+        private async Task ExecuteExternalTask(
           IIdentity identity,
-          ExternalTask<TPayload> externalTask,
-          HandleExternalTaskAction<TPayload> handleAction
+          ExternalTask<TExternalTaskPayload> externalTask
         )
-          where TPayload : new()
         {
             const int lockExtensionBuffer = 5000;
-            const int lockRefreshIntervalInMs = LockDurationInMilliseconds - lockExtensionBuffer;
+            const int lockRefreshIntervalInMs = LockDuration - lockExtensionBuffer;
 
             var lockRefreshTimer = this.StartExtendLockTimer(identity, externalTask, lockRefreshIntervalInMs);
 
             try
             {
-                var result = await handleAction(externalTask);
+                var result = await this.ProcessingFunction(externalTask);
 
                 lockRefreshTimer.Stop();
 
@@ -142,24 +158,24 @@ namespace ProcessEngine.ConsumerAPI.Client
             {
                 Console.WriteLine(exception);
                 lockRefreshTimer.Stop();
-                await this.externalTaskApi.HandleServiceError(identity, this.WorkerId, externalTask.Id, exception.Message, exception.StackTrace);
+                await this.ConsumerApiClient.HandleServiceError(identity, this.WorkerId, externalTask.Id, exception.Message, exception.StackTrace);
             }
         }
 
-        private System.Timers.Timer StartExtendLockTimer<TPayload>(IIdentity identity, ExternalTask<TPayload> externalTask, int intervall)
+        private System.Timers.Timer StartExtendLockTimer(IIdentity identity, ExternalTask<TExternalTaskPayload> externalTask, int intervall)
         {
             var timer = new System.Timers.Timer(intervall);
-            timer.Elapsed += async (sender, e) => await ExtendLock<TPayload>(identity, externalTask);
+            timer.Elapsed += async (sender, e) => await ExtendLock(identity, externalTask);
             timer.Start();
 
             return timer;
         }
 
-        private async Task ExtendLock<TPayload>(IIdentity identity, ExternalTask<TPayload> externalTask)
+        private async Task ExtendLock(IIdentity identity, ExternalTask<TExternalTaskPayload> externalTask)
         {
             try
             {
-                await this.externalTaskApi.ExtendLock(identity, this.WorkerId, externalTask.Id, LockDurationInMilliseconds);
+                await this.ConsumerApiClient.ExtendLock(identity, this.WorkerId, externalTask.Id, LockDuration);
             }
             catch (Exception error)
             {
@@ -174,7 +190,7 @@ namespace ProcessEngine.ConsumerAPI.Client
             if (result is ExternalTaskBpmnError) {
 
                 var bpmnError = result as ExternalTaskBpmnError;
-                await this.externalTaskApi.HandleBpmnError(identity, this.WorkerId, externalTaskId, bpmnError.errorCode);
+                await this.ConsumerApiClient.HandleBpmnError(identity, this.WorkerId, externalTaskId, bpmnError.errorCode);
 
             }
             else if (result is ExternalTaskServiceError<object>)
@@ -182,13 +198,13 @@ namespace ProcessEngine.ConsumerAPI.Client
 
                 var serviceError = result as ExternalTaskServiceError<object>;
                 await this
-                    .externalTaskApi
+                    .ConsumerApiClient
                     .HandleServiceError(identity, this.WorkerId, externalTaskId, serviceError.errorMessage, serviceError.errorDetails as string);
 
             }
             else
             {
-                await this.externalTaskApi.FinishExternalTask(identity, this.WorkerId, externalTaskId, (result as ExternalTaskSuccessResult<object>).result);
+                await this.ConsumerApiClient.FinishExternalTask(identity, this.WorkerId, externalTaskId, (result as ExternalTaskSuccessResult<object>).result);
             }
         }
     }
