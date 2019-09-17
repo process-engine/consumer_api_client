@@ -32,7 +32,7 @@
     "@essential-projects/http_contracts": "^2.4.0",
     "@essential-projects/http": "^2.4.0",
     "@essential-projects/iam_contracts": "^3.5.0",
-    "@process-engine/consumer_api_contracts": "8.1.0-c1903190-b30",
+    "@process-engine/consumer_api_contracts": "feature~add_total-count",
     "async-middleware": "^1.2.1",
     "bluebird": "^3.5.3",
     "loggerhythm": "^3.0.3",
