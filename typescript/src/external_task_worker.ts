@@ -38,21 +38,21 @@ export class ExternalTaskWorker implements IExternalTaskWorker {
     const keepPolling = true;
     while (keepPolling) {
 
-      const externalTasks = await this.fetchAndLockExternalTasks<TPayload>(
+      const externalTaskList = await this.fetchAndLockExternalTasks<TPayload>(
         identity,
         topic,
         maxTasks,
         longpollingTimeout,
       );
 
-      if (externalTasks.length === 0) {
+      if (externalTaskList.externalTasks.length === 0) {
         await this.sleep(1000);
         continue;
       }
 
       const executeTaskPromises: Array<Promise<void>> = [];
 
-      for (const externalTask of externalTasks) {
+      for (const externalTask of externalTaskList.externalTasks) {
         executeTaskPromises.push(this.executeExternalTask(identity, externalTask, handleAction));
       }
 
@@ -65,12 +65,14 @@ export class ExternalTaskWorker implements IExternalTaskWorker {
     topic: string,
     maxTasks: number,
     longpollingTimeout: number,
-  ): Promise<Array<DataModels.ExternalTask.ExternalTask<TPayload>>> {
+  ): Promise<DataModels.ExternalTask.ExternalTaskList<TPayload>> {
 
     try {
-      return await this
+      const externalTasks = await this
         .externalTaskService
         .fetchAndLockExternalTasks<TPayload>(identity, this.workerId, topic, maxTasks, longpollingTimeout, this.lockDuration);
+
+      return {externalTasks: externalTasks, totalCount: externalTasks.length};
     } catch (error) {
 
       logger.error(
@@ -81,7 +83,7 @@ export class ExternalTaskWorker implements IExternalTaskWorker {
 
       // Returning an empty Array here, since "waitForAndHandle" already implements a timeout, in case no tasks are available for processing.
       // No need to do that twice.
-      return [];
+      return {externalTasks: [], totalCount: 0};
     }
   }
 
