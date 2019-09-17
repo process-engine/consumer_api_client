@@ -83,7 +83,7 @@ export class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> implements
         this.longpollingTimeout,
       );
 
-      if (externalTaskList.externalTasks.length === 0) {
+      if (externalTasks.length === 0) {
         await this.sleep(1000);
         continue;
       }
@@ -119,7 +119,7 @@ export class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> implements
 
       // Returning an empty Array here, since "waitForAndHandle" already implements a timeout, in case no tasks are available for processing.
       // No need to do that twice.
-      return {externalTasks: [], totalCount: 0};
+      return [];
     }
   }
 
