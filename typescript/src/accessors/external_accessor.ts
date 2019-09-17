@@ -397,7 +397,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     identity: IIdentity,
     correlationId: string,
     processModelId: string,
-  ): Promise<Array<DataModels.CorrelationResult>> {
+  ): Promise<DataModels.CorrelationResultList> {
 
     const urlRestPart = restSettings.paths.getProcessResultForCorrelation
       .replace(restSettings.params.correlationId, correlationId)
@@ -407,7 +407,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
 
     const requestAuthHeaders = this.createRequestAuthHeaders(identity);
 
-    const httpResponse = await this.httpClient.get<Array<DataModels.CorrelationResult>>(url, requestAuthHeaders);
+    const httpResponse = await this.httpClient.get<DataModels.CorrelationResultList>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
@@ -416,12 +416,12 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     identity: IIdentity,
     offset: number = 0,
     limit: number = 0,
-  ): Promise<Array<DataModels.ProcessInstance>> {
+  ): Promise<DataModels.ProcessInstanceList> {
     const requestAuthHeaders = this.createRequestAuthHeaders(identity);
 
     const url = this.buildUrl(restSettings.paths.getOwnProcessInstances, offset, limit);
 
-    const httpResponse = await this.httpClient.get<Array<DataModels.ProcessInstance>>(url, requestAuthHeaders);
+    const httpResponse = await this.httpClient.get<DataModels.ProcessInstanceList>(url, requestAuthHeaders);
 
     return httpResponse.result;
   }
