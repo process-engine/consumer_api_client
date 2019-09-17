@@ -951,7 +951,7 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
   ): Promise<DataModels.FlowNodeInstances.TaskList> {
     const requestAuthHeaders = this.createRequestAuthHeaders(identity);
 
-    const url = this.buildUrl(restSettings.paths.allSuspendedTasks);
+    const url = this.buildUrl(restSettings.paths.allSuspendedTasks, offset, limit);
 
     const httpResponse = await this.httpClient.get<DataModels.FlowNodeInstances.TaskList>(url, requestAuthHeaders);
 
