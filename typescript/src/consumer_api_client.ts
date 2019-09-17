@@ -344,7 +344,7 @@ export class ConsumerApiClient implements IConsumerApiClient {
     identity: IIdentity,
     correlationId: string,
     processModelId: string,
-  ): Promise<Array<DataModels.CorrelationResult>> {
+  ): Promise<DataModels.Correlations.CorrelationResultList> {
     this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.getProcessResultForCorrelation(identity, correlationId, processModelId);
@@ -354,7 +354,7 @@ export class ConsumerApiClient implements IConsumerApiClient {
     identity: IIdentity,
     offset: number = 0,
     limit: number = 0,
-  ): Promise<Array<DataModels.ProcessInstance>> {
+  ): Promise<DataModels.ProcessModels.ProcessInstanceList> {
     this.ensureIsAuthorized(identity);
 
     return this.consumerApiAccessor.getProcessInstancesByIdentity(identity, offset, limit);

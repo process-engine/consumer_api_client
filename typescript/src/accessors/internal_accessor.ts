@@ -68,7 +68,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     identity: IIdentity,
     correlationId: string,
     processModelId: string,
-  ): Promise<Array<DataModels.CorrelationResult>> {
+  ): Promise<DataModels.Correlations.CorrelationResultList> {
     return this.processModelService.getProcessResultForCorrelation(identity, correlationId, processModelId);
   }
 
@@ -76,7 +76,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     identity: IIdentity,
     offset: number = 0,
     limit: number = 0,
-  ): Promise<Array<DataModels.ProcessInstance>> {
+  ): Promise<DataModels.ProcessModels.ProcessInstanceList> {
     return this.processModelService.getProcessInstancesByIdentity(identity, offset, limit);
   }
 
