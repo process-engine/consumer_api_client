@@ -70,26 +70,6 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.activityFinished, callback, subscribeOnce);
   }
 
-  // ------------ For backwards compatibility only
-
-  public async onCallActivityWaiting(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.callActivityWaiting, callback, subscribeOnce);
-  }
-
-  public async onCallActivityFinished(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    return this.createSocketIoSubscription<typeof callback>(identity, socketSettings.paths.callActivityFinished, callback, subscribeOnce);
-  }
-
-  // ------------
-
   public async onEmptyActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
