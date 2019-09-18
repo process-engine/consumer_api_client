@@ -655,6 +655,62 @@ export class ConsumerApiClient implements IConsumerApiClient {
     return this.consumerApiAccessor.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
   }
 
+  // Tasks
+  public async getAllSuspendedTasks(
+    identity: IIdentity,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getAllSuspendedTasks(identity, offset, limit);
+  }
+
+  public async getSuspendedTasksForProcessModel(
+    identity: IIdentity,
+    processModelId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getSuspendedTasksForProcessModel(identity, processModelId, offset, limit);
+  }
+
+  public async getSuspendedTasksForProcessInstance(
+    identity: IIdentity,
+    processInstanceId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getSuspendedTasksForProcessInstance(identity, processInstanceId, offset, limit);
+  }
+
+  public async getSuspendedTasksForCorrelation(
+    identity: IIdentity,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getSuspendedTasksForCorrelation(identity, correlationId, offset, limit);
+  }
+
+  public async getSuspendedTasksForProcessModelInCorrelation(
+    identity: IIdentity,
+    processModelId: string,
+    correlationId: string,
+    offset: number = 0,
+    limit: number = 0,
+  ): Promise<DataModels.FlowNodeInstances.TaskList> {
+    this.ensureIsAuthorized(identity);
+
+    return this.consumerApiAccessor.getSuspendedTasksForProcessModelInCorrelation(identity, processModelId, correlationId, offset, limit);
+  }
+
   private ensureIsAuthorized(identity: IIdentity): void {
     const noAuthTokenProvided = !identity || typeof identity.token !== 'string';
     if (noAuthTokenProvided) {
