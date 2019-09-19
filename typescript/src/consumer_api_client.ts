@@ -42,34 +42,6 @@ export class ConsumerApiClient implements IConsumerApiClient {
     return this.consumerApiAccessor.onActivityFinished(identity, callback, subscribeOnce);
   }
 
-  // ------------ For backwards compatibility only
-
-  public async onCallActivityWaiting(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityWaitingCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    this.ensureIsAuthorized(identity);
-
-    logger.warn('"onCallActivityWaiting" is deprecated and will be removed with the next major release! Use "onActivityReached" instead!');
-
-    return this.consumerApiAccessor.onCallActivityWaiting(identity, callback, subscribeOnce);
-  }
-
-  public async onCallActivityFinished(
-    identity: IIdentity,
-    callback: Messages.CallbackTypes.OnCallActivityFinishedCallback,
-    subscribeOnce: boolean = false,
-  ): Promise<Subscription> {
-    this.ensureIsAuthorized(identity);
-
-    logger.warn('"onCallActivityFinished" is deprecated and will be removed with the next major release! Use "onActivityFinished" instead!');
-
-    return this.consumerApiAccessor.onCallActivityFinished(identity, callback, subscribeOnce);
-  }
-
-  // ------------
-
   public async onEmptyActivityWaiting(
     identity: IIdentity,
     callback: Messages.CallbackTypes.OnEmptyActivityWaitingCallback,
