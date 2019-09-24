@@ -119,7 +119,7 @@
             throw new Exception("Process could not be started.");
         }
 
-        public async Task<IEnumerable<CorrelationResult<TPayload>>> GetProcessResultForCorrelation<TPayload>(
+        public async Task<CorrelationResultList<TPayload>> GetProcessResultForCorrelation<TPayload>(
             IIdentity identity,
             string correlationId,
             string processModelId)
@@ -133,7 +133,7 @@
 
             var jsonResult = "";
 
-            IEnumerable<CorrelationResult<TPayload>> parsedResult = null;
+            CorrelationResultList<TPayload> parsedResult = null;
 
             var request = this.CreateRequestMessage(identity, HttpMethod.Get, urlWithEndpoint);
             var result = await this.httpClient.SendAsync(request);
@@ -141,17 +141,17 @@
             if (result.IsSuccessStatusCode)
             {
                 jsonResult = await result.Content.ReadAsStringAsync();
-                parsedResult = JsonConvert.DeserializeObject<IEnumerable<CorrelationResult<TPayload>>>(jsonResult);
+                parsedResult = JsonConvert.DeserializeObject<CorrelationResultList<TPayload>>(jsonResult);
             }
 
             return parsedResult;
         }
 
-        public async Task<IEnumerable<ProcessInstance>> GetProcessInstancesByIdentity(IIdentity identity, int offset = 0, int limit = 0)
+        public async Task<ProcessInstanceList> GetProcessInstancesByIdentity(IIdentity identity, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.GetOwnProcessInstances;
 
-            var result = await this.SendRequestAndExpectResult<IEnumerable<ProcessInstance>>(identity, HttpMethod.Get, endpoint, null, offset, limit);
+            var result = await this.SendRequestAndExpectResult<ProcessInstanceList>(identity, HttpMethod.Get, endpoint, null, offset, limit);
 
             return result;
         }
