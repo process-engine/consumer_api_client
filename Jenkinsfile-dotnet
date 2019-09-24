@@ -72,23 +72,23 @@ pipeline {
         }
       }
     }
-    stage('test') {
-      steps {
-        script {
-          docker.image('5minds/process_engine_runtime').withRun() { c ->
-            docker.image('microsoft/dotnet:2.1-sdk').inside("--link ${c.id}:process_engine_runtime") {
-              dir('dotnet') {
-                process_engine_rest_api_url = "http://process_engine_runtime:8000"
-                sh "while ! curl --silent ${process_engine_rest_api_url} > /dev/null; do sleep 1; done"
-                sh("PROCESS_ENGINE_REST_API_URL=${process_engine_rest_api_url} dotnet test --logger trx --configuration Release tests/ProcessEngine.ConsumerAPI.Client.Tests.csproj");
+    // stage('test') {
+    //   steps {
+    //     script {
+    //       docker.image('5minds/process_engine_runtime').withRun() { c ->
+    //         docker.image('microsoft/dotnet:2.1-sdk').inside("--link ${c.id}:process_engine_runtime") {
+    //           dir('dotnet') {
+    //             process_engine_rest_api_url = "http://process_engine_runtime:8000"
+    //             sh "while ! curl --silent ${process_engine_rest_api_url} > /dev/null; do sleep 1; done"
+    //             sh("PROCESS_ENGINE_REST_API_URL=${process_engine_rest_api_url} dotnet test --logger trx --configuration Release tests/ProcessEngine.ConsumerAPI.Client.Tests.csproj");
 
-                step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
-              }
-            }
-          }
-        }
-      }
-    }
+    //             step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: true, keepLongStdio: true])
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
     stage('publish') {
       steps {
         withCredentials([string(credentialsId: 'myget_process_engine_public_feed_token', variable: 'PROCESS_ENGINE_PUBLIC')]) {
