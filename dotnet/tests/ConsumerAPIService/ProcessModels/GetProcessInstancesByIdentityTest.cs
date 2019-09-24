@@ -34,7 +34,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 .ConsumerAPIClient
                 .GetProcessInstancesByIdentity(this.fixture.DefaultIdentity);
 
-            Assert.NotNull(processInstances);
+            Assert.NotNull(processInstances.ProcessInstances);
         }
     }
 }

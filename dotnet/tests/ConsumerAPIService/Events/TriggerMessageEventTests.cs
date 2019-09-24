@@ -48,7 +48,7 @@ namespace ProcessEngine.ConsumerAPI.Client.Tests
                 .ConsumerAPIClient
                 .GetProcessResultForCorrelation<object>(this.fixture.DefaultIdentity, processStartResponsePayload.CorrelationId, processModelId);
 
-            Assert.NotEmpty(processResult);
+            Assert.NotEmpty(processResult.CorrelationResults);
         }
 
     }
