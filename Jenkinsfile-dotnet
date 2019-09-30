@@ -18,11 +18,7 @@ def cleanup_workspace() {
 def buildIsRequired = true
 
 pipeline {
-  agent {
-    docker {
-      image 'microsoft/dotnet:2.1-sdk'
-    }
-  }
+  agent any
   options {
     buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '20'))
   }
