@@ -15,14 +15,47 @@ def cleanup_workspace() {
   }
 }
 
+def buildIsRequired = true
+
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'microsoft/dotnet:2.1-sdk'
+    }
+  }
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '20'))
+  }
   environment {
     HOME = "$WORKSPACE"
   }
 
   stages {
+    stage('Check if build is required') {
+      steps {
+        script {
+          // Taken from https://stackoverflow.com/questions/37755586/how-do-you-pull-git-committer-information-for-jenkins-pipeline
+          sh 'git --no-pager show -s --format=\'%an\' > commit-author.txt'
+          def commitAuthorName = readFile('commit-author.txt').trim()
+
+          def ciAdminName = "admin" // jenkins will set this name after every restart, so we need to look out for this.
+          def ciUserName = "process-engine-ci"
+
+          echo(commitAuthorName)
+          echo("Commiter is process-engine-ci: ${commitAuthorName == ciUserName || commitAuthorName == ciAdminName}")
+
+          buildIsRequired = commitAuthorName != ciAdminName && commitAuthorName != ciUserName
+
+          if (!buildIsRequired) {
+            echo("Commit was made by process-engine-ci. Skipping build.")
+          }
+        }
+      }
+    }
     stage('prepare') {
+      when {
+        expression {buildIsRequired == true}
+      }
       steps {
         script {
           docker.image('microsoft/dotnet:2.1-sdk').inside() {
@@ -61,6 +94,9 @@ pipeline {
       }
     }
     stage('build') {
+      when {
+        expression {buildIsRequired == true}
+      }
       steps {
         script {
           docker.image('microsoft/dotnet:2.1-sdk').inside() {
@@ -73,6 +109,9 @@ pipeline {
       }
     }
     // stage('test') {
+    //   when {
+    //     expression {buildIsRequired == true}
+    //   }
     //   steps {
     //     script {
     //       docker.image('5minds/process_engine_runtime').withRun() { c ->
@@ -90,6 +129,9 @@ pipeline {
     //   }
     // }
     stage('publish') {
+      when {
+        expression {buildIsRequired == true}
+      }
       steps {
         withCredentials([string(credentialsId: 'myget_process_engine_public_feed_token', variable: 'PROCESS_ENGINE_PUBLIC')]) {
           script {
@@ -128,6 +170,9 @@ pipeline {
       }
     }
     stage('cleanup') {
+      when {
+        expression {buildIsRequired == true}
+      }
       steps {
         script {
           // this stage just exists, so the cleanup-work that happens in the post-script
