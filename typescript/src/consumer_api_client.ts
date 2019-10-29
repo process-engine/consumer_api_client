@@ -1,5 +1,3 @@
-import {Logger} from 'loggerhythm';
-
 import * as EssentialProjectErrors from '@essential-projects/errors_ts';
 import {Subscription} from '@essential-projects/event_aggregator_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
@@ -10,8 +8,6 @@ import {
   IConsumerApiClient,
   Messages,
 } from '@process-engine/consumer_api_contracts';
-
-const logger = Logger.createLogger('processengine:consumer_api:client');
 
 export class ConsumerApiClient implements IConsumerApiClient {
 
