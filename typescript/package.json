@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/consumer_api_client",
-  "version": "6.2.0-beta.1",
+  "version": "6.2.0",
   "description": "the api-client package for process-engine-consumer",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
@@ -32,7 +32,7 @@
     "@essential-projects/http_contracts": "^2.4.0",
     "@essential-projects/http": "^2.4.0",
     "@essential-projects/iam_contracts": "^3.5.0",
-    "@process-engine/consumer_api_contracts": "9.1.0-alpha.2",
+    "@process-engine/consumer_api_contracts": "9.1.0-beta.2",
     "async-middleware": "^1.2.1",
     "bluebird": "^3.5.3",
     "loggerhythm": "^3.0.3",
