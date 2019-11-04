@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/consumer_api_client_bundle",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "This project creates a JS bundle of the consumer_api_client",
   "main": "index.js",
   "scripts": {
