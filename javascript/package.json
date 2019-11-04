@@ -13,10 +13,10 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@essential-projects/http": "2.4.0",
-    "@process-engine/consumer_api_client": "6.1.0",
-    "crypto": "1.0.1",
-    "uuid": "3.3.2"
+    "@essential-projects/http": "~2.4.0",
+    "@process-engine/consumer_api_client": "6.2.0",
+    "crypto": "~1.0.1",
+    "uuid": "~3.3.2"
   },
   "devDependencies": {
     "webpack": "^4.33.0",
