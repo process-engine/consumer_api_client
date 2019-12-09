@@ -19,6 +19,7 @@
     "uuid": "~3.3.2"
   },
   "devDependencies": {
+    "@process-engine/ci_tools": "^2.3.0",
     "webpack": "^4.33.0",
     "webpack-cli": "^3.3.2"
   }
