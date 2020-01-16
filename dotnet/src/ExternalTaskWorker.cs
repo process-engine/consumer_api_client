@@ -195,7 +195,7 @@ namespace ProcessEngine.ConsumerAPI.Client
             if (result is ExternalTaskBpmnError) {
 
                 var bpmnError = result as ExternalTaskBpmnError;
-                await this.ConsumerApiClient.HandleBpmnError(identity, this.WorkerId, externalTaskId, bpmnError.errorCode);
+                await this.ConsumerApiClient.HandleBpmnError(identity, this.WorkerId, externalTaskId, bpmnError.ErrorCode);
 
             }
             else if (result is ExternalTaskServiceError<object>)
@@ -204,12 +204,12 @@ namespace ProcessEngine.ConsumerAPI.Client
                 var serviceError = result as ExternalTaskServiceError<object>;
                 await this
                     .ConsumerApiClient
-                    .HandleServiceError(identity, this.WorkerId, externalTaskId, serviceError.errorMessage, serviceError.errorDetails as string);
+                    .HandleServiceError(identity, this.WorkerId, externalTaskId, serviceError.ErrorMessage, serviceError.ErrorDetails as string);
 
             }
             else
             {
-                await this.ConsumerApiClient.FinishExternalTask(identity, this.WorkerId, externalTaskId, (result as ExternalTaskSuccessResult<object>).result);
+                await this.ConsumerApiClient.FinishExternalTask(identity, this.WorkerId, externalTaskId, (result as ExternalTaskSuccessResult<object>).Result);
             }
         }
     }

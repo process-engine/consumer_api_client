@@ -464,10 +464,16 @@ export class ConsumerApiClient implements IConsumerApiClient {
     return this.consumerApiAccessor.extendLock(identity, workerId, externalTaskId, additionalDuration);
   }
 
-  public async handleBpmnError(identity: IIdentity, workerId: string, externalTaskId: string, errorCode: string): Promise<void> {
+  public async handleBpmnError(
+    identity: IIdentity,
+    workerId: string,
+    externalTaskId: string,
+    errorCode: string,
+    errorMessage?: string,
+  ): Promise<void> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.handleBpmnError(identity, workerId, externalTaskId, errorCode);
+    return this.consumerApiAccessor.handleBpmnError(identity, workerId, externalTaskId, errorCode, errorMessage);
   }
 
   public async handleServiceError(
@@ -476,10 +482,11 @@ export class ConsumerApiClient implements IConsumerApiClient {
     externalTaskId: string,
     errorMessage: string,
     errorDetails: string,
+    errorCode?: string,
   ): Promise<void> {
     this.ensureIsAuthorized(identity);
 
-    return this.consumerApiAccessor.handleServiceError(identity, workerId, externalTaskId, errorMessage, errorDetails);
+    return this.consumerApiAccessor.handleServiceError(identity, workerId, externalTaskId, errorMessage, errorDetails, errorCode);
   }
 
   public async finishExternalTask<TResultType>(identity: IIdentity, workerId: string, externalTaskId: string, payload: TResultType): Promise<void> {

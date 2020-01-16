@@ -193,8 +193,14 @@ export class InternalAccessor implements IConsumerApiAccessor {
     return this.externalTaskService.extendLock(identity, workerId, externalTaskId, additionalDuration);
   }
 
-  public async handleBpmnError(identity: IIdentity, workerId: string, externalTaskId: string, errorCode: string): Promise<void> {
-    return this.externalTaskService.handleBpmnError(identity, workerId, externalTaskId, errorCode);
+  public async handleBpmnError(
+    identity: IIdentity,
+    workerId: string,
+    externalTaskId: string,
+    errorCode: string,
+    errorMessage?: string,
+  ): Promise<void> {
+    return this.externalTaskService.handleBpmnError(identity, workerId, externalTaskId, errorCode, errorMessage);
   }
 
   public async handleServiceError(
@@ -203,8 +209,9 @@ export class InternalAccessor implements IConsumerApiAccessor {
     externalTaskId: string,
     errorMessage: string,
     errorDetails: string,
+    errorCode?: string,
   ): Promise<void> {
-    return this.externalTaskService.handleServiceError(identity, workerId, externalTaskId, errorMessage, errorDetails);
+    return this.externalTaskService.handleServiceError(identity, workerId, externalTaskId, errorMessage, errorDetails, errorCode);
   }
 
   public async finishExternalTask<TResultType>(identity: IIdentity, workerId: string, externalTaskId: string, payload: TResultType): Promise<void> {
