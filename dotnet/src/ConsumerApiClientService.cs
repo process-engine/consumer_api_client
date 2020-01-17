@@ -363,6 +363,20 @@
             await this.PostExternalTaskRequest<HandleBpmnErrorRequest>(identity, endpoint, handleBpmnErrorRequest);
         }
 
+        public async Task HandleBpmnError(IIdentity identity, string workerId, string externalTaskId, string errorCode, string errorMessage)
+        {
+            var endpoint = RestSettings.Paths.FinishExternalTaskWithBpmnError.Replace(RestSettings.Params.ExternalTaskId, externalTaskId);
+
+            var handleBpmnErrorRequest = new HandleBpmnErrorRequest
+            (
+                workerId,
+                errorCode,
+                errorMessage
+            );
+
+            await this.PostExternalTaskRequest<HandleBpmnErrorRequest>(identity, endpoint, handleBpmnErrorRequest);
+        }
+
         public async Task HandleServiceError(IIdentity identity, string workerId, string externalTaskId, string errorMessage, string errorDetails)
         {
             var endpoint = RestSettings.Paths.FinishExternalTaskWithServiceError.Replace(RestSettings.Params.ExternalTaskId, externalTaskId);
@@ -372,6 +386,21 @@
                 workerId,
                 errorMessage,
                 errorDetails
+            );
+
+            await this.PostExternalTaskRequest<HandleServiceErrorRequest>(identity, endpoint, handleServiceErrorRequest);
+        }
+
+        public async Task HandleServiceError(IIdentity identity, string workerId, string externalTaskId, string errorMessage, string errorDetails, string errorCode)
+        {
+            var endpoint = RestSettings.Paths.FinishExternalTaskWithServiceError.Replace(RestSettings.Params.ExternalTaskId, externalTaskId);
+
+            var handleServiceErrorRequest = new HandleServiceErrorRequest
+            (
+                workerId,
+                errorMessage,
+                errorDetails,
+                errorCode
             );
 
             await this.PostExternalTaskRequest<HandleServiceErrorRequest>(identity, endpoint, handleServiceErrorRequest);
