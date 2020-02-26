@@ -52,6 +52,18 @@ export class ExternalAccessor implements IConsumerApiAccessor, IConsumerSocketIo
     this.removeSocketForIdentity(identity);
   }
 
+  // Application Info
+
+  public async getApplicationInfo(identity: IIdentity): Promise<DataModels.ApplicationInfo> {
+    const requestAuthHeaders = this.createRequestAuthHeaders(identity);
+
+    const url = this.buildUrl(restSettings.paths.getApplicationInfo);
+
+    const httpResponse = await this.httpClient.get<DataModels.ApplicationInfo>(url, requestAuthHeaders);
+
+    return httpResponse.result;
+  }
+
   // Notifications
 
   public async onActivityReached(
