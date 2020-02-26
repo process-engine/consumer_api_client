@@ -17,6 +17,10 @@ export class ConsumerApiClient implements IConsumerApiClient {
     this.consumerApiAccessor = consumerApiAccessor;
   }
 
+  public async getApplicationInfo(identity: IIdentity): Promise<DataModels.ApplicationInfo> {
+    return this.consumerApiAccessor.getApplicationInfo(identity);
+  }
+
   // Notifications
   public async onActivityReached(
     identity: IIdentity,

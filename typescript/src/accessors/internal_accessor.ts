@@ -10,16 +10,18 @@ import {
 
 export class InternalAccessor implements IConsumerApiAccessor {
 
-  private emptyActivityService: APIs.IEmptyActivityConsumerApi;
-  private eventService: APIs.IEventConsumerApi;
-  private externalTaskService: APIs.IExternalTaskConsumerApi;
-  private manualTaskService: APIs.IManualTaskConsumerApi;
-  private notificationService: APIs.INotificationConsumerApi;
-  private processModelService: APIs.IProcessModelConsumerApi;
-  private userTaskService: APIs.IUserTaskConsumerApi;
-  private flowNodeInstanceService: APIs.IFlowNodeInstanceConsumerApi;
+  private readonly applicationInfoService: APIs.IApplicationInfoConsumerApi;
+  private readonly emptyActivityService: APIs.IEmptyActivityConsumerApi;
+  private readonly eventService: APIs.IEventConsumerApi;
+  private readonly externalTaskService: APIs.IExternalTaskConsumerApi;
+  private readonly manualTaskService: APIs.IManualTaskConsumerApi;
+  private readonly notificationService: APIs.INotificationConsumerApi;
+  private readonly processModelService: APIs.IProcessModelConsumerApi;
+  private readonly userTaskService: APIs.IUserTaskConsumerApi;
+  private readonly flowNodeInstanceService: APIs.IFlowNodeInstanceConsumerApi;
 
   constructor(
+    applicationInfoService: APIs.IApplicationInfoConsumerApi,
     emptyActivityService: APIs.IEmptyActivityConsumerApi,
     eventService: APIs.IEventConsumerApi,
     externalTaskService: APIs.IExternalTaskConsumerApi,
@@ -29,6 +31,7 @@ export class InternalAccessor implements IConsumerApiAccessor {
     userTaskService: APIs.IUserTaskConsumerApi,
     flowNodeInstanceService: APIs.IFlowNodeInstanceConsumerApi,
   ) {
+    this.applicationInfoService = applicationInfoService;
     this.emptyActivityService = emptyActivityService;
     this.eventService = eventService;
     this.externalTaskService = externalTaskService;
@@ -37,6 +40,12 @@ export class InternalAccessor implements IConsumerApiAccessor {
     this.processModelService = processModelService;
     this.userTaskService = userTaskService;
     this.flowNodeInstanceService = flowNodeInstanceService;
+  }
+
+  // Application Info
+
+  public async getApplicationInfo(identity: IIdentity): Promise<DataModels.ApplicationInfo> {
+    return this.applicationInfoService.getApplicationInfo(identity);
   }
 
   // Process models and instances
