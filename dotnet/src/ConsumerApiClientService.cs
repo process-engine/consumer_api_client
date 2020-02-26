@@ -31,6 +31,15 @@
             this.httpClient.Dispose();
         }
 
+        public async Task<ApplicationInfo> GetApplicationInfo(IIdentity identity)
+        {
+            var endpoint = RestSettings.Paths.GetApplicationInfo;
+
+            var result = await this.SendRequestAndExpectResult<ApplicationInfo>(identity, HttpMethod.Get, endpoint);
+
+            return result;
+        }
+
         public async Task<ProcessModelList> GetProcessModels(IIdentity identity, int offset = 0, int limit = 0)
         {
             var endpoint = RestSettings.Paths.ProcessModels;
