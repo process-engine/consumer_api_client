@@ -104,7 +104,7 @@ export class ExternalTaskWorker<TPayload, TResultPayload> implements IExternalTa
   private async fetchAndLockExternalTasks(): Promise<Array<DataModels.ExternalTask.ExternalTask<TPayload>>> {
 
     try {
-      return await this
+      return this
         .consumerApiClient
         .fetchAndLockExternalTasks<TPayload>(this.identity, this.workerId, this.topic, this.maxTasks, this.longpollingTimeout, this.lockDuration);
     } catch (error) {
