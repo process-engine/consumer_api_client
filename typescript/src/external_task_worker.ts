@@ -15,7 +15,7 @@ import {ConsumerApiClient} from './consumer_api_client';
 
 const logger: Logger = Logger.createLogger('processengine:consumer_api_client:external_task_worker');
 
-export class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> implements IExternalTaskWorker {
+export class ExternalTaskWorker<TPayload, TResultPayload> implements IExternalTaskWorker {
 
   private readonly _workerId = uuid.v4();
   private readonly lockDuration = 30000;
@@ -23,7 +23,7 @@ export class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> implements
   private readonly topic: string;
   private readonly maxTasks: number;
   private readonly longpollingTimeout: number;
-  private readonly processingFunction: HandleExternalTaskAction<TExternalTaskPayload, TResultPayload>;
+  private readonly processingFunction: HandleExternalTaskAction<TPayload, TResultPayload>;
 
   private _identity: IIdentity;
   private _pollingActive = false;
@@ -35,7 +35,7 @@ export class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> implements
     topic: string,
     maxTasks: number,
     longpollingTimeout: number,
-    processingFunction: HandleExternalTaskAction<TExternalTaskPayload, TResultPayload>,
+    processingFunction: HandleExternalTaskAction<TPayload, TResultPayload>,
   ) {
     this.processEngineUrl = processEngineUrl;
     this.identity = identity;
@@ -84,12 +84,7 @@ export class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> implements
 
     while (this.pollingIsActive) {
 
-      const externalTasks = await this.fetchAndLockExternalTasks(
-        this.identity,
-        this.topic,
-        this.maxTasks,
-        this.longpollingTimeout,
-      );
+      const externalTasks = await this.fetchAndLockExternalTasks();
 
       if (externalTasks.length === 0) {
         await this.sleep(1000);
@@ -99,24 +94,19 @@ export class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> implements
       const executeTaskPromises: Array<Promise<void>> = [];
 
       for (const externalTask of externalTasks) {
-        executeTaskPromises.push(this.executeExternalTask(this.identity, externalTask));
+        executeTaskPromises.push(this.executeExternalTask(externalTask));
       }
 
       await Promise.all(executeTaskPromises);
     }
   }
 
-  private async fetchAndLockExternalTasks(
-    identity: IIdentity,
-    topic: string,
-    maxTasks: number,
-    longpollingTimeout: number,
-  ): Promise<Array<DataModels.ExternalTask.ExternalTask<TExternalTaskPayload>>> {
+  private async fetchAndLockExternalTasks(): Promise<Array<DataModels.ExternalTask.ExternalTask<TPayload>>> {
 
     try {
-      return await this
+      return this
         .consumerApiClient
-        .fetchAndLockExternalTasks<TExternalTaskPayload>(identity, this.workerId, topic, maxTasks, longpollingTimeout, this.lockDuration);
+        .fetchAndLockExternalTasks<TPayload>(this.identity, this.workerId, this.topic, this.maxTasks, this.longpollingTimeout, this.lockDuration);
     } catch (error) {
 
       logger.error(
@@ -131,31 +121,27 @@ export class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> implements
     }
   }
 
-  private async executeExternalTask(
-    identity: IIdentity,
-    externalTask: DataModels.ExternalTask.ExternalTask<TExternalTaskPayload>,
-  ): Promise<void> {
+  private async executeExternalTask(externalTask: DataModels.ExternalTask.ExternalTask<TPayload>): Promise<void> {
 
     try {
       const lockExtensionBuffer = 5000;
 
-      const interval =
-        setInterval(async (): Promise<void> => this.extendLocks(identity, externalTask), this.lockDuration - lockExtensionBuffer);
+      const interval = setInterval(async (): Promise<void> => this.extendLocks(externalTask), this.lockDuration - lockExtensionBuffer);
 
       const result = await this.processingFunction(externalTask);
       clearInterval(interval);
 
-      await this.processResult(identity, result, externalTask.id);
+      await this.processResult(result, externalTask.id);
 
     } catch (error) {
       logger.error('Failed to execute ExternalTask!', error.message, error.stack);
-      await this.consumerApiClient.handleServiceError(identity, this.workerId, externalTask.id, error.message, '');
+      await this.consumerApiClient.handleServiceError(this.identity, this.workerId, externalTask.id, error.message, '');
     }
   }
 
-  private async extendLocks(identity: IIdentity, externalTask: DataModels.ExternalTask.ExternalTask<TExternalTaskPayload>): Promise<void> {
+  private async extendLocks(externalTask: DataModels.ExternalTask.ExternalTask<TPayload>): Promise<void> {
     try {
-      await this.consumerApiClient.extendLock(identity, this.workerId, externalTask.id, this.lockDuration);
+      await this.consumerApiClient.extendLock(this.identity, this.workerId, externalTask.id, this.lockDuration);
     } catch (error) {
       // This can happen, if the lock-extension was performed after the task was already finished.
       // Since this isn't really an error, a warning suffices here.
@@ -163,23 +149,28 @@ export class ExternalTaskWorker<TExternalTaskPayload, TResultPayload> implements
     }
   }
 
-  private async processResult(identity: IIdentity, result: DataModels.ExternalTask.ExternalTaskResultBase, externalTaskId: string): Promise<void> {
+  private async processResult(result: DataModels.ExternalTask.ExternalTaskResultBase, externalTaskId: string): Promise<void> {
 
     if (result instanceof DataModels.ExternalTask.ExternalTaskBpmnError) {
       const bpmnError = result as DataModels.ExternalTask.ExternalTaskBpmnError;
-      await this.consumerApiClient.handleBpmnError(identity, this.workerId, externalTaskId, bpmnError.errorCode);
+      await this.consumerApiClient.handleBpmnError(this.identity, this.workerId, externalTaskId, bpmnError.errorCode);
 
     } else if (result instanceof DataModels.ExternalTask.ExternalTaskServiceError) {
 
       const serviceError = result as DataModels.ExternalTask.ExternalTaskServiceError;
       await this
         .consumerApiClient
-        .handleServiceError(identity, this.workerId, externalTaskId, serviceError.errorMessage, serviceError.errorDetails);
+        .handleServiceError(this.identity, this.workerId, externalTaskId, serviceError.errorMessage, serviceError.errorDetails);
 
     } else {
       await this
         .consumerApiClient
-        .finishExternalTask(identity, this.workerId, externalTaskId, (result as DataModels.ExternalTask.ExternalTaskSuccessResult<object>).result);
+        .finishExternalTask(
+          this.identity,
+          this.workerId,
+          externalTaskId,
+          (result as DataModels.ExternalTask.ExternalTaskSuccessResult<object>).result,
+        );
     }
   }
 

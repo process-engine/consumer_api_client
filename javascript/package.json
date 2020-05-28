@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/consumer_api_client_bundle",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "This project creates a JS bundle of the consumer_api_client",
   "main": "index.js",
   "scripts": {
@@ -14,13 +14,13 @@
   "license": "MIT",
   "dependencies": {
     "@essential-projects/http": "~2.5.0",
-    "@process-engine/consumer_api_client": "6.2.0",
+    "@process-engine/consumer_api_client": "6.4.0",
     "crypto": "~1.0.1",
-    "uuid": "~3.3.3"
+    "uuid": "~8.1.0"
   },
   "devDependencies": {
-    "@process-engine/ci_tools": "^2.4.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "@process-engine/ci_tools": "^3.0.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   }
 }
