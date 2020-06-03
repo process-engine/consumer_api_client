@@ -153,14 +153,19 @@ export class ExternalTaskWorker<TPayload, TResultPayload> implements IExternalTa
 
     if (result instanceof DataModels.ExternalTask.ExternalTaskBpmnError) {
       const bpmnError = result as DataModels.ExternalTask.ExternalTaskBpmnError;
-      await this.consumerApiClient.handleBpmnError(this.identity, this.workerId, externalTaskId, bpmnError.errorCode);
+      await this.consumerApiClient.handleBpmnError(this.identity, this.workerId, externalTaskId, bpmnError.errorCode, bpmnError.errorMessage);
 
     } else if (result instanceof DataModels.ExternalTask.ExternalTaskServiceError) {
 
       const serviceError = result as DataModels.ExternalTask.ExternalTaskServiceError;
-      await this
-        .consumerApiClient
-        .handleServiceError(this.identity, this.workerId, externalTaskId, serviceError.errorMessage, serviceError.errorDetails);
+      await this.consumerApiClient.handleServiceError(
+        this.identity,
+        this.workerId,
+        externalTaskId,
+        serviceError.errorMessage,
+        serviceError.errorDetails,
+        serviceError.errorCode,
+      );
 
     } else {
       await this
